@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from . import assets, bgm, tts, visuals as V
+from . import assets, bgm, reading, tts, visuals as V
 
 SR = tts.SR
 DEFAULT_THEME = {"bg": ["#1e3c72", "#6a1b9a"], "accent": "#ffd600"}
@@ -106,6 +106,12 @@ def render(script_path, cfg, root, out_dir):
     # ---- 1. narration audio + timeline ----
     print(f"[{name}] TTS ({cfg['tts']['backend']})...")
     tts.USED.clear()
+    spoken = [tts_text(ch, prons) for sc in script["scenes"] for ch in split_sentences(sc.get("narration", ""))]
+    try:
+        fixed = reading.prepare(spoken, cfg)
+    except Exception as e:
+        print(f"  [reading] check skipped: {e}")
+        fixed = {}
     voice_parts, subs, scenes_t = [], [], []
     t = 0.0
     for si, sc in enumerate(script["scenes"]):
@@ -113,7 +119,8 @@ def render(script_path, cfg, root, out_dir):
         lead = 0.12 if si else 0.05
         voice_parts.append(np.zeros(int(lead * SR), np.float32)); t += lead
         for ch in split_sentences(sc.get("narration", "")):
-            a = tts.synth(tts_text(ch, prons), cfg)
+            line = tts_text(ch, prons)
+            a = tts.synth(fixed.get(line, line), cfg)
             subs.append((t, t + len(a) / SR, subtitle_text(ch)))
             voice_parts.append(a); t += len(a) / SR
             voice_parts.append(np.zeros(int(0.12 * SR), np.float32)); t += 0.12
