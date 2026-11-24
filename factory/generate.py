@@ -89,6 +89,8 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
   photo は全体の3〜4割、図解系（number/compare/list/pie）を最低2つ入れる。
 - 画面上部のタイトル（title）は15文字以内、[ ]で1か所強調。
 - youtube_title は末尾に #雑学 #shorts。description は2〜3行＋ハッシュタグ。
+- 画面の文字は短く: compare の label は8文字・value は6文字・note は14文字まで、
+  pie の center は6文字まで（例「約3割」）、list の各 text は14文字まで、illustration/text の text は12文字まで。
 - 画面に出す文字（text, label, items の text など）に絵文字は入れない。絵文字は emoji 欄だけに。
 - 読み間違えやすい語（数字＋助数詞、難読語）は pronunciations に読みをひらがなで。
 
@@ -163,10 +165,11 @@ def _visual(v: Visual):
     return {"type": "text", "text": v.text, "emoji": v.emoji}
 
 
-def generate(history, outro, seed=None):
+def generate(history, outro, seed=None, recent_categories=()):
     client = anthropic.Anthropic()
     rng = random.Random(seed or dt.date.today().toordinal())
-    category = rng.choice(CATEGORIES)
+    pool = [c for c in CATEGORIES if c not in set(recent_categories)] or CATEGORIES
+    category = rng.choice(pool)
     print(f"[generate] category: {category}")
     draft = research(client, category, history)
     s = to_script(client, draft)

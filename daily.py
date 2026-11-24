@@ -46,15 +46,16 @@ def main():
             print(f"[daily] queue: {queue[0].name}")
         elif os.environ.get("ANTHROPIC_API_KEY"):
             from factory.generate import generate
+            recent = [h.get("category") for h in history[-6:] if h.get("category")]
             script = generate([h["topic"] for h in history], cfg["outro"],
-                              seed=dt.date.today().toordinal() * 10 + i)
+                              seed=dt.date.today().toordinal() * 10 + i, recent_categories=recent)
         else:
             print("[daily] queue is empty and ANTHROPIC_API_KEY is not set; nothing to do")
             break
         path = archive / f"{name}.json"
         path.write_text(json.dumps(script, ensure_ascii=False, indent=2), encoding="utf-8")
         render(path, cfg, ROOT, out)
-        history.append({"date": today, "name": name,
+        history.append({"date": today, "name": name, "category": script.get("category", ""),
                         "topic": script.get("topic") or script.get("title", "").replace("[", "").replace("]", "")})
         made.append(name)
         hist_path.write_text(json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")

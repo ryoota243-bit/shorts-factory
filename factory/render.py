@@ -16,23 +16,47 @@ DEFAULT_THEME = {"bg": ["#1e3c72", "#6a1b9a"], "accent": "#ffd600"}
 XFADE = 0.18
 
 
+MAX_CHUNK = 24
+
+
+def _split_at(marked, plain_idx):
+    """Split a "[..]"-marked string at a plain-text index, keeping highlights balanced."""
+    n, inside = 0, False
+    for i, ch in enumerate(marked):
+        if n == plain_idx and ch != "]":
+            a, b = marked[:i], marked[i:]
+            return (a + "]", "[" + b) if inside else (a, b)
+        if ch in "[]":
+            inside = ch == "["
+            continue
+        if False:
+            a, b = marked[:i], marked[i:]
+            return (a + "]", "[" + b) if inside else (a, b)
+        n += 1
+    return marked, ""
+
+
+def _halve(marked):
+    plain = re.sub(r"[\[\]]", "", marked)
+    if len(plain) <= MAX_CHUNK:
+        return [marked]
+    mid = len(plain) / 2
+    commas = [i + 1 for i, c in enumerate(plain) if c == "、" and 6 <= i + 1 <= len(plain) - 5]
+    cands = commas or sorted(p for p in (V.break_points(plain) or ()) if 6 <= p <= len(plain) - 5)
+    if not cands:
+        return [marked]
+    a, b = _split_at(marked, min(cands, key=lambda i: abs(i - mid)))
+    return _halve(a.strip()) + _halve(b.strip())
+
+
 def split_sentences(text):
-    """Split narration into subtitle chunks (~ <= 28 chars)."""
-    parts = [p for p in re.split(r"(?<=[。！？!?])", text) if p.strip()]
+    """Split narration into subtitle chunks of at most ~MAX_CHUNK characters."""
+    parts = [p.strip() for p in re.split(r"(?<=[。！？!?])", text) if p.strip()]
     out = []
     for p in parts:
-        while len(re.sub(r"[\[\]]", "", p)) > 24 and "、" in p[8:]:
-            # cut at the comma closest to the middle
-            plain = p
-            cands = [m.start() for m in re.finditer("、", plain) if 6 < m.start() < len(plain) - 4]
-            if not cands:
-                break
-            mid = len(plain) / 2
-            c = min(cands, key=lambda i: abs(i - mid))
-            out.append(p[: c + 1])
-            p = p[c + 1:]
-        out.append(p)
-    return [o.strip() for o in out if o.strip()]
+        out += _halve(p)
+    out = [o.replace("[]", "") for o in out]
+    return [o for o in out if re.sub(r"[\[\]。、]", "", o)]
 
 
 def tts_text(chunk, prons):

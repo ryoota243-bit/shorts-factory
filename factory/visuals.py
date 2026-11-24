@@ -1,5 +1,6 @@
 """Scene visuals drawn with Pillow. Each layer has frame(t, dur) -> RGB Image (W x H)."""
 import functools
+import re
 import math
 import random
 import subprocess
@@ -101,26 +102,39 @@ def glen(fnt, ch):
     return fnt.size * 1.05 if is_emoji(ch) else font_for(fnt, ch).getlength(ch)
 
 
+ASCIIISH = re.compile(r"[0-9０-９A-Za-zＡ-Ｚａ-ｚ.,．，%％:/+\-]+")
+
+
 @functools.lru_cache(4096)
 def break_points(plain):
-    """Indices where a line may break (word starts that are not particles/symbols)."""
+    """Indices where a line may break (word starts that are not particles/symbols).
+
+    Digit/latin runs are kept whole (the analyzer rewrites them, e.g. 10 -> 十)."""
     try:
         import pyopenjtalk
-        feats = pyopenjtalk.run_frontend(plain)
-        if sum(len(f["string"]) for f in feats) != len(plain):
-            raise ValueError
     except Exception:
         return None
-    pts, i, prev = set(), 0, ""
-    for f in feats:
-        attach = (f["pos"] in ("助詞", "助動詞", "記号") or f.get("pos_group1") in ("接尾", "非自立")
-                  or prev == "接頭詞")
-        prev = f["pos"]
-        if i and not attach and f["string"][0] not in NO_HEAD:
-            pts.add(i)
-        if f["pos"] == "記号" and f["string"] in "、。！？":
-            pts.add(i + len(f["string"]))
-        i += len(f["string"])
+    pts, pos, prev, prev_num, prev_g1, prev_str = set(), 0, "", False, "", ""
+    for m in re.finditer(ASCIIISH.pattern + r"|[^0-9０-９A-Za-zＡ-Ｚａ-ｚ.,．，%％:/+\-]+", plain):
+        seg = m.group(0)
+        if ASCIIISH.fullmatch(seg):
+            if pos and prev not in ("接頭詞",):
+                pts.add(pos)
+            pos += len(seg); prev, prev_num = "名詞", True
+            continue
+        feats = pyopenjtalk.run_frontend(seg)
+        if sum(len(f["string"]) for f in feats) != len(seg):
+            feats = [{"string": c, "pos": "記号" if c in "、。！？" else "名詞"} for c in seg]
+        for f in feats:
+            attach = (f["pos"] in ("助詞", "助動詞", "記号") or f.get("pos_group1") in ("接尾", "非自立")
+                      or prev == "接頭詞" or prev_num or (prev_g1 == "サ変接続" and f["pos"] == "動詞")
+                      or (prev_str == "と" and f["string"].startswith("し")))
+            if pos and not attach and f["string"][0] not in NO_HEAD:
+                pts.add(pos)
+            if f["pos"] == "記号" and f["string"] in "、。！？":
+                pts.add(pos + len(f["string"]))
+            prev, prev_num, prev_g1, prev_str = f["pos"], False, f.get("pos_group1", ""), f["string"]
+            pos += len(f["string"])
     return pts
 
 
@@ -362,28 +376,48 @@ class NumberLayer(Layer):
         return im
 
 
+def fit_text(text, size, max_w, max_h, min_size=24, **kw):
+    """rich_text shrunk (font size first, then scale) until it fits max_w x max_h."""
+    sz = size
+    while True:
+        im = rich_text(text, sz, max_w - 20, **kw)
+        if (im.width <= max_w and im.height <= max_h) or sz <= min_size:
+            break
+        sz = int(sz * 0.9)
+    k = min(1.0, max_w / im.width, max_h / im.height)
+    return scaled(im, k)
+
+
+def readable_on_white(rgb):
+    lum = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255
+    return rgb if lum < 0.7 else tuple(int(c * 0.55) for c in rgb)
+
+
 class CompareLayer(Layer):
+    CW, CH = 440, 640
+
     def __init__(self, spec, theme, seed=0):
         super().__init__(spec, theme, seed)
         self.cols = []
+        CW, CH = self.CW, self.CH
+
+        def put(card, img, top, h):
+            card.paste(img, ((CW - img.width) // 2, int(top + (h - img.height) / 2)), img)
+
         for it in spec["items"][:2]:
-            col = hex2rgb(it.get("color", "#ffffff"))
-            card = rounded((440, 640), 40, (255, 255, 255, 235))
+            col = hex2rgb(it.get("color", "#333333"))
+            card = rounded((CW, CH), 40, (255, 255, 255, 235))
             d = ImageDraw.Draw(card)
-            lab = rich_text(it.get("label", ""), 64, 400, fill=(40, 40, 40))
-            card.paste(lab, ((440 - lab.width) // 2, 30), lab)
+            put(card, fit_text(it.get("label", ""), 64, 400, 100, fill=(40, 40, 40)), 20, 100)
             if it.get("emoji"):
-                e = emoji(it["emoji"], 170)
-                card.paste(e, ((440 - e.width) // 2, 130), e)
+                put(card, emoji(it["emoji"], 150), 130, 160)
             else:
-                d.ellipse((130, 130, 310, 310), fill=col)
-            val = rich_text(it.get("value", ""), 120, 420, fill=col, stroke=0)
-            card.paste(val, ((440 - val.width) // 2, 330), val)
+                d.ellipse((CW / 2 - 75, 135, CW / 2 + 75, 285), fill=col)
+            put(card, fit_text(it.get("value", ""), 120, 410, 190, fill=readable_on_white(col)), 300, 190)
             if it.get("note"):
-                note = rich_text(it["note"], 40, 400, fill=(80, 80, 80), weight="Bold")
-                card.paste(note, ((440 - note.width) // 2, 500), note)
+                put(card, fit_text(it["note"], 42, 400, 120, fill=(80, 80, 80), weight="Bold"), 500, 125)
             self.cols.append(card)
-        self.vs = rich_text(spec.get("vs", "VS"), 110, stroke=10, fill=self.accent, shadow=True)
+        self.vs = rich_text(spec.get("vs", "VS"), 100, stroke=10, fill=self.accent, shadow=True)
 
     def frame(self, t, dur):
         im = self.background(t, dur)
@@ -391,7 +425,8 @@ class CompareLayer(Layer):
             k = ease_back((t - i * 0.25) / 0.45)
             x = W / 2 + (-1 if i == 0 else 1) * 245
             paste_center(im, scaled(card, max(0.01, k)), x, CONTENT_CY)
-        paste_center(im, scaled(self.vs, max(0.01, ease_back((t - 0.5) / 0.4))), W / 2, CONTENT_CY)
+        vs_y = CONTENT_CY - self.CH / 2 + 210   # level with the icons, clear of the card text
+        paste_center(im, scaled(self.vs, max(0.01, ease_back((t - 0.5) / 0.4))), W / 2, vs_y)
         return im
 
 
@@ -435,7 +470,7 @@ class PieLayer(Layer):
         self.segs = spec["segments"]
         tot = sum(s["value"] for s in self.segs)
         self.fracs = [s["value"] / tot for s in self.segs]
-        self.center = rich_text(spec.get("center", ""), 120, stroke=8, fill=self.accent)
+        self.center_text = spec.get("center", "")
         texts = [rich_text(s.get("label", ""), 52, 5000, stroke=6) for s in self.segs]
         # side by side when labels are short, otherwise one per line
         self.vertical = len(texts) > 2 or any(t.width > 370 for t in texts)
@@ -470,6 +505,9 @@ class PieLayer(Layer):
         hole = int(R * 0.55)
         d.ellipse((10 + R - hole, 10 + R - hole, 10 + R + hole, 10 + R + hole), fill=(0, 0, 0, 0))
         paste_center(im, layer, W / 2, cy)
+        if not hasattr(self, "center"):
+            hole_d = int(R * 0.55 * 2 * 0.85)
+            self.center = fit_text(self.center_text, 120, hole_d, hole_d, stroke=8, fill=self.accent)
         paste_center(im, self.center, W / 2, cy, alpha=ease_out((t - 0.9) / 0.3))
         for i, row in enumerate(self.legend):
             a = ease_out((t - 0.4 - i * 0.2) / 0.3)
