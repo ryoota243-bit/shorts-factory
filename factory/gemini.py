@@ -14,6 +14,7 @@ import urllib.request
 from pydantic import ValidationError
 
 BASE = "https://generativelanguage.googleapis.com/v1beta"
+DISABLED = {}  # set after a quota error so one run does not keep hitting the API
 CONFIG = {"text_model": "auto", "image_model": "auto"}
 
 
@@ -22,13 +23,22 @@ def configure(cfg):
 
 
 def _req(path, body=None, timeout=300):
+    if "reason" in DISABLED:
+        raise RuntimeError(f"Gemini skipped for this run: {DISABLED['reason']}")
     req = urllib.request.Request(
         f"{BASE}/{path}", data=json.dumps(body).encode() if body is not None else None,
         headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]})
     try:
         return json.loads(urllib.request.urlopen(req, timeout=timeout).read())
     except urllib.error.HTTPError as e:
-        raise RuntimeError(f"Gemini API {e.code}: {e.read()[:500].decode(errors='replace')}") from None
+        raw = e.read().decode(errors="replace")
+        try:
+            msg = json.loads(raw)["error"]["message"]
+        except Exception:
+            msg = raw[:1500]
+        if e.code == 429 and "quota" in msg.lower():
+            DISABLED["reason"] = f"quota exceeded ({msg[:200]})"
+        raise RuntimeError(f"Gemini API {e.code}: {msg}") from None
 
 
 @functools.lru_cache(None)

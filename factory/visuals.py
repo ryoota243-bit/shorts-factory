@@ -118,7 +118,7 @@ def break_points(plain):
     for m in re.finditer(ASCIIISH.pattern + r"|[^0-9０-９A-Za-zＡ-Ｚａ-ｚ.,．，%％:/+\-]+", plain):
         seg = m.group(0)
         if ASCIIISH.fullmatch(seg):
-            if pos and prev not in ("接頭詞",):
+            if pos and prev not in ("接頭詞",) and not plain[:pos].endswith(("分の", "約", "第", "No.")):
                 pts.add(pos)
             pos += len(seg); prev, prev_num = "名詞", True
             continue
