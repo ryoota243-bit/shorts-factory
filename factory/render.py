@@ -42,7 +42,12 @@ def _halve(marked):
         return [marked]
     mid = len(plain) / 2
     commas = [i + 1 for i, c in enumerate(plain) if c == "、" and 6 <= i + 1 <= len(plain) - 5]
-    cands = commas or sorted(p for p in (V.break_points(plain) or ()) if 6 <= p <= len(plain) - 5)
+    def outside_brackets(p):
+        head = plain[:p]
+        return all(head.count(o) <= head.count(c) for o, c in ("「」", "『』", "（）", "()"))
+    commas = [p for p in commas if outside_brackets(p)]
+    cands = commas or sorted(p for p in (V.break_points(plain) or ())
+                             if 6 <= p <= len(plain) - 5 and outside_brackets(p))
     if not cands:
         return [marked]
     a, b = _split_at(marked, min(cands, key=lambda i: abs(i - mid)))
