@@ -23,8 +23,7 @@
       "pixabay",
       "ai"
     ],
-    "prefer_video": false,
-    "ai_model": "gemini-2.5-flash-image"
+    "prefer_video": false
   },
   "bgm": {
     "dir": "bgm",
@@ -45,5 +44,10 @@
       "text": "フォローで\n[毎日雑学]"
     },
     "hold": 0.8
+  },
+  "script_writer": "claude",
+  "gemini": {
+    "text_model": "auto",
+    "image_model": "auto"
   }
 }

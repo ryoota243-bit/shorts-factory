@@ -6,8 +6,12 @@ on:
   workflow_dispatch:
     inputs:
       count:
-        description: "作る本数"
+        description: "作るお題の数"
         default: "1"
+      compare:
+        description: "比較モード（同じお題を Claude と Gemini の両方で台本化）"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -52,7 +56,10 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
-        run: python daily.py --count "${{ github.event.inputs.count || 1 }}"
+        run: |
+          args="--count ${{ github.event.inputs.count || 1 }}"
+          [ "${{ github.event.inputs.compare }}" = "true" ] && args="$args --compare"
+          python daily.py $args
 
       - name: Save scripts and history
         run: |

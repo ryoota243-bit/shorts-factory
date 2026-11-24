@@ -198,6 +198,7 @@ def render(script_path, cfg, root, out_dir):
         "title": script.get("youtube_title") or script.get("title"),
         "description": desc,
         "tts": sorted(tts.USED),
+        "writer": script.get("writer", ""),
         "sources": script.get("sources", []),
         "tags": script.get("tags", []),
         "duration": round(total, 2),

@@ -8,6 +8,7 @@ import argparse
 import json
 from pathlib import Path
 
+from factory import gemini
 from factory.render import render
 
 ROOT = Path(__file__).resolve().parent
@@ -21,6 +22,7 @@ def main():
     ap.add_argument("--skip-existing", action="store_true")
     a = ap.parse_args()
     cfg = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+    gemini.configure(cfg)
     if a.tts:
         cfg["tts"]["backend"] = a.tts
     t = Path(a.target)

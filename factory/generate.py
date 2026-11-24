@@ -66,13 +66,10 @@ class Script(BaseModel):
 
 
 RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャンネルの構成作家です。
-カテゴリ「{category}」から、視聴者が「へぇ！」と驚く雑学ネタを1つ選び、35〜50秒の台本を作ってください。
-
-# 重複禁止（過去に扱ったテーマ）
-{history}
+{theme_line}
 
 # 手順
-1. web検索で、選んだネタの事実を信頼できる情報源（公的機関・大学・百科事典・専門メディア）で確認する。
+1. web検索で、ネタの事実を信頼できる情報源（公的機関・大学・百科事典・専門メディア）で確認する。
    俗説・諸説あるもの・確認できないものは採用しない。数字は出典どおりに。
 2. 確認できた事実だけで台本を書く。
 
@@ -82,11 +79,14 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
 - シーン数5〜7、ナレーション合計200〜300文字。1シーンのナレーションは1〜2文。
 - ナレーションは話し言葉。強調したい語句は [ ] で囲む（各シーン1か所まで）。
 - 各シーンに映像を指定:
-  photo（実写写真。query は素材サイトで確実に見つかる一般的な英語2〜3語。固有名詞・年代・型番は使わず、
-  例: "IBM 1401" ではなく "vintage computer"。AI生成用の英語 ai_prompt も書く）/
+  photo（素材サイトの実写写真。どこにでもある一般的なモノ・風景・動物向け。query は確実に見つかる
+  一般的な英語2〜3語で、固有名詞・年代・型番は使わない。例: "IBM 1401" ではなく "vintage computer"）/
+  ai（AI生成画像。素材サイトに無さそうな具体的な場面向け: 歴史の一場面、発明の瞬間、特定の状況、
+  比喩的なイメージなど）/
+  photo と ai の両方に、英語の ai_prompt（写実的な写真風。画像内に文字を入れない。実在の人物の顔は描かない）を書く /
   number（数字を大きく）/ compare（2つの比較）/ list（2〜4項目）/ pie（割合）/
   illustration（絵文字1〜2個＋短い文字）/ text（大きな文字）。
-  photo は全体の3〜4割、図解系（number/compare/list/pie）を最低2つ入れる。
+  photo と ai を合わせて全体の3〜4割、図解系（number/compare/list/pie）を最低2つ入れる。
 - 画面上部のタイトル（title）は15文字以内、[ ]で1か所強調。
 - youtube_title は末尾に #雑学 #shorts。description は2〜3行＋ハッシュタグ。
 - 画面の文字は短く: compare の label は8文字・value は6文字・note は14文字まで、
@@ -99,7 +99,7 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
 FORMAT_PROMPT = """次の台本案を、指定のJSONスキーマに変換してください。
 - 使わない項目は空文字・空配列・0 にする。
 - visual.type ごとに使う項目:
-  photo: query, ai_prompt, emoji, text（emoji と text は写真が見つからない時の代わりのイラスト用）
+  photo / ai: query, ai_prompt, emoji, text（emoji と text は画像が用意できない時の代わりのイラスト用）
   number: number, unit, label / compare: items(2件: label, value, color, note, emoji)
   list: items(emoji, text) / pie: segments(label, value, color), center
   illustration: emoji, text / text: text, emoji
@@ -114,9 +114,8 @@ def _text(msg):
     return "".join(b.text for b in msg.content if b.type == "text")
 
 
-def research(client, category, history):
-    hist = "\n".join(f"- {h}" for h in history[-200:]) or "（なし）"
-    messages = [{"role": "user", "content": RESEARCH_PROMPT.format(category=category, history=hist)}]
+def research(client, prompt):
+    messages = [{"role": "user", "content": prompt}]
     tools = [{"type": "web_search_20260209", "name": "web_search", "max_uses": 8}]
     for _ in range(5):
         msg = client.beta.messages.create(
@@ -165,24 +164,46 @@ def _visual(v: Visual):
     return {"type": "text", "text": v.text, "emoji": v.emoji}
 
 
-def generate(history, outro, seed=None, recent_categories=()):
-    client = anthropic.Anthropic()
-    rng = random.Random(seed or dt.date.today().toordinal())
-    pool = [c for c in CATEGORIES if c not in set(recent_categories)] or CATEGORIES
-    category = rng.choice(pool)
-    print(f"[generate] category: {category}")
-    draft = research(client, category, history)
-    s = to_script(client, draft)
-    desc = s.description
+def theme_line(category=None, history=(), topic=None):
+    if topic:
+        return (f"テーマ「{topic}」（カテゴリ: {category}）の雑学で、視聴者が「へぇ！」と驚く"
+                f"35〜50秒の台本を作ってください。")
+    hist = "\n".join(f"- {h}" for h in list(history)[-200:]) or "（なし）"
+    return (f"カテゴリ「{category}」から、視聴者が「へぇ！」と驚く雑学ネタを1つ選び、35〜50秒の台本を"
+            f"作ってください。\n\n# 重複禁止（過去に扱ったテーマ）\n{hist}")
+
+
+def assemble(s: Script, category, outro, writer):
     return {
         "topic": s.topic,
         "category": category,
+        "writer": writer,
         "title": s.title,
         "youtube_title": s.youtube_title,
-        "description": desc,
+        "description": s.description,
         "tags": s.tags,
         "theme": {"bg": (s.bg_colors + ["#1e3c72", "#6a1b9a"])[:2], "accent": s.accent or "#ffd600"},
         "pronunciations": {p.word: p.reading for p in s.pronunciations},
         "scenes": [{"narration": sc.narration, "visual": _visual(sc.visual)} for sc in s.scenes] + [outro],
         "sources": s.sources,
     }
+
+
+def pick_category(seed=None, recent_categories=()):
+    rng = random.Random(seed or dt.date.today().toordinal())
+    pool = [c for c in CATEGORIES if c not in set(recent_categories)] or CATEGORIES
+    return rng.choice(pool)
+
+
+def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None):
+    """Write a script. With topic set, write about that topic instead of choosing one."""
+    category = category or pick_category(seed, recent_categories)
+    print(f"[generate:{writer}] category: {category}" + (f" / topic: {topic}" if topic else ""))
+    prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic))
+    if writer == "gemini":
+        from . import gemini
+        s = gemini.write_script(prompt, FORMAT_PROMPT, Script)
+    else:
+        client = anthropic.Anthropic()
+        s = to_script(client, research(client, prompt))
+    return assemble(s, category, outro, writer)

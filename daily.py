@@ -11,6 +11,7 @@ import os
 import shutil
 from pathlib import Path
 
+from factory import gemini
 from factory.render import render
 
 ROOT = Path(__file__).resolve().parent
@@ -21,7 +22,11 @@ def main():
     cfg = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
     ap = argparse.ArgumentParser()
     ap.add_argument("--count", type=int, default=cfg.get("daily", {}).get("count", 1))
+    ap.add_argument("--writer", choices=["claude", "gemini"], default=cfg.get("script_writer", "claude"))
+    ap.add_argument("--compare", action="store_true",
+                    help="同じお題を Claude と Gemini の両方で台本化して2本ずつ作る")
     a = ap.parse_args()
+    gemini.configure(cfg)
 
     hist_path = ROOT / "history.json"
     history = json.loads(hist_path.read_text(encoding="utf-8")) if hist_path.exists() else []
@@ -32,39 +37,67 @@ def main():
     made = []
 
     used = {h["name"] for h in history} | {p.stem for p in archive.glob("*.json")}
-    n = 0
-    for i in range(a.count):
-        n += 1
+    def next_name():
+        n = 1
         while f"{today}_{n:02d}" in used:
             n += 1
-        name = f"{today}_{n:02d}"
+        return f"{today}_{n:02d}"
+
+    def make(script, name):
+        path = archive / f"{name}.json"
+        path.write_text(json.dumps(script, ensure_ascii=False, indent=2), encoding="utf-8")
         used.add(name)
+        try:
+            render(path, cfg, ROOT, out)
+            made.append(name)
+        except Exception as e:  # keep going with the next video
+            print(f"[daily] render failed for {name}: {e}")
+
+    for i in range(a.count):
+        seed = dt.date.today().toordinal() * 10 + i + len(history)
+        recent = [h.get("category") for h in history[-6:] if h.get("category")]
         queue = sorted(queue_dir.glob("*.json"))
-        if queue:
+        if queue and not a.compare:
             script = json.loads(queue[0].read_text(encoding="utf-8"))
             queue[0].unlink()
             print(f"[daily] queue: {queue[0].name}")
-        elif os.environ.get("ANTHROPIC_API_KEY"):
+            scripts = [(script, "")]
+        elif os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("GEMINI_API_KEY"):
             from factory.generate import generate
-            recent = [h.get("category") for h in history[-6:] if h.get("category")]
-            script = generate([h["topic"] for h in history], cfg["outro"],
-                              seed=dt.date.today().toordinal() * 10 + i, recent_categories=recent)
+            topics = [h["topic"] for h in history]
+            writers = ["claude", "gemini"] if a.compare else [a.writer]
+            scripts = []
+            first = None
+            for w in writers:
+                try:
+                    if first is None:
+                        s = generate(topics, cfg["outro"], seed=seed, recent_categories=recent, writer=w)
+                        first = s
+                    else:  # same topic & category as the first writer
+                        s = generate(topics, cfg["outro"], writer=w,
+                                     category=first["category"], topic=first["topic"])
+                    scripts.append((s, f"_{w}" if a.compare else ""))
+                except Exception as e:
+                    print(f"[daily] {w} script failed: {e}")
+            if not scripts:
+                continue
         else:
-            print("[daily] queue is empty and ANTHROPIC_API_KEY is not set; nothing to do")
+            print("[daily] queue is empty and no API key is set; nothing to do")
             break
-        path = archive / f"{name}.json"
-        path.write_text(json.dumps(script, ensure_ascii=False, indent=2), encoding="utf-8")
-        render(path, cfg, ROOT, out)
-        history.append({"date": today, "name": name, "category": script.get("category", ""),
-                        "topic": script.get("topic") or script.get("title", "").replace("[", "").replace("]", "")})
-        made.append(name)
+        base = next_name()
+        for script, suffix in scripts:
+            make(script, base + suffix)
+        used.add(base)
+        s0 = scripts[0][0]
+        history.append({"date": today, "name": base, "category": s0.get("category", ""),
+                        "topic": s0.get("topic") or s0.get("title", "").replace("[", "").replace("]", "")})
         hist_path.write_text(json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # release notes: copy-paste friendly upload info
     lines = []
     for n in made:
         m = json.loads((out / f"{n}.json").read_text(encoding="utf-8"))
-        lines += [f"## {n}.mp4", "", "**タイトル**", "```", m["title"] or "", "```", "**概要欄**", "```",
+        lines += [f"## {n}.mp4", "", f"台本: {m.get('writer') or '手動'}", "", "**タイトル**", "```", m["title"] or "", "```", "**概要欄**", "```",
                   m["description"], "```", "**タグ**: " + ", ".join(m["tags"]), ""]
         if m.get("sources"):
             lines += ["<details><summary>出典（事実確認用）</summary>", ""]

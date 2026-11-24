@@ -14,6 +14,8 @@
 ノートにあるタイトル・概要欄をコピーして、YouTube アプリから投稿してください。
 
 - **今すぐ作る**：Actions → `daily-shorts` → `Run workflow`（本数も指定できます）
+- **台本AIの比較**：`Run workflow` で「比較モード」にチェックすると、同じお題を Claude と Gemini の両方で台本化して2本ずつ作ります
+- **台本AIの切り替え**：`config.json` の `script_writer` を `claude` / `gemini` に
 - **自分で書いた台本を優先する**：`scripts/queue/` に JSON を置くと、次の回で使われます
 - **使い終わった台本**：`scripts/archive/` に、作成済みテーマは `history.json` に残ります
 
@@ -24,7 +26,7 @@
 | `ANTHROPIC_API_KEY` | 台本の自動作成 | https://console.anthropic.com/ （支払い方法の登録が必要） | ✅ |
 | `PEXELS_API_KEY` | 写真・動画素材（無料） | https://www.pexels.com/api/ | 推奨 |
 | `PIXABAY_API_KEY` | 写真・動画素材（無料） | https://pixabay.com/api/docs/ （ログイン後に表示） | 推奨 |
-| `GEMINI_API_KEY` | AI 画像生成 | https://aistudio.google.com/apikey | 任意 |
+| `GEMINI_API_KEY` | AI 画像生成・Gemini 台本 | https://aistudio.google.com/apikey | 推奨 |
 | `GOOGLE_TTS_API_KEY` | Google の声を使う場合のみ | Google Cloud コンソール | 任意 |
 
 キーが無い機能は自動で飛ばします（例：素材のキーが無ければ図解で代用）。

@@ -1,7 +1,7 @@
 """Find a photo/video for a scene: local file -> Pexels -> Pixabay -> AI generation.
 
 Keys come from environment variables: PEXELS_API_KEY, PIXABAY_API_KEY, GEMINI_API_KEY.
-A source without a key is skipped silently.
+A source without a key is skipped silently. type "ai" tries AI first, then stock photos.
 """
 import base64
 import hashlib
@@ -68,25 +68,16 @@ def _pixabay(v, want_video, cache):
 
 
 def _ai(v, cfg, cache):
-    key = os.environ.get("GEMINI_API_KEY")
     prompt = v.get("ai_prompt")
-    if not key or not prompt:
+    if not os.environ.get("GEMINI_API_KEY") or not prompt:
         return None
     path = Path(cache) / ("ai_" + hashlib.sha1(prompt.encode()).hexdigest()[:16] + ".png")
     if not path.exists():
-        model = cfg["assets"].get("ai_model", "gemini-2.5-flash-image")
-        body = {"contents": [{"parts": [{"text": prompt + " Vertical 9:16 composition, no text."}]}],
-                "generationConfig": {"responseModalities": ["IMAGE"],
-                                     "imageConfig": {"aspectRatio": "9:16"}}}
-        req = urllib.request.Request(
-            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-            data=json.dumps(body).encode(),
-            headers={"Content-Type": "application/json", "x-goog-api-key": key})
-        res = json.loads(urllib.request.urlopen(req, timeout=180).read())
-        parts = res["candidates"][0]["content"]["parts"]
-        data = next(p["inlineData"]["data"] for p in parts if "inlineData" in p)
-        path.write_bytes(base64.b64decode(data))
-    return {"kind": "image", "path": path, "credit": "AI generated"}
+        from . import gemini
+        full = (prompt + ". Vertical 9:16 composition. No text, letters, logos or watermarks in the image."
+                " Do not depict the face of any real, identifiable person.")
+        path.write_bytes(gemini.generate_image(full))
+    return {"kind": "image", "path": path, "credit": "AI生成画像 (Gemini)"}
 
 
 def resolve(v, cfg, cache, root):
@@ -94,7 +85,8 @@ def resolve(v, cfg, cache, root):
     if v.get("type") not in ("photo", "video", "ai"):
         return None
     want_video = v["type"] == "video" or cfg["assets"].get("prefer_video", False)
-    order = v.get("sources") or (["ai"] if v["type"] == "ai" else cfg["assets"]["order"])
+    order = v.get("sources") or (["local", "ai", "pexels", "pixabay"] if v["type"] == "ai"
+                                 else cfg["assets"]["order"])
     for src in order:
         try:
             if src == "local" and v.get("file"):
