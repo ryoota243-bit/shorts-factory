@@ -88,7 +88,11 @@ def _halve(marked):
                              if 6 <= p <= len(plain) - 5 and outside_brackets(p))
     if not cands:
         return [marked]
-    a, b = _split_at(marked, min(cands, key=lambda i: abs(i - mid)))
+    # prefer clause ends (after は/が/を/に/で/、) and avoid splitting "AのB" phrases
+    def cost(i):
+        prev = plain[i - 1]
+        return abs(i - mid) + (6 if prev == "の" else 0) - (2 if prev in "はがをにでも、" else 0)
+    a, b = _split_at(marked, min(cands, key=cost))
     return _halve(a.strip()) + _halve(b.strip())
 
 
