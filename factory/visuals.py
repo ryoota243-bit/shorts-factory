@@ -387,7 +387,7 @@ class NumberLayer(Layer):
         cy = CONTENT_CY + 60
         paste_center(im, n, cx, cy)
         if self.unit:
-            paste_center(im, self.unit, cx + n.width / 2 + uw / 2 - 10, cy + 70, alpha=ease_out((t - 0.6) / 0.3))
+            paste_center(im, self.unit, cx + n.width / 2 + uw / 2 - 10, cy + 70, alpha=ease_out((t - 0.1) / 0.3))
         return im
 
 
