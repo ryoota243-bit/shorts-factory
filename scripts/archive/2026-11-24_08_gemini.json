@@ -1,0 +1,144 @@
+{
+  "topic": "目の呼吸",
+  "category": "人体",
+  "writer": "gemini",
+  "title": "目は[空気から呼吸]している？",
+  "youtube_title": "目は空気から直接呼吸している？角膜の驚きの秘密 #雑学 #shorts",
+  "description": "人間の体で唯一、空気から直接酸素をもらっている部分をご存じですか？\n角膜の不思議な仕組みと、目が酸欠になると起きるトラブルを解説します！\n#雑学 #人体 #目の健康",
+  "tags": [
+    "雑学",
+    "人体",
+    "目の健康",
+    "角膜",
+    "サイエンス"
+  ],
+  "theme": {
+    "bg": [
+      "#0B132B",
+      "#1C2541"
+    ],
+    "accent": "#00E5FF"
+  },
+  "pronunciations": {
+    "角膜": "かくまく",
+    "裸眼": "らがん"
+  },
+  "scenes": [
+    {
+      "narration": "実は人間の体で、[空気から直接]息をしている場所があります。",
+      "visual": {
+        "type": "ai",
+        "query": "human eye cornea",
+        "ai_prompt": "Cinematic macro close-up shot of a human eye looking forward, showing clear details of the iris and transparent cornea with beautiful soft lighting, hyper-realistic, 8k, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "👀",
+          "text": "空気から直接呼吸？"
+        }
+      }
+    },
+    {
+      "narration": "それは黒目の表面にある角膜で、光を通すために[血管がゼロ]なんです。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "一般の細胞",
+            "value": "血液から",
+            "color": "#6C757D",
+            "note": "血管を通して酸素補給",
+            "emoji": "🩸"
+          },
+          {
+            "label": "角膜の細胞",
+            "value": "血管ゼロ",
+            "color": "#00E5FF",
+            "note": "透明さを保つため",
+            "emoji": "👁️"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "普通の細胞は血液から酸素をもらいますが、角膜は[涙]に溶けた空気を直接吸っています。",
+      "visual": {
+        "type": "photo",
+        "query": "eye tear drop",
+        "ai_prompt": "Extreme macro close-up of a human eye with a thin natural tear film layer over the cornea, soft gentle reflection, realistic photography, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "💧",
+          "text": "涙の層から酸素を吸収"
+        }
+      }
+    },
+    {
+      "narration": "では寝ている時はというと、なんと[まぶたの裏]の血管から酸素をもらっています。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "起きている時",
+            "value": "空気から",
+            "color": "#00E5FF",
+            "note": "涙を通して直接吸収",
+            "emoji": "☀️"
+          },
+          {
+            "label": "寝ている時",
+            "value": "まぶた裏",
+            "color": "#FF9F43",
+            "note": "まぶたの血管から吸収",
+            "emoji": "🌙"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "もし酸欠が続くと、酸素を求めて黒目に[血管が侵入]してくることも。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "⚠️",
+            "text": "黒目に血管が侵入"
+          },
+          {
+            "emoji": "📉",
+            "text": "角膜細胞の減少"
+          },
+          {
+            "emoji": "🦠",
+            "text": "感染症のリスク増"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "目もちゃんと呼吸しています。たまには[裸眼]で深呼吸させてあげましょう。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "👀",
+        "text": "目にも休息を！"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.menicon.co.jp/whats/happy/users/u03_2/",
+    "https://en.wikipedia.org/wiki/Cornea",
+    "https://hayatsu-ganka.com/blog/2026/04/03/498/",
+    "https://pubmed.ncbi.nlm.nih.gov/3821035/",
+    "https://www.hamano-eye-clinic.com/chishiki/chishiki12.html",
+    "https://www.ikec.jp/mailmagazine/364/",
+    "https://ogata-ganka.com/blog/2019/01/30/%E7%9B%AE%E3%81%AE%E9%85%B8%E6%AC%A0%E3%81%AF%E9%9D%9E%E5%B8%B8%E3%81%AB%E5%8D%b1%E9%99%BA%E3%81%A7%E3%81%99%E3%80%82/"
+  ]
+}

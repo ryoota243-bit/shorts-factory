@@ -1,0 +1,127 @@
+{
+  "topic": "角膜は空気から酸素をもらう",
+  "category": "人体",
+  "writer": "claude",
+  "title": "黒目は[空気]で息をする",
+  "youtube_title": "血管がないのに生きてる？黒目は空気から酸素をもらっていた #雑学 #shorts",
+  "description": "黒目の表面にある「角膜」には血管がありません。\nじゃあ酸素はどこから？答えは空気と涙でした。\n#雑学 #人体 #目 #角膜 #豆知識",
+  "tags": [
+    "雑学",
+    "人体",
+    "目",
+    "角膜",
+    "豆知識",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#0B1A2E",
+      "#06303A"
+    ],
+    "accent": "#4FE3FF"
+  },
+  "pronunciations": {
+    "房水": "ぼうすい"
+  },
+  "scenes": [
+    {
+      "narration": "実は人の体には、[血管が通っていない]のに生きている組織があります。しかも酸素の入手先は、なんと空気なんです。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Extreme macro photograph of a human eye, glowing transparent dome on the front of the eye, faint particles of air flowing gently toward it, dark background, cinematic lighting, photorealistic, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "👁️",
+          "text": "血管がないのに生きている"
+        }
+      }
+    },
+    {
+      "narration": "その正体は、黒目の表面を覆う透明な膜、[角膜]です。",
+      "visual": {
+        "type": "photo",
+        "query": "eye close up",
+        "ai_prompt": "Close-up photograph of a human eye showing the clear glossy surface over the iris, soft natural light, shallow depth of field, photorealistic, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "👁️",
+          "text": "角膜"
+        }
+      }
+    },
+    {
+      "narration": "厚さは中心で[約0.5ミリ]。光を通すため透明でなければならず、細い血管すら邪魔になるんです。",
+      "visual": {
+        "type": "number",
+        "value": 0.5,
+        "unit": "mm",
+        "label": "角膜の中心の厚さ（約）"
+      }
+    },
+    {
+      "narration": "目を開けている間は、空気中の酸素が[涙に溶けて]届き、眠っている間はまぶたの裏の血管から受け取ります。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "目を開けている時",
+            "value": "空気から",
+            "color": "#4FE3FF",
+            "note": "酸素が涙に溶けて届く",
+            "emoji": "👀"
+          },
+          {
+            "label": "眠っている時",
+            "value": "まぶたから",
+            "color": "#FF7A9A",
+            "note": "まぶた裏の血管から",
+            "emoji": "😴"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "栄養も、前からは涙、後ろからは[房水]という目の中の液体でもらっています。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "💧",
+            "text": "前側から：涙"
+          },
+          {
+            "emoji": "👁️",
+            "text": "内側から：房水"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "つまりあなたの黒目は、今この瞬間も[空気で息をしている]んです。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "👁️💨",
+        "text": "黒目も息してる"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.britannica.com/science/cornea",
+    "https://www.downstate.edu/patient-care/find-treatment/areas-of-care/ophthalmology/eye-disorders/cornea.html",
+    "https://africacheck.org/fact-checks/meta-programme-fact-checks/yes-eyes-cornea-doesnt-have-blood-and-gets-its-oxygen-air",
+    "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/9618773",
+    "https://www.ck12.org/flexi/physical-science/vision-and-the-eye/how-does-the-cornea-obtain-oxygen-when-the-eyes-are-closed/",
+    "https://www.jstage.jst.go.jp/article/vision/1/1/1_20/_pdf/-char/ja",
+    "https://www.gankaikai.or.jp/health/58/index.html"
+  ]
+}

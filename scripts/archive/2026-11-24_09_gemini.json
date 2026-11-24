@@ -1,0 +1,127 @@
+{
+  "topic": "回転寿司の誕生秘話",
+  "category": "日本の文化",
+  "writer": "gemini",
+  "title": "回転寿司は[ビール工場]生まれ？",
+  "youtube_title": "回転寿司のルーツはビール工場だった！？誕生の意外な秘密 #雑学 #shorts",
+  "description": "大人も子どもも大好きな「回転寿司」。\n実は、昭和の大阪でビール工場の製造ラインを見たことから誕生しました！\n寿司とビールの意外な関係をご紹介します。\n#回転寿司 #雑学 #shorts #食文化 #歴史",
+  "tags": [
+    "回転寿司",
+    "雑学",
+    "ビール工場",
+    "食文化",
+    "歴史",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#1a1410",
+      "#2d1e12"
+    ],
+    "accent": "#f59e0b"
+  },
+  "pronunciations": {
+    "元禄寿司": "げんろくずし"
+  },
+  "scenes": [
+    {
+      "narration": "みんなが大好きな回転寿司、実は[ビール工場]から生まれたって知ってた？",
+      "visual": {
+        "type": "photo",
+        "query": "conveyor belt sushi",
+        "ai_prompt": "Close-up realistic photo of fresh delicious sushi plates moving along a modern conveyor belt in a bright Japanese sushi restaurant, warm atmospheric lighting, commercial food photography",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🍣",
+          "text": "回転寿司のルーツ"
+        }
+      }
+    },
+    {
+      "narration": "昭和の大阪で立ち食い寿司店が大繁盛するも、店主は[人手不足]で注文をさばけず困っていました。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "注文客",
+            "value": "殺到",
+            "color": "#ef4444",
+            "note": "大繁盛",
+            "emoji": "👥"
+          },
+          {
+            "label": "職人の手",
+            "value": "限界",
+            "color": "#64748b",
+            "note": "配膳が追いつかない",
+            "emoji": "👨‍🍳"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "そんな時、見学したビール工場で[ビール瓶]がベルトコンベアを流れる光景に目を奪われます。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Cinematic realistic photograph from a side angle showing vintage glass beer bottles moving steadily in a line on a factory conveyor belt, 1950s Japanese brewery interior, warm industrial lighting, no visible human faces",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🍺",
+          "text": "ビール工場コンベア"
+        }
+      }
+    },
+    {
+      "narration": "瓶の代わりに寿司を回そうと決意し、カーブを曲がる工夫を重ねて、開発に[10年]も費やしました。",
+      "visual": {
+        "type": "number",
+        "value": 10,
+        "unit": "年",
+        "label": "カーブを克服する研究"
+      }
+    },
+    {
+      "narration": "そして1958年、世界初の回転寿司店[元禄寿司]が大阪に誕生したのです。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "📅",
+            "text": "1958年に大阪で誕生"
+          },
+          {
+            "emoji": "🍣",
+            "text": "世界初の回転寿司店"
+          },
+          {
+            "emoji": "⚙️",
+            "text": "のちに機械遺産へ認定"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "次にお店で流れる皿を見たら、まずは[ビール]で乾杯したくなっちゃうかもね。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🍣🍺",
+        "text": "まずは乾杯？"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://koueki.jiii.or.jp/innovation100/innovation.php?id=26",
+    "https://www.jsme.or.jp/kikaiisan/heritage_112.html",
+    "http://www.mawaru-genrokuzusi.co.jp/history/"
+  ]
+}

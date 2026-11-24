@@ -1,0 +1,121 @@
+{
+  "topic": "回転寿司のルーツはビール工場",
+  "category": "日本の文化",
+  "writer": "claude",
+  "title": "回転寿司は[ビール]から",
+  "youtube_title": "回転寿司のレーン、ヒントはビール工場だった！ #雑学 #shorts",
+  "description": "回転寿司のあのレーン、実はビール工場のベルトコンベアがヒントだった！\n1958年に大阪で生まれた世界初の回転寿司店から、全国に広がるまでを紹介します。\n#雑学 #回転寿司 #日本の文化 #豆知識 #shorts",
+  "tags": [
+    "雑学",
+    "回転寿司",
+    "日本の文化",
+    "豆知識",
+    "shorts",
+    "元禄寿司",
+    "大阪万博"
+  ],
+  "theme": {
+    "bg": [
+      "#1A1F3A",
+      "#3A1420"
+    ],
+    "accent": "#FFC83D"
+  },
+  "pronunciations": {
+    "白石義明": "しらいしよしあき",
+    "廻る元禄寿司": "まわるげんろくずし",
+    "東大阪市": "ひがしおおさかし"
+  },
+  "scenes": [
+    {
+      "narration": "回転寿司のあのレーン、実は[ビール工場]がヒントだったって知ってた？",
+      "visual": {
+        "type": "photo",
+        "query": "conveyor belt sushi",
+        "ai_prompt": "Realistic photo of colorful sushi plates moving on a conveyor belt in a modern Japanese sushi restaurant, close-up, warm lighting, shallow depth of field, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🍣",
+          "text": "回転寿司のレーン"
+        }
+      }
+    },
+    {
+      "narration": "大阪で立ち食い寿司店を営んでいた白石義明さん。ビール工場で、瓶が次々と流れるベルトコンベアを見て[ひらめきます]。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Realistic vintage-style photo of a 1950s Japanese beer factory, rows of glass beer bottles moving along a long conveyor belt, a middle-aged man in a white cook's jacket seen from behind watching the line, face not visible, soft film grain, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🍺",
+          "text": "ビール工場でひらめき"
+        }
+      }
+    },
+    {
+      "narration": "これなら客の注文を効率よくさばける。1958年、今の東大阪市に[世界初]の回転寿司店「廻る元禄寿司」が開店しました。",
+      "visual": {
+        "type": "number",
+        "value": 1958,
+        "unit": "年",
+        "label": "世界初の回転寿司"
+      }
+    },
+    {
+      "narration": "1970年の大阪万博に出店すると大行列に。回転寿司は一気に[全国]へ知られました。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🍣👥",
+        "text": "万博で大行列"
+      }
+    },
+    {
+      "narration": "1978年に仕組みの権利が切れると、他社が次々と参入。寿司は[気軽な食べ物]になっていきました。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "1978年まで",
+            "value": "元禄寿司のみ",
+            "color": "#E05A47",
+            "note": "実用新案権で保護",
+            "emoji": "🔒"
+          },
+          {
+            "label": "1978年以降",
+            "value": "参入が続々",
+            "color": "#3DB8FF",
+            "note": "実用新案の期間が満了",
+            "emoji": "🍣"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "あの回るレーンのご先祖は、[ビール工場]にあったんです。",
+      "visual": {
+        "type": "text",
+        "text": "ルーツはビール工場",
+        "emoji": "🍺"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://koueki.jiii.or.jp/innovation100/innovation_detail.php?eid=00026&age=high-growth",
+    "https://koueki.jiii.or.jp/innovation100/innovation_list.php?age=high-growth",
+    "https://j-net21.smrj.go.jp/special/expo1970/20231113.html",
+    "https://osaka-info.jp/gourmet/gastronomy-kaitenzushi/",
+    "https://ja.wikipedia.org/wiki/白石義明",
+    "https://www.mizkan.co.jp/sushilab/manabu/7.html"
+  ]
+}

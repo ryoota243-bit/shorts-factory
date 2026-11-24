@@ -1,0 +1,119 @@
+{
+  "topic": "ボールペンのキャップの穴は窒息防止のため",
+  "category": "身近なモノ",
+  "writer": "claude",
+  "title": "キャップの[穴]の正体",
+  "youtube_title": "ボールペンのキャップに穴がある本当の理由 #雑学 #shorts",
+  "description": "ボールペンのキャップの先にある小さな穴、実はインクのためではありません。\n国際規格で決められた、命を守るための設計なんです。\n#雑学 #豆知識 #ボールペン #文房具 #身近なモノ",
+  "tags": [
+    "雑学",
+    "豆知識",
+    "ボールペン",
+    "文房具",
+    "身近なモノ",
+    "ISO11540",
+    "窒息防止"
+  ],
+  "theme": {
+    "bg": [
+      "#0F1E3A",
+      "#1F3A5F"
+    ],
+    "accent": "#FFD23F"
+  },
+  "pronunciations": {
+    "ISO11540": "あいえすおーいちいちごーよんぜろ"
+  },
+  "scenes": [
+    {
+      "narration": "ボールペンのキャップの先にある、この小さな[穴]。いったい何のためにあると思いますか？",
+      "visual": {
+        "type": "photo",
+        "query": "pen cap closeup",
+        "ai_prompt": "Extreme close-up photo of a clear plastic ballpoint pen cap with a small hole at the tip, on a white desk, soft natural light, shallow depth of field, photorealistic, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🖊️",
+          "text": "キャップの小さな穴"
+        }
+      }
+    },
+    {
+      "narration": "実はこれ、キャップを誤って吸い込んだとき、[気道]が完全にふさがれないようにするための穴なんです。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Photorealistic image of a student at a desk absentmindedly holding a ballpoint pen cap between the lips, face cropped below the nose, notebook and textbooks on the desk, warm indoor light, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🫁",
+          "text": "気道をふさがないため"
+        }
+      }
+    },
+    {
+      "narration": "国際規格のISO11540で求められていて、対象は[14歳まで]の子どもが使う筆記具です。",
+      "visual": {
+        "type": "number",
+        "value": 14,
+        "unit": "歳",
+        "label": "までの子どもの筆記具が対象"
+      }
+    },
+    {
+      "narration": "基準では、キャップを通る空気が[毎分8リットル]以上あることと決められています。",
+      "visual": {
+        "type": "number",
+        "value": 8,
+        "unit": "L/分",
+        "label": "以上の空気が通ること"
+      }
+    },
+    {
+      "narration": "穴の代わりに側面の[溝]で空気を通すタイプもあり、飲み込めないほど大きなキャップは対象外です。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "🕳️",
+            "text": "先端に穴を開ける"
+          },
+          {
+            "emoji": "〰️",
+            "text": "側面の溝で空気を通す"
+          },
+          {
+            "emoji": "🙅",
+            "text": "大きいキャップは対象外"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "何気ない小さな穴は、[命を守る]ための設計だったんですね。",
+      "visual": {
+        "type": "text",
+        "text": "命を守る小さな穴",
+        "emoji": ""
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.iflscience.com/theres-a-surprising-reason-why-pen-caps-have-holes-in-them-47723",
+    "https://www.sciencealert.com/the-reason-for-holes-on-the-tops-of-pen-caps-is-surprisingly-awesome",
+    "https://jocr.jp/raditopi/2022/06/13/434150/?detail-page=2",
+    "https://www.dinmedia.de/en/standard/iso-11540/1341680",
+    "https://cdn.standards.iteh.ai/samples/81889/9c3d070a4cea43d5af38070f80582924/ISO-11540-2021.pdf",
+    "https://cdn.standards.iteh.ai/samples/56728/1242fdf4b4aa4dd089fc75d172f7a966/ISO-11540-2014.pdf",
+    "https://patents.google.com/patent/JPH0911684A/ja"
+  ]
+}

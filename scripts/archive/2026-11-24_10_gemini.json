@@ -1,0 +1,112 @@
+{
+  "topic": "ボールペンのキャップの穴",
+  "category": "身近なモノ",
+  "writer": "gemini",
+  "title": "キャップの穴は[命を救う]ため？",
+  "youtube_title": "ボールペンのキャップに穴がある本当の理由 #雑学 #shorts",
+  "description": "ボールペンのキャップ先端にある小さな穴の正体。\n実はインクのためではなく、命を守るための安全設計でした。\n身近な文房具に隠された驚きの工夫を解説します！\n#雑学 #身近なモノ #豆知識",
+  "tags": [
+    "雑学",
+    "身近なモノ",
+    "豆知識",
+    "文房具",
+    "安全設計"
+  ],
+  "theme": {
+    "bg": [
+      "#111827",
+      "#1e293b"
+    ],
+    "accent": "#38bdf8"
+  },
+  "pronunciations": {
+    "ISO": "あいえすおー"
+  },
+  "scenes": [
+    {
+      "narration": "ボールペンのキャップの先端にある「小さな穴」。実は[何のため]にあるか知っていますか？",
+      "visual": {
+        "type": "photo",
+        "query": "ballpoint pen cap",
+        "ai_prompt": "Close-up macro shot of a blue plastic ballpoint pen cap showing a tiny ventilation hole at the tip, resting on white paper, bright studio lighting, realistic photography",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🖊️",
+          "text": "キャップの穴の正体"
+        }
+      }
+    },
+    {
+      "narration": "インクの乾燥防止ではなく、実は[命を救う]ための大切な設計なんです。",
+      "visual": {
+        "type": "text",
+        "text": "命を救うための設計",
+        "emoji": "💡"
+      }
+    },
+    {
+      "narration": "子どもなどが誤って飲み込み、喉に詰まらせた時の[窒息事故]を防ぐためです。",
+      "visual": {
+        "type": "ai",
+        "query": "child study desk pen",
+        "ai_prompt": "A warm, natural photography shot of a child's study desk with colored pens and an open notebook, soft afternoon sunlight, shallow depth of field, cozy atmosphere",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🧒",
+          "text": "窒息事故を防ぐ工夫"
+        }
+      }
+    },
+    {
+      "narration": "穴から毎分[8リットル]以上の空気が通ることで、呼吸を確保して時間を稼げます。",
+      "visual": {
+        "type": "number",
+        "value": 8,
+        "unit": "L/分",
+        "label": "最低通気量"
+      }
+    },
+    {
+      "narration": "14歳以下が使うペンを対象に、[国際規格]であるISOでも義務づけられています。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "👶",
+            "text": "14歳以下の筆記具"
+          },
+          {
+            "emoji": "🕳️",
+            "text": "キャップに通気孔"
+          },
+          {
+            "emoji": "⏱️",
+            "text": "救命の時間を確保"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "何気ない小さな穴には、人命を守るための[大きな工夫]が詰まっていたんですね。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🖊️",
+        "text": "小さな穴の大きな役目"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.iso.org/standard/64516.html",
+    "https://kikakurui.com/s/S6060-2017-01.html",
+    "https://www.snopes.com/fact-check/pen-cap-holes-prevent-choking/"
+  ]
+}
