@@ -587,6 +587,7 @@ class PhotoLayer(Layer):
         self.full = img.width / img.height < 0.8
         rng = random.Random(seed)
         self.dir = rng.choice([(-1, -1), (1, -1), (-1, 1), (1, 1), (0, 0)])
+        self.punch = False  # hook scene: start zoomed in and pull back fast
         if self.full:
             self.big = cover(img, int(W * 1.15), int(H * 1.15))
         else:
@@ -602,6 +603,8 @@ class PhotoLayer(Layer):
         p = t / max(dur, 0.1)
         if self.full:
             z = 1.15 - 0.12 * p
+            if self.punch:
+                z /= 1 + 0.28 * (1 - ease_out(t / 1.4))
             cw, ch = int(self.big.width * z / 1.15), int(self.big.height * z / 1.15)
             mx, my = (self.big.width - cw) / 2, (self.big.height - ch) / 2
             x = mx + self.dir[0] * mx * (p - 0.5)
@@ -611,6 +614,8 @@ class PhotoLayer(Layer):
             return im
         im = self.bg.copy()
         k = 1.0 + 0.05 * p
+        if self.punch:
+            k *= 1 + 0.25 * (1 - ease_out(t / 1.2))
         paste_center(im, scaled(self.card, k * ease_back(t / 0.45)), W / 2, CONTENT_CY)
         return im
 

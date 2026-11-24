@@ -96,3 +96,17 @@ def pop(sr=SR):
     t = np.arange(int(0.12 * sr)) / sr
     f = 300 + 900 * np.exp(-t * 40)
     return (np.sin(2 * np.pi * np.cumsum(f) / sr) * np.exp(-t * 35)).astype(np.float32)
+
+
+def impact(sr=SR, seed=1):
+    """Opening hit: low boom + rising whoosh into a short crack."""
+    rng = np.random.default_rng(seed)
+    t = np.arange(int(0.9 * sr)) / sr
+    boom = np.sin(2 * np.pi * np.cumsum(38 + 70 * np.exp(-t * 9)) / sr) * np.exp(-t * 4.5)
+    noise = rng.standard_normal(len(t)).astype(np.float32)
+    hiss = np.diff(np.concatenate([[0], noise])) * np.exp(-t * 7) * 0.35
+    crack = np.zeros_like(t)
+    n = int(0.03 * sr)
+    crack[:n] = rng.standard_normal(n) * np.linspace(1, 0, n) * 0.5
+    x = boom * 0.9 + hiss + crack
+    return (x / (np.abs(x).max() + 1e-9)).astype(np.float32)

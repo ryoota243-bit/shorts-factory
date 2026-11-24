@@ -1,5 +1,6 @@
 """Turn a script JSON into a vertical MP4."""
 import json
+import math
 import os
 import re
 import subprocess
@@ -184,7 +185,7 @@ def render(script_path, cfg, root, out_dir):
     t = 0.0
     for si, sc in enumerate(script["scenes"]):
         start = t
-        lead = 0.12 if si else 0.05
+        lead = 0.12 if si else 0.3  # let the opening hit land first
         voice_parts.append(np.zeros(int(lead * SR), np.float32)); t += lead
         for ch in split_sentences(sc.get("narration", "")):
             line = to_speak(ch)
@@ -214,6 +215,8 @@ def render(script_path, cfg, root, out_dir):
     env = np.convolve((env > 0.02).astype(np.float32), np.ones(9600) / 9600, mode="same")
     vol = cfg["bgm"]["volume"]
     mix = voice + music * vol * (1 - 0.45 * env)
+    hit = bgm.impact() * 0.55  # opening impact
+    mix[: len(hit)] += hit[: len(mix)]
     pop = bgm.pop() * 0.25
     for st, _ in scenes_t[1:]:
         s = int(st * SR); mix[s:s + len(pop)] += pop[: max(0, min(len(pop), n - s))]
@@ -248,6 +251,12 @@ def render(script_path, cfg, root, out_dir):
             if src not in cache_bd:
                 cache_bd[src] = V.backdrop(src, tint)
             l.bgimg = cache_bd[src]
+    hook_copy = re.sub(r"\s+", "", script.get("thumb_text") or "")
+    hook_img = (V.fit_text(hook_copy, 170, 1000, 520, min_size=100, stroke=20, fill=(255, 255, 255),
+                           hi=V.hex2rgb(theme["accent"]), shadow=True, spacing=1.1) if hook_copy else None)
+    HOOK = 2.7  # seconds the catch copy stays up at the start
+    if isinstance(layers[0], V.PhotoLayer):
+        layers[0].punch = True
     thumb_img = None
     try:
         thumb_img, tcredit = thumbnail.build(script, theme, cfg, root, layers, out_dir / f"{name}.thumb.png")
@@ -292,8 +301,20 @@ def render(script_path, cfg, root, out_dir):
         if si < len(scenes_t) - 1 and s1 - tt <= 1.5 / fps:
             prev_last = img.copy()
         img = img.copy() if img is getattr(layers[si], "last", None) else img
-        if script.get("title"):
-            img.paste(band, ((V.W - band.width) // 2, 150), band)
+        in_hook = si == 0 and hook_img is not None and tt < HOOK
+        if in_hook:
+            k = 1.35 - 0.35 * V.ease_back(tt / 0.35)
+            a = 1.0 - V.clamp((tt - (HOOK - 0.35)) / 0.35)
+            shake = math.sin(tt * 90) * 14 * max(0.0, 1 - tt / 0.35)
+            V.paste_center(img, V.scaled(hook_img, max(0.01, k)), V.W / 2 + shake, V.H * 0.42, alpha=a)
+            if tt < 0.12:  # white flash on the first frames
+                img = Image.blend(img, Image.new("RGB", img.size, (255, 255, 255)), 0.7 * (1 - tt / 0.12))
+        if script.get("title") and not in_hook:
+            b = band
+            if si == 0 and hook_img is not None and tt < HOOK + 0.3:
+                b = band.copy()
+                b.putalpha(b.getchannel("A").point(lambda v, f=V.clamp((tt - HOOK) / 0.3): int(v * f)))
+            img.paste(b, ((V.W - b.width) // 2, 150), b)
         for a, b, s in subs:
             if a - 0.05 <= tt < b:
                 si_img = sub_img(s)
