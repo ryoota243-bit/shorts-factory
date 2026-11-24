@@ -129,6 +129,22 @@ def make_layer(scene, theme, seed, cfg, root, credits, fps):
     return V.LAYERS[v["type"]](v, theme, seed)
 
 
+def build_description(script, cfg, voicevox=True):
+    """Video description: summary + main sources + channel footer + voice credit."""
+    ch = cfg.get("channel", {})
+    credit = cfg["tts"]["voicevox"].get("credit", "VOICEVOX")
+    body = script.get("description", "").replace(credit, "").strip()
+    parts = [body]
+    srcs = [u for u in script.get("sources", []) if u.startswith("http")][: ch.get("max_sources", 3)]
+    if srcs:
+        parts.append("▼主な出典\n" + "\n".join(srcs))
+    if ch.get("footer"):
+        parts.append(ch["footer"])
+    if voicevox:
+        parts.append(f"音声：{credit}")
+    return "\n\n".join(p for p in parts if p)[:4900]
+
+
 def write_wav(path, x):
     st = np.repeat((np.clip(x, -1, 1) * 32767).astype(np.int16)[:, None], 2, axis=1)
     with wave.open(str(path), "wb") as w:
@@ -295,11 +311,7 @@ def render(script_path, cfg, root, out_dir):
             l.close()
     wav.unlink()
 
-    desc = script.get("description", "")
-    if "voicevox" in tts.USED:
-        credit = cfg["tts"]["voicevox"].get("credit", "VOICEVOX")
-        if credit not in desc:
-            desc += f"\n\n{credit}"
+    desc = build_description(script, cfg, voicevox="voicevox" in tts.USED)
     qa_issues = []
     if os.environ.get("ANTHROPIC_API_KEY") and cfg.get("qa", True):
         try:

@@ -106,29 +106,36 @@ def main():
                         "topic": s0.get("topic") or s0.get("title", "").replace("[", "").replace("]", "")})
         hist_path.write_text(json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    # release notes: copy-paste friendly upload info
+    write_notes(made, out, cfg)
+    print(f"[daily] made: {made}")
+
+
+def notes_for(names, out, cfg):
+    """Copy-paste friendly upload info for the release page."""
     lines = []
-    for n in made:
+    for n in names:
         m = json.loads((out / f"{n}.json").read_text(encoding="utf-8"))
         lines += [f"## {n}.mp4", "", f"台本: {m.get('writer') or '手動'}", "",
                   (f"サムネイル: {m['thumbnail']}（動画の最初のコマも同じ画面です。アプリでカバーに選べます）"
-                   if m.get("thumbnail") else ""), "", "**タイトル**", "```", m["title"] or "", "```", "**概要欄**", "```",
-                  m["description"], "```", "**タグ**: " + ", ".join(m["tags"]), ""]
+                   if m.get("thumbnail") else ""), "", "**タイトル**", "```", m["title"] or "", "```",
+                  "**概要欄**", "```", m["description"], "```", "**タグ**: " + ", ".join(m["tags"]), ""]
         if m.get("factcheck"):
             lines += ["**Claude 校閲メモ**", ""] + [f"- {x}" for x in m["factcheck"]] + [""]
         if m.get("qa"):
             lines += ["**自動チェックで見つかった問題**", ""]
-            lines += [f"- [{q['severity']}] シーン{q['scene']}: {q['issue']}" for q in m["qa"]] or ["- なし"]
-            lines += [""]
+            lines += [f"- [{q['severity']}] シーン{q['scene']}: {q['issue']}" for q in m["qa"]] + [""]
         if m.get("sources"):
             lines += ["<details><summary>出典（事実確認用）</summary>", ""]
-            lines += [f"- {s}" for s in m["sources"]] + ["", "</details>", ""]
+            lines += [f"- {x}" for x in m["sources"]] + ["", "</details>", ""]
         if m.get("credits"):
             lines += ["素材: " + " / ".join(m["credits"]), ""]
         if "openjtalk" in m.get("tts", []) and cfg["tts"]["backend"] != "openjtalk":
             lines += ["⚠️ VOICEVOX に接続できず、一部 Open JTalk の声で生成されています", ""]
-    (out / "RELEASE_NOTES.md").write_text("\n".join(lines) or "生成なし", encoding="utf-8")
-    print(f"[daily] made: {made}")
+    return "\n".join(lines) or "生成なし"
+
+
+def write_notes(names, out, cfg):
+    (out / "RELEASE_NOTES.md").write_text(notes_for(names, out, cfg), encoding="utf-8")
 
 
 if __name__ == "__main__":
