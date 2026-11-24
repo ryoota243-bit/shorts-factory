@@ -1,0 +1,130 @@
+{
+  "topic": "宇宙ステーションの日の出",
+  "category": "宇宙",
+  "writer": "gemini+claude",
+  "title": "1日に約[16回]の日の出",
+  "youtube_title": "1日に約16回も朝が来るヤバい場所 #雑学 #shorts",
+  "description": "1日に約16回も日の出と日の入りを体験する場所があります。\n体内時計はどうなってしまうのでしょうか？宇宙の驚きの日常を解説します。\n#宇宙 #雑学 #国際宇宙ステーション",
+  "tags": [
+    "宇宙",
+    "雑学",
+    "国際宇宙ステーション",
+    "ISS",
+    "科学"
+  ],
+  "theme": {
+    "bg": [
+      "#0B0E14",
+      "#161B22"
+    ],
+    "accent": "#38BDF8"
+  },
+  "pronunciations": {
+    "国際宇宙ステーション": "こくさいうちゅうすてーしょん",
+    "グリニッジ標準時": "ぐりにっじひょうじゅんじ"
+  },
+  "scenes": [
+    {
+      "narration": "1日に約 [16回] も日の出が見られる場所があるのを知っていますか？",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A photorealistic astronaut looking through the panoramic Cupola windows of the International Space Station, gazing at a breathtaking sunrise rising over the curved horizon of the blue Earth below, dramatic rim lighting, cinematic space view, highly detailed",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🌅",
+          "text": "宇宙からの日の出"
+        }
+      }
+    },
+    {
+      "narration": "その場所とは、地上約400キロを回る [国際宇宙ステーション] です。",
+      "visual": {
+        "type": "photo",
+        "query": "space station orbit",
+        "ai_prompt": "A crisp realistic exterior view of the International Space Station in low Earth orbit, orbiting peacefully above the blue oceans and white clouds of Earth, high resolution photograph from orbit",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🛰️",
+          "text": "国際宇宙ステーション"
+        }
+      }
+    },
+    {
+      "narration": "ステーションは時速約 [2万8000キロ] で飛び、地球を約90分で1周します。",
+      "visual": {
+        "type": "number",
+        "value": 90,
+        "unit": "分",
+        "label": "地球1周の時間(約)"
+      }
+    },
+    {
+      "narration": "その結果、1日に約 [16回] もの日の出と日の入りを迎えます。",
+      "visual": {
+        "type": "number",
+        "value": 16,
+        "unit": "回",
+        "label": "1日の日の出回数(約)"
+      }
+    },
+    {
+      "narration": "夜は長くても [約36分] ほど。昼と夜が目まぐるしく入れ替わり、体内時計が乱れやすくなります。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "昼の時間",
+            "value": "約1時間",
+            "color": "#F59E0B",
+            "note": "1周のうち太陽が当たる時間",
+            "emoji": "☀️"
+          },
+          {
+            "label": "夜の時間",
+            "value": "長くても約36分",
+            "color": "#3B82F6",
+            "note": "地球の影に入る時間",
+            "emoji": "🌑"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "そこで船内はグリニッジ標準時で動き、 [照明の色と明るさ] を切り替えて体内時計を整えています。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "💡⏰",
+        "text": "照明で作る昼と夜"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://earthobservatory.nasa.gov/images/44267/sunset-from-the-international-space-station",
+    "https://humans-in-space.jaxa.jp/glossary/detail/000405.html",
+    "https://blogs.esa.int/thomas-pesquet/2017/01/16/weightlessness-work-sleep-the-routine-of-an-astronaut/",
+    "https://ntrs.nasa.gov/api/citations/20160005080/downloads/20160005080.pdf"
+  ],
+  "factcheck": [
+    "日の出の回数を「16回」から「約16回」に変更（実際は約15.5周で、ハイベータ期には日の出がない日もあるため）。対象はタイトル・YouTubeタイトル・説明文・シーン1・シーン4。",
+    "説明文の「24時間で16回」を「1日に約16回」に変更。",
+    "シーン5の「約45分ごとに昼夜が交代」は誤りなので、「夜は長くても約36分」に変更（軌道計算に基づく私の値）。",
+    "シーン5の比較図の値を「昼 約45分／夜 約45分」から「昼 約1時間／夜 長くても約36分」に変更。",
+    "シーン5の「体内時計は狂いそうになる」を「乱れやすくなる」に弱めた。",
+    "シーン6の「照明の明るさで昼夜を作る」を「グリニッジ標準時で生活し、照明の色と明るさを切り替える」に変更（NASAの照明資料とESAによる）。",
+    "シーン6の画面の文字を「照明で作る昼と夜」に変更。",
+    "シーン3・4のラベルに「(約)」を追加。",
+    "読み方に「グリニッジ標準時」を追加。",
+    "出典から確認できなかった science.nasa.gov と NASA Facts and Figures を外し、JAXA・ESA・NASA NTRSを追加。",
+    "時速約2万8000キロは二次情報でしか確認できず、裏付けの出典もないため、公開前にNASAの公式ページで確認して出典に加えるよう注記。"
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "topic": "雲の重さ",
+  "category": "科学",
+  "writer": "gemini+claude",
+  "title": "雲の重さは[500トン]？",
+  "youtube_title": "空に浮かぶ雲の水はゾウ100頭分？落ちてこない科学的な理由 #雑学 #shorts",
+  "description": "空にふわふわ浮かぶ白い雲。縦・横・高さ1kmの典型的な積雲なら、約500トンもの水を含むと見積もられています。\nなぜそんな大重量が頭上から落ちてこないのか、科学的な理由をサクッと解説します！\n#科学 #天気 #雑学 #shorts",
+  "tags": [
+    "科学",
+    "天気",
+    "雑学",
+    "雲",
+    "気象",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#0c192c",
+      "#1e293b"
+    ],
+    "accent": "#38bdf8"
+  },
+  "pronunciations": {
+    "積雲": "せきうん",
+    "微小": "びしょう"
+  },
+  "scenes": [
+    {
+      "narration": "青空に浮かぶ、フワフワの白い雲。実はあれ、とんでもなく[重い]って知っていましたか？",
+      "visual": {
+        "type": "photo",
+        "query": "white cumulus cloud",
+        "ai_prompt": "A beautiful fluffy white cumulus cloud floating in a vast clear blue sky on a bright sunny day, photorealistic, cinematic lighting, 8k resolution",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "☁️",
+          "text": "白い積雲"
+        }
+      }
+    },
+    {
+      "narration": "縦・横・高さ1kmの典型的な積雲に含まれる水の重さは、なんと[約500トン]。",
+      "visual": {
+        "type": "number",
+        "value": 500,
+        "unit": "トン",
+        "label": "1km³の積雲に含まれる水"
+      }
+    },
+    {
+      "narration": "これはゾウ[約100頭分]。世界最大の旅客機A380の最大離陸重量、575トンに迫る重さです。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "積雲の水",
+            "value": "約500t",
+            "color": "#38bdf8",
+            "note": "縦横高さ1kmの場合",
+            "emoji": "☁️"
+          },
+          {
+            "label": "ゾウ",
+            "value": "約100頭",
+            "color": "#f59e0b",
+            "note": "1頭5t換算",
+            "emoji": "🐘"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "そんな大重量が、なぜ頭上から[落ちてこない]のでしょうか？",
+      "visual": {
+        "type": "illustration",
+        "emoji": "☁️❓",
+        "text": "なぜ落ちない？"
+      }
+    },
+    {
+      "narration": "理由は、雲の水が[微小な水滴]に分かれていて落ちる速さがとても遅く、それを上昇気流が支えているから。実はゆっくり落ちているんです。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "💧",
+            "text": "水滴は直径0.1mm未満"
+          },
+          {
+            "emoji": "🪂",
+            "text": "重さの割に空気抵抗が大"
+          },
+          {
+            "emoji": "⬆️",
+            "text": "上昇気流が支える"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "次に空を見上げるときは、頭の上に[ゾウ100頭分]の水が浮いていることを思い出してください。",
+      "visual": {
+        "type": "ai",
+        "query": "cloud floating over modern city",
+        "ai_prompt": "Surrealistic and cinematic visual of a massive fluffy white cloud floating peacefully in the sky over a modern city street, warm sunlight, photorealistic photography style",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "☁️",
+          "text": "頭上の雲"
+        }
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.usgs.gov/water-science-school/science/how-much-does-a-cloud-weigh",
+    "https://abcnews.com/WNT/story?amp=&id=129037&page=1",
+    "https://www.airbus.com/sites/g/files/jlcbta136/files/2025-01/airbus-a380-facts-and-figures-february-2022.pdf",
+    "https://pursuit.unimelb.edu.au/articles/big-white-clouds-are-light-and-fluffy-right-wrong",
+    "https://www.livescience.com/planet-earth/why-do-clouds-float",
+    "https://www.scientificamerican.com/article/why-do-clouds-float-when/"
+  ],
+  "factcheck": [
+    "「1km四方」を「縦・横・高さ1km（1km³）」に直した（USGSの計算は体積が前提）。",
+    "「平均的な積雲」を「典型的な積雲」にした。",
+    "画面ラベル「積雲1つの重さ」を「1km³の積雲に含まれる水」にした（水だけの重さで、雲の大きさによって変わるため）。",
+    "概要欄の「1つで約500トン」に「縦・横・高さ1kmなら」「見積もられています」を書き足した。",
+    "「アフリカゾウなら約100頭分」を「ゾウ約100頭分（1頭5t換算）」にした（LeMone氏の例えで、体重は仮定の値）。",
+    "「大型旅客機1機分以上」を「A380の最大離陸重量575トンに迫る」にした（A380は500tより重く、「以上」は誤解を招くため）。",
+    "浮く理由に「落ちる速さが遅い」「実はゆっくり落ちている」を足し、リストに「直径0.1mm未満」「重さの割に空気抵抗が大」を入れた。",
+    "オチとYouTubeタイトルの「ゾウ100頭」を「ゾウ100頭分の水」「雲の水はゾウ100頭分」にした。",
+    "USGSのURLを現行のものに直し、確認に使った出典（ABC News、Airbus、メルボルン大学、Live Science、Scientific American）を足した。"
+  ]
+}

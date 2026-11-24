@@ -1,0 +1,139 @@
+{
+  "topic": "フランス最長の国境",
+  "category": "地理・世界の国",
+  "writer": "gemini+claude",
+  "title": "フランス最長の[国境の相手]",
+  "youtube_title": "フランスが最も長く国境を接する国はブラジル？ #雑学 #shorts",
+  "description": "フランスが最も長い陸上国境を接する国は、ヨーロッパの隣国ではなく南米のブラジルです。\n南米にあるフランスの海外県・ギアナの意外な事実をサクッと解説します。\n※国境の長さは資料によって異なります（本動画はフランス側資料の数値）。\n#地理 #フランス #雑学",
+  "tags": [
+    "地理",
+    "フランス",
+    "ブラジル",
+    "雑学",
+    "トリビア"
+  ],
+  "theme": {
+    "bg": [
+      "#0f172a",
+      "#1e293b"
+    ],
+    "accent": "#38bdf8"
+  },
+  "pronunciations": {
+    "フランス領ギアナ": "ふらんすりょうぎあな",
+    "隣国": "りんごく",
+    "海外県": "かいがいけん"
+  },
+  "scenes": [
+    {
+      "narration": "フランスが陸上で最も長く国境を接している国、[どこ]か知っていますか？",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A cinematic realistic globe view showing Europe and South America with a bright border outline, dramatic atmospheric lighting, photorealistic satellite photography",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🌍",
+          "text": "フランス最長の国境"
+        }
+      }
+    },
+    {
+      "narration": "スペインでもドイツでもなく、実は南米の[ブラジル]なんです。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "対スペイン",
+            "value": "約623km",
+            "color": "#64748b",
+            "note": "本土で最長（仏側資料）",
+            "emoji": "🇪🇸"
+          },
+          {
+            "label": "対ブラジル",
+            "value": "約730km",
+            "color": "#38bdf8",
+            "note": "フランス全体で最長（仏側資料）",
+            "emoji": "🇧🇷"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "フランス側の資料では、その長さは約[730km]。ヨーロッパの隣国を上回ります。",
+      "visual": {
+        "type": "number",
+        "value": 730,
+        "unit": "km",
+        "label": "ブラジルとの国境（約）"
+      }
+    },
+    {
+      "narration": "理由は、南米にある[フランス領ギアナ]という土地にあります。",
+      "visual": {
+        "type": "photo",
+        "query": "tropical rainforest river",
+        "ai_prompt": "Aerial view of a wide river flowing through a dense tropical rainforest at a remote border region, sunny day, realistic aerial photograph",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🌴",
+          "text": "フランス領ギアナ"
+        }
+      }
+    },
+    {
+      "narration": "ここは今は植民地ではなく、ユーロも使えるフランスの[海外県]なんです。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "🏛️",
+            "text": "フランスの海外県・海外地域圏"
+          },
+          {
+            "emoji": "💶",
+            "text": "通貨はユーロ"
+          },
+          {
+            "emoji": "🇪🇺",
+            "text": "EUの一部（最外縁地域）"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "南米で国境の川を越えると、そこは[フランス]。なんとも不思議ですよね。",
+      "visual": {
+        "type": "text",
+        "text": "南米にあるフランス",
+        "emoji": "🇫🇷"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://fr.wikipedia.org/wiki/Fronti%C3%A8re_entre_le_Br%C3%A9sil_et_la_France",
+    "https://cnig.gouv.fr/IMG/documents_wordpress/2014/11/2014-10frontieres_GTEI_VF.pdf",
+    "https://www.europarl.europa.eu/factsheets/en/sheet/100/outermost-regions-ors-",
+    "https://www.ecb.europa.eu/ecb-and-you/explainers/show-me/html/euro_outside_europe.en.html"
+  ],
+  "factcheck": [
+    "国境の長さは資料で違う（仏側：ブラジル約730km、スペイン約623km／CIA：約649km・約646km）ので、ナレーション・図・説明文に「約」と「仏側資料」を加えた",
+    "「正式なフランスの県」を「フランスの海外県・海外地域圏」に直した（2016年から一つの地方自治体が運営）",
+    "「植民地ではなく」を「今は植民地ではなく」に直した（1946年までは植民地だった）",
+    "「EUの領域に含まれる」を「EUの一部（最外縁地域）」に、「ユーロが流通」を「通貨はユーロ」にした",
+    "「ジャングルを歩いて渡ると」は違法な越境を思わせるので、「国境の川を越えると」に直した",
+    "compare（比較）の注記「欧州本土で最長」を「本土で最長（仏側資料）」に直した",
+    "出典：裏付けが確認できなかったsenat.frを外し、確認に使った仏Wikipediaを追加した",
+    "検索の上限に達したため、残りの公的URL3件と【未検証】の項目は公開前に人の手で確認が必要"
+  ]
+}
