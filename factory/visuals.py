@@ -136,8 +136,11 @@ def break_points(plain):
                 pts.add(pos + len(f["string"]))
             prev, prev_num, prev_g1, prev_str = f["pos"], False, f.get("pos_group1", ""), f["string"]
             pos += len(f["string"])
-    # never leave an opening bracket at a line end
-    return {p for p in pts if p < len(plain) and plain[p - 1] not in OPENERS}
+    # never leave an opening bracket at a line end, never break inside quotes/parentheses
+    def outside(p):
+        head = plain[:p]
+        return all(head.count(o) <= head.count(c) for o, c in ("「」", "『』", "（）", "()", "【】"))
+    return {p for p in pts if p < len(plain) and plain[p - 1] not in OPENERS and outside(p)}
 
 
 def _wrap_target(chars, fnt, target, pts):
