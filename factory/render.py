@@ -220,6 +220,18 @@ def render(script_path, cfg, root, out_dir):
     title = V.rich_text(script.get("title", ""), 76, 960, hi=V.hex2rgb(theme["accent"]), stroke=0)
     band = V.rounded((min(1040, title.width + 70), title.height + 40), 30, (0, 0, 0, 170))
     band.paste(title, ((band.width - title.width) // 2, 20), title)
+    # diagram scenes borrow a blurred photo from the video so the middle is not one flat colour
+    photos = [(i, l.src_path) for i, l in enumerate(layers) if getattr(l, "src_path", None)]
+    if photos:
+        tint = V.hex2rgb(theme["bg"][0])
+        cache_bd = {}
+        for i, l in enumerate(layers):
+            if getattr(l, "src_path", None) or isinstance(l, V.VideoLayer):
+                continue
+            src = min(photos, key=lambda p: (abs(p[0] - i), p[0] > i))[1]
+            if src not in cache_bd:
+                cache_bd[src] = V.backdrop(src, tint)
+            l.bgimg = cache_bd[src]
     thumb_img = None
     try:
         thumb_img, tcredit = thumbnail.build(script, theme, cfg, root, layers, out_dir / f"{name}.thumb.png")

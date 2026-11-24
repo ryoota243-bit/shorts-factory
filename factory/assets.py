@@ -74,7 +74,8 @@ def _ai(v, cfg, cache, avoid=""):
     path = Path(cache) / ("ai_" + hashlib.sha1(prompt.encode()).hexdigest()[:16] + ".png")
     if not path.exists():
         from . import gemini
-        full = (prompt + ". Vertical 9:16 composition. No text, letters, logos or watermarks in the image."
+        full = (prompt + ". Vertical 9:16 composition. No text, letters, logos, emblems, patches, flags-as-logos"
+                " or watermarks in the image."
                 " Do not depict the face of any real, identifiable person.")
         path.write_bytes(gemini.generate_image(full))
     return {"kind": "image", "path": path, "credit": "AI生成画像 (Gemini)"}

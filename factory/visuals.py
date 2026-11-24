@@ -290,7 +290,12 @@ class Layer:
         self.spec, self.theme, self.seed = spec, theme, seed
         self.accent = hex2rgb(theme.get("accent", "#ffd600"))
 
+    bgimg = None  # optional blurred photo backdrop (set by the renderer)
+
     def background(self, t, dur):
+        if self.bgimg is not None:
+            off = int((self.bgimg.height - H) * min(1.0, t / max(dur, 0.1)))
+            return self.bgimg.crop((0, off, W, off + H))
         bg = gradient_bg(self.theme["bg"][0], self.theme["bg"][1], self.seed)
         off = int((bg.height - H) * (0.5 + 0.5 * math.sin(self.seed + t * 0.25)))
         return bg.crop((0, off, W, off + H))
@@ -535,6 +540,15 @@ class PieLayer(Layer):
             else:
                 paste_center(im, row, W / 2 + (i - (n - 1) / 2) * 460, cy + R + 90, alpha=a)
         return im
+
+
+def backdrop(path, tint):
+    """Blurred, darkened, tinted version of a photo for diagram scenes (taller for a slow pan)."""
+    img = Image.open(path).convert("RGB")
+    small = cover(img, W // 6, int(H * 1.12) // 6).filter(ImageFilter.GaussianBlur(3))
+    big = small.resize((W, int(H * 1.12)), Image.BICUBIC)
+    shade = Image.new("RGB", big.size, tint)
+    return Image.blend(big, shade, 0.62)
 
 
 def cover(img, w, h):

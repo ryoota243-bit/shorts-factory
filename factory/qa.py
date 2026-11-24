@@ -54,19 +54,30 @@ scene はシーン番号（1始まり、最後のフォロー呼びかけも1シ
 {script}"""
 
 
-def _sheet(mp4, duration, out_png):
+def _sheet(mp4, duration, out_png, offset=0.0):
+    """Tile COLS x ROWS frames; the first one is always inside the thumbnail lead-in."""
+    from PIL import Image
     n = COLS * ROWS
-    vf = f"fps={n}/{duration},scale=240:426,tile={COLS}x{ROWS}"
-    subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-i", str(mp4), "-vf", vf,
-                    "-frames:v", "1", str(out_png)], check=True)
-    return [(k + 0.5) * duration / n for k in range(n)]
+    first = [min(0.2, offset / 2)] if offset > 0 else []
+    rest = n - len(first)
+    span = duration - offset
+    times = first + [offset + (k + 0.5) * span / rest for k in range(rest)]
+    sheet = Image.new("RGB", (240 * COLS, 426 * ROWS))
+    for k, t in enumerate(times):
+        raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-ss", f"{t:.3f}", "-i", str(mp4),
+                              "-frames:v", "1", "-vf", "scale=240:426", "-f", "image2pipe", "-vcodec", "png", "-"],
+                             capture_output=True, check=True).stdout
+        import io
+        sheet.paste(Image.open(io.BytesIO(raw)).convert("RGB"), ((k % COLS) * 240, (k // COLS) * 426))
+    sheet.save(out_png)
+    return times
 
 
 def review(mp4, script, scenes_t, subs, offset=0.0):
     """Return a list of issue dicts (empty when nothing found). offset = thumbnail lead-in seconds."""
     duration = scenes_t[-1][1] + offset
     png = Path(mp4).with_suffix(".sheet.png")
-    times = _sheet(mp4, duration, png)
+    times = _sheet(mp4, duration, png, offset)
     lines = []
     for k, t in enumerate(times):
         if t < offset:
