@@ -1,0 +1,138 @@
+{
+  "topic": "ナマケモノの餓死の謎",
+  "category": "動物",
+  "writer": "gemini+claude",
+  "title": "[満腹なのに]餓死する動物？",
+  "youtube_title": "【衝撃】お腹いっぱいなのに餓死する動物がいる？ #雑学 #shorts",
+  "description": "胃の中に葉っぱがたっぷり詰まっているのに、餓死してしまうことがある動物、ナマケモノ。\n実はその大きな原因は「寒さ」でした。超省エネな生き方をするナマケモノの驚きの生態を解説します。\n#ナマケモノ #動物の雑学 #生物 #雑学",
+  "tags": [
+    "ナマケモノ",
+    "動物の雑学",
+    "生物",
+    "雑学",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#142416",
+      "#0d1810"
+    ],
+    "accent": "#4EFA8B"
+  },
+  "pronunciations": {
+    "共生細菌": "きょうせいさいきん"
+  },
+  "scenes": [
+    {
+      "narration": "胃袋に食べ物がパンパンなのに、[餓死してしまう動物]を知っていますか？",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🦥",
+        "text": "満腹なのに餓死？"
+      }
+    },
+    {
+      "narration": "その動物とは、木の上でのんびり暮らす[ナマケモノ]です。",
+      "visual": {
+        "type": "photo",
+        "query": "sloth tree branch",
+        "ai_prompt": "A close-up portrait of a brown-throated three-toed sloth resting peacefully on a mossy tree branch in a rainforest, photorealistic, natural morning light, high resolution, 8k",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🦥",
+          "text": "ナマケモノ"
+        }
+      }
+    },
+    {
+      "narration": "ナマケモノの胃の中身は体重の約３割にもなり、葉っぱ１枚の消化には[最長３０日]ほどかかるとも言われます。",
+      "visual": {
+        "type": "number",
+        "value": 30,
+        "unit": "日",
+        "label": "葉1枚の消化にかかる日数（最長・諸説あり）"
+      }
+    },
+    {
+      "narration": "実は硬い葉っぱを消化できるのは、胃の中にすむ[共生細菌]のおかげなんです。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "🦠",
+            "text": "胃の中の共生細菌"
+          },
+          {
+            "emoji": "🍃",
+            "text": "葉の繊維を分解"
+          },
+          {
+            "emoji": "✨",
+            "text": "栄養を吸収して生きる"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "しかし自分で体温を保つのが苦手なため、体が冷えると細菌が[働かなくなり]、死んでしまうこともあります。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "体が温かい",
+            "value": "活発",
+            "color": "#FF7675",
+            "note": "胃の細菌が消化",
+            "emoji": "☀️"
+          },
+          {
+            "label": "体が冷える",
+            "value": "停止",
+            "color": "#74B9FF",
+            "note": "消化が進まない",
+            "emoji": "❄️"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "その結果、葉っぱをお腹いっぱい食べても栄養が取れず、[満腹のまま]命を落とすことがあるのです。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A wild sloth hanging on a tree branch in a cold rainy tropical forest, surrounded by dense mist and falling rain drops, cinematic moody atmosphere, photorealistic documentary style, sharp focus, 8k",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🌧️",
+          "text": "満腹のまま命を落とすことも"
+        }
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.slothconservation.org/blog/starving-death-full-stomach",
+    "https://www.slothconservation.org/slothopedia",
+    "https://www.slothconservation.org/blog/what-do-sloths-eat-sloth-diet-food-and-digestion",
+    "https://animals.sandiegozoo.org/animals/two-toed-sloth",
+    "https://www.britannica.com/animal/sloth"
+  ],
+  "factcheck": [
+    "シーン3：「胃は体重の約3分の1」を「胃の中身は体重の約3割」に修正（ブリタニカは約30%、SCFは最大37%で、どちらも測っているのは中身）",
+    "シーン3：「消化に最長30日」を「葉1枚の消化に最長30日ほどかかるとも言われる」に修正（50日や約1週間とする資料もあるため）",
+    "シーン3の画面ラベル：「消化にかかる日数」を「葉1枚の消化にかかる日数（最長・諸説あり）」に変更",
+    "シーン5：「細菌が活動停止」を「働かなくなり、死んでしまうこともある」に修正（サンディエゴ動物園とSCFの記述に合わせた）",
+    "シーン5の比較図：「気温が高い」を「体が温かい」に変えて「体が冷える」と対にし、注記「消化できず餓死」を「消化が進まない」に弱めた",
+    "シーン6とその画面文字：断定の「命を落としてしまう」を「命を落とすことがある」に変更",
+    "説明文：「餓死してしまう」を「餓死してしまうことがある」に、「省エネ進化を極めた」を「超省エネな生き方をする」に変更",
+    "sources：SCFのURLを正しいページに直し、内容を確認できなかったスミソニアンとslothsanctuaryのURLを、確認に使ったSCF・サンディエゴ動物園・ブリタニカに差し替えた"
+  ]
+}
