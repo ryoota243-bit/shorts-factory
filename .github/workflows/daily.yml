@@ -11,6 +11,10 @@ on:
       rerender:
         description: "作り直す台本名（空白区切り、例: 2026-11-24_12 2026-11-24_13）。指定時は新規作成しない"
         default: ""
+      upload:
+        description: "YouTube にアップロードする（毎朝の自動実行では常にアップロード）"
+        type: boolean
+        default: false
       compare:
         description: "比較モード（同じお題を Claude と Gemini の両方で台本化）"
         type: boolean
@@ -59,10 +63,16 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
           args="--count ${{ github.event.inputs.count || 1 }}"
           [ "${{ github.event.inputs.compare }}" = "true" ] && args="$args --compare"
           [ -n "${{ github.event.inputs.rerender }}" ] && args="$args --rerender ${{ github.event.inputs.rerender }}"
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.upload }}" = "true" ]; then
+            args="$args --upload"
+          fi
           python daily.py $args
 
       - name: Save scripts and history

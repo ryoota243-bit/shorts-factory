@@ -6,7 +6,8 @@
 2. VOICEVOX（ずんだもん）でナレーションを作る
 3. 写真・動画を Pexels / Pixabay から探し、見つからなければ Gemini で AI 画像を作り、それも無理なら図解にする
 4. 字幕・図解・BGM・効果音を合成して MP4 にする
-5. **Releases** に動画とコピペ用のタイトル・概要欄・タグを置く → スマホから YouTube に投稿
+5. **Releases** に動画とコピペ用のタイトル・概要欄・タグを置く
+6. YouTube に **非公開** で自動アップロード（設定手順: `docs/youtube_setup.md`）→ YouTube Studio で公開に切り替え
 
 ## 毎日の使い方
 

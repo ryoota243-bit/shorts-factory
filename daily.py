@@ -27,6 +27,7 @@ def main():
                     help="同じお題を Claude と Gemini の両方で台本化して2本ずつ作る")
     ap.add_argument("--rerender", nargs="*", default=[],
                     help="scripts/archive の既存台本で動画だけ作り直す（例: 2026-11-24_12）")
+    ap.add_argument("--upload", action="store_true", help="作った動画を YouTube にアップロードする")
     a = ap.parse_args()
     gemini.configure(cfg)
 
@@ -106,8 +107,34 @@ def main():
                         "topic": s0.get("topic") or s0.get("title", "").replace("[", "").replace("]", "")})
         hist_path.write_text(json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    if a.upload and made:
+        upload_all(made, out, cfg, history, hist_path)
     write_notes(made, out, cfg)
     print(f"[daily] made: {made}")
+
+
+def upload_all(names, out, cfg, history, hist_path):
+    from factory import youtube
+    if not cfg.get("youtube", {}).get("enabled", True):
+        return
+    if not youtube.configured():
+        print("[youtube] secrets not set; skipping upload")
+        return
+    for n in names:
+        meta_path = out / f"{n}.json"
+        m = json.loads(meta_path.read_text(encoding="utf-8"))
+        try:
+            r = youtube.upload(out / f"{n}.mp4", m, cfg, out / f"{n}.thumb.png")
+            print(f"[youtube] {n}: {r['url']} ({r['privacy']}) {r['note']}")
+        except Exception as e:
+            r = {"error": str(e)}
+            print(f"[youtube] {n}: upload failed: {e}")
+        m["youtube"] = r
+        meta_path.write_text(json.dumps(m, ensure_ascii=False, indent=2), encoding="utf-8")
+        for h in history:
+            if h["name"] == n or n.startswith(h["name"]):
+                h.setdefault("youtube", []).append(r.get("url") or r.get("error"))
+    hist_path.write_text(json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def notes_for(names, out, cfg):
@@ -115,7 +142,11 @@ def notes_for(names, out, cfg):
     lines = []
     for n in names:
         m = json.loads((out / f"{n}.json").read_text(encoding="utf-8"))
-        lines += [f"## {n}.mp4", "", f"台本: {m.get('writer') or '手動'}", "",
+        yt = m.get("youtube") or {}
+        yt_line = (f"**YouTube: {yt['url']}（{'非公開' if yt.get('privacy') == 'private' else yt.get('privacy')}）**"
+                   + (f" / {yt['note']}" if yt.get("note") else "") if yt.get("url")
+                   else (f"⚠️ YouTube へのアップロード失敗: {yt['error']}" if yt.get("error") else ""))
+        lines += [f"## {n}.mp4", "", yt_line, "", f"台本: {m.get('writer') or '手動'}", "",
                   (f"サムネイル: {m['thumbnail']}（動画の最初のコマも同じ画面です。アプリでカバーに選べます）"
                    if m.get("thumbnail") else ""), "", "**タイトル**", "```", m["title"] or "", "```",
                   "**概要欄**", "```", m["description"], "```", "**タグ**: " + ", ".join(m["tags"]), ""]
