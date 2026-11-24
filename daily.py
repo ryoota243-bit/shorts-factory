@@ -28,6 +28,8 @@ def main():
     ap.add_argument("--rerender", nargs="*", default=[],
                     help="scripts/archive の既存台本で動画だけ作り直す（例: 2026-11-24_12）")
     ap.add_argument("--upload", action="store_true", help="作った動画を YouTube にアップロードする")
+    ap.add_argument("--upload-only", nargs="*", default=[],
+                    help="output/ にある完成済みの動画（例: 2026-11-24_08_gemini）をアップロードだけする")
     a = ap.parse_args()
     gemini.configure(cfg)
 
@@ -55,6 +57,23 @@ def main():
             made.append(name)
         except Exception as e:  # keep going with the next video
             print(f"[daily] render failed for {name}: {e}")
+
+    if a.upload_only:  # upload already-rendered videos (downloaded from Releases by the workflow)
+        from factory.render import build_description, normalize
+        names = [n for n in a.upload_only if (out / f"{n}.mp4").exists() and (out / f"{n}.json").exists()]
+        for n in names:  # refresh the description from the current script (latest footer / fixes)
+            sp = archive / f"{n}.json"
+            if sp.exists():
+                m = json.loads((out / f"{n}.json").read_text(encoding="utf-8"))
+                m["description"] = build_description(normalize(json.loads(sp.read_text(encoding="utf-8"))), cfg,
+                                                     voicevox="voicevox" in m.get("tts", ["voicevox"]))
+                (out / f"{n}.json").write_text(json.dumps(m, ensure_ascii=False, indent=2), encoding="utf-8")
+        missing = sorted(set(a.upload_only) - set(names))
+        if missing:
+            print(f"[daily] not found in output/: {missing}")
+        upload_all(names, out, cfg, history, hist_path)
+        (out / "UPLOAD_ONLY").write_text("\n".join(names), encoding="utf-8")
+        return
 
     for name in a.rerender:  # re-render existing scripts with the latest code (no new script cost)
         path = archive / f"{name}.json"

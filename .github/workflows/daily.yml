@@ -11,6 +11,9 @@ on:
       rerender:
         description: "作り直す台本名（空白区切り、例: 2026-11-24_12 2026-11-24_13）。指定時は新規作成しない"
         default: ""
+      upload_existing:
+        description: "完成済みの動画を作り直さずアップロード（空白区切りの名前、例: 2026-11-24_08_gemini）"
+        default: ""
       upload:
         description: "YouTube にアップロードする（毎朝の自動実行では常にアップロード）"
         type: boolean
@@ -56,6 +59,20 @@ jobs:
           done
           echo "VOICEVOX did not start"; exit 1
 
+      - name: Fetch finished videos for upload-only
+        if: ${{ github.event.inputs.upload_existing != '' && github.event.inputs.upload_existing != null }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p output
+          for n in ${{ github.event.inputs.upload_existing }}; do
+            tag=$(gh api "repos/${{ github.repository }}/releases?per_page=100" \
+                  --jq "[.[] | select(any(.assets[]; .name == \"$n.mp4\"))][0].tag_name")
+            echo "$n <- $tag"
+            [ -n "$tag" ] && [ "$tag" != "null" ] && gh release download "$tag" -R "${{ github.repository }}" -p "$n.*" -D output
+          done
+          ls -la output
+
       - name: Generate videos
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -70,6 +87,7 @@ jobs:
           args="--count ${{ github.event.inputs.count || 1 }}"
           [ "${{ github.event.inputs.compare }}" = "true" ] && args="$args --compare"
           [ -n "${{ github.event.inputs.rerender }}" ] && args="$args --rerender ${{ github.event.inputs.rerender }}"
+          [ -n "${{ github.event.inputs.upload_existing }}" ] && args="$args --upload-only ${{ github.event.inputs.upload_existing }}"
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.upload }}" = "true" ]; then
             args="$args --upload"
           fi
@@ -90,6 +108,7 @@ jobs:
           shopt -s nullglob
           files=(output/*.mp4)
           [ ${#files[@]} -eq 0 ] && { echo "no videos"; exit 0; }
+          [ -f output/UPLOAD_ONLY ] && { echo "upload-only run: no new release"; exit 0; }
           tag="v$(TZ=Asia/Tokyo date +%Y%m%d-%H%M)"
           gh release create "$tag" output/*.mp4 output/*.json output/*.thumb.png \
             --title "$(TZ=Asia/Tokyo date +%Y-%m-%d) のショート" \
