@@ -1,0 +1,160 @@
+{
+  "topic": "Bluetoothの名前の由来",
+  "category": "言葉・語源",
+  "title": "Bluetoothの[正体]は王様",
+  "youtube_title": "「Bluetooth」の名前、実は千年以上前の王様のあだ名だった #雑学 #shorts",
+  "description": "スマホやイヤホンでおなじみのBluetooth。直訳すると「青い歯」ですが、その由来は10世紀のデンマーク王でした。\nあのマークに隠された意外な正体も紹介します。\n#雑学 #語源 #Bluetooth #豆知識 #shorts",
+  "tags": [
+    "雑学",
+    "語源",
+    "Bluetooth",
+    "豆知識",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#0A1A3A",
+      "#1A0F2E"
+    ],
+    "accent": "#4FC3F7"
+  },
+  "pronunciations": {
+    "直訳": "ちょくやく",
+    "10世紀": "じゅっせいき",
+    "ハーラル王": "はーらるおう",
+    "3社": "さんしゃ",
+    "仮": "かり",
+    "商標調査": "しょうひょうちょうさ",
+    "H": "えいち",
+    "B": "びー",
+    "PAN": "ぱん",
+    "千年以上前": "せんねんいじょうまえ"
+  },
+  "scenes": [
+    {
+      "narration": "ブルートゥースって、直訳すると[青い歯]。なんで歯なんでしょう？",
+      "visual": {
+        "type": "photo",
+        "query": "wireless earbuds",
+        "ai_prompt": "Close-up of wireless earbuds and a smartphone on a clean white desk, soft natural light, shallow depth of field, photorealistic",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🎧",
+          "text": "直訳すると「青い歯」"
+        }
+      }
+    },
+    {
+      "narration": "実はこれ、10世紀にデンマークを統一した[ハーラル王]のあだ名なんです。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "👑🦷",
+        "text": "ハーラル「青歯」王"
+      }
+    },
+    {
+      "narration": "インテル、エリクソン、ノキアの3社が規格づくりを話し合った会議で、[仮のコードネーム]として提案されました。",
+      "visual": {
+        "type": "photo",
+        "query": "business meeting",
+        "ai_prompt": "Engineers from different companies discussing around a conference table in a 1990s style office, documents and laptops on the table, warm lighting, photorealistic",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🤝",
+          "text": "3社の会議で仮の名前に"
+        }
+      }
+    },
+    {
+      "narration": "理由は、王が国をまとめたように、この技術で[パソコンと携帯電話]の業界をつなぎたかったから。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "ハーラル王",
+            "value": "国をまとめた",
+            "color": "#FFB300",
+            "emoji": "👑"
+          },
+          {
+            "label": "新しい無線技術",
+            "value": "パソコンと携帯をつなぐ",
+            "color": "#4FC3F7",
+            "emoji": "📡"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "正式名の候補もありましたが、広く使われすぎていたり、[商標調査]が間に合わなかったりで、仮の名前がそのまま採用。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "🌐",
+            "text": "PAN：すでに広く使われていた"
+          },
+          {
+            "emoji": "⏳",
+            "text": "RadioWire：商標調査が間に合わず"
+          },
+          {
+            "emoji": "✅",
+            "text": "結果：仮名のBluetoothに決定"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "そしてあのマークは、王のイニシャルHとBのルーン文字を[合体]させたものなんです。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "ルーン文字のH",
+            "value": "Harald",
+            "color": "#4FC3F7",
+            "note": "2文字を合体させたのがあのマーク",
+            "emoji": "🔤"
+          },
+          {
+            "label": "ルーン文字のB",
+            "value": "Bluetooth",
+            "color": "#1E88E5",
+            "note": "2文字を合体させたのがあのマーク",
+            "emoji": "🔤"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "スマホをつなぐたび、[千年以上前の王様]の名前を呼んでいたんですね。",
+      "visual": {
+        "type": "photo",
+        "query": "smartphone headphones",
+        "ai_prompt": "A person holding a smartphone while wearing wireless headphones, cozy room, warm evening light, cinematic, photorealistic",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "📱",
+          "text": "千年以上前の王様の名前"
+        }
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.bluetooth.com/bluetooth-origin/",
+    "https://www.britannica.com/biography/Harald-I-king-of-Denmark",
+    "https://www.bluetooth.com/about-us/bluetooth-origin/",
+    "https://en.wikipedia.org/wiki/Bluetooth",
+    "https://www.mentalfloss.com/technology/why-we-call-it-bluetooth"
+  ]
+}

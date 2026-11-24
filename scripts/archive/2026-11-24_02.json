@@ -1,0 +1,151 @@
+{
+  "topic": "QRコードは囲碁がヒントで誕生",
+  "category": "身近なモノ",
+  "title": "QRコードは[囲碁]生まれ",
+  "youtube_title": "QRコードの元ネタは「囲碁」だった！ #雑学 #shorts",
+  "description": "毎日見かけるQRコードは、昼休みの囲碁がヒントになって生まれました。\n開発したのは日本の自動車部品メーカー。バーコードの約200倍の情報を扱えます。\n#雑学 #QRコード #囲碁 #豆知識 #身近なモノ",
+  "tags": [
+    "雑学",
+    "QRコード",
+    "囲碁",
+    "豆知識",
+    "身近なモノ",
+    "デンソー",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#1a1a2e",
+      "#16213e"
+    ],
+    "accent": "#ffd166"
+  },
+  "pronunciations": {
+    "1994年": "せんきゅうひゃくきゅうじゅうよねん",
+    "原昌宏": "はらまさひろ",
+    "囲碁": "いご",
+    "2方向": "にほうこう",
+    "約200倍": "やくにひゃくばい",
+    "30%": "さんじゅっパーセント",
+    "無償": "むしょう",
+    "一局": "いっきょく"
+  },
+  "scenes": [
+    {
+      "narration": "毎日のように見かけるQRコード。実はあの模様、[囲碁]がヒントで生まれたんです。",
+      "visual": {
+        "type": "photo",
+        "query": "qr code scan",
+        "ai_prompt": "Close-up of a hand holding a smartphone scanning a black and white QR code on a cafe table, shallow depth of field, natural light, photorealistic",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "📱",
+          "text": "QRコード"
+        }
+      }
+    },
+    {
+      "narration": "誕生は1994年。自動車部品メーカーのデンソーが、工場の[部品管理]のために開発しました。",
+      "visual": {
+        "type": "photo",
+        "query": "car parts factory",
+        "ai_prompt": "Interior of a clean automotive parts factory with shelves of labeled metal components and a worker checking inventory, industrial lighting, photorealistic",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🏭",
+          "text": "1994年 部品管理のために誕生"
+        }
+      }
+    },
+    {
+      "narration": "開発者の原昌宏さんは、昼休みに打っていた囲碁の[白と黒の石の並び]からヒントを得たそうです。",
+      "visual": {
+        "type": "photo",
+        "query": "go board stones",
+        "ai_prompt": "Top-down view of a wooden Go board with black and white stones arranged in a grid pattern mid-game, soft warm lighting, photorealistic",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "⚫⚪",
+          "text": "囲碁の石の並びがヒント"
+        }
+      }
+    },
+    {
+      "narration": "縦と横の2方向に情報を持たせることで、バーコードの約[200倍]の情報を扱えるようになりました。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "バーコード",
+            "value": "1",
+            "color": "#8d99ae",
+            "note": "横方向だけ",
+            "emoji": "📊"
+          },
+          {
+            "label": "QRコード",
+            "value": "約200倍",
+            "color": "#ffd166",
+            "note": "縦と横の2方向",
+            "emoji": "🔳"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "しかも汚れたり欠けたりしても、最大で約[30%]まで復元できる仕組みつきです。",
+      "visual": {
+        "type": "pie",
+        "center": "最大約30%まで復元",
+        "segments": [
+          {
+            "label": "復元できる",
+            "value": 30.0,
+            "color": "#ffd166"
+          },
+          {
+            "label": "その他",
+            "value": 70.0,
+            "color": "#4a4e69"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "さらにデンソーは特許を[無償で開放]。そのおかげで、世界中に広まっていきました。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🔓🌍",
+        "text": "特許を無償開放"
+      }
+    },
+    {
+      "narration": "昼休みの[一局]が、世界の当たり前を生んだんですね。",
+      "visual": {
+        "type": "text",
+        "text": "昼休みの一局が世界を変えた",
+        "emoji": "⚫"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.denso-wave.com/ja/adcd/info/detail__201007-01.html",
+    "https://www.denso.com/jp/ja/business/innovation/qrcode/",
+    "https://www.denso-wave.com/ja/adcd/info/2403130.html",
+    "https://www.jpo.go.jp/news/koho/innovation/01_qrcode.html",
+    "https://www.newsweekjapan.jp/stories/technology/2021/08/post-96818.php",
+    "https://x.com/Nihonkiin_pr/status/1957377229039804792",
+    "https://www.denso-wave.com/ja/adcd/product/software/qrdecode.html",
+    "https://www.keyence.co.jp/ss/products/autoid/codereader/basic2d_qr.jsp",
+    "https://www.mediaseek.co.jp/barcode/10908/"
+  ]
+}

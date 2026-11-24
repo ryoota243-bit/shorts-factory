@@ -1,0 +1,128 @@
+{
+  "topic": "フェザント島（半年ごとに管理国が交代する島）",
+  "category": "地理・世界の国",
+  "title": "半年ごとに[国が変わる]島",
+  "youtube_title": "半年ごとに国が変わる島が実在する！？ #雑学 #shorts",
+  "description": "スペインとフランスの国境を流れる川に、半年ごとに管理する国が入れ替わる小さな島があります。\nその島は、1659年に歴史的な条約が結ばれた場所でもありました。\n#雑学 #地理 #世界の国 #フェザント島 #スペイン #フランス #shorts",
+  "tags": [
+    "雑学",
+    "地理",
+    "世界の国",
+    "フェザント島",
+    "スペイン",
+    "フランス",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#0F2A3D",
+      "#1B3B2A"
+    ],
+    "accent": "#FFD54F"
+  },
+  "pronunciations": {
+    "2月1日": "にがつついたち",
+    "7月31日": "しちがつさんじゅういちにち",
+    "8月1日": "はちがつついたち",
+    "1月31日": "いちがつさんじゅういちにち",
+    "1659年": "せんろっぴゃくごじゅうきゅうねん",
+    "200メートル": "にひゃくめーとる",
+    "約200m": "やくにひゃくめーとる",
+    "2つ": "ふたつ",
+    "フェザント島": "ふぇざんととう",
+    "無人島": "むじんとう"
+  },
+  "scenes": [
+    {
+      "narration": "半年ごとに[国が変わる]島が、ヨーロッパにあるって知ってました？",
+      "visual": {
+        "type": "photo",
+        "query": "small river island",
+        "ai_prompt": "A small green uninhabited island covered with trees in the middle of a calm river, two riverbanks with towns on each side, soft daylight, realistic photo",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🏝️",
+          "text": "半年ごとに国が変わる島"
+        }
+      }
+    },
+    {
+      "narration": "場所はスペインとフランスの国境を流れる川の中。その名も[フェザント島]です。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🇪🇸🏝️",
+        "text": "国境の川に浮かぶ島"
+      }
+    },
+    {
+      "narration": "2月1日から7月31日まではスペイン、8月1日から1月31日までは[フランス]が管理しています。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "スペイン",
+            "value": "2月1日〜7月31日",
+            "color": "#E53935",
+            "note": "前半の半年",
+            "emoji": "🇪🇸"
+          },
+          {
+            "label": "フランス",
+            "value": "8月1日〜1月31日",
+            "color": "#1E88E5",
+            "note": "後半の半年",
+            "emoji": "🇫🇷"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "長さはわずか約[200メートル]。住んでいる人はいない無人島です。",
+      "visual": {
+        "type": "number",
+        "value": 200,
+        "unit": "m",
+        "label": "島の長さ（住民0人）"
+      }
+    },
+    {
+      "narration": "実は1659年、両国の長い戦争を終わらせた[ピレネー条約]が、この島で結ばれたんです。",
+      "visual": {
+        "type": "photo",
+        "query": "old treaty document",
+        "ai_prompt": "An old parchment treaty document with wax seals and a quill pen on a wooden table, 17th century European style, warm candlelight, realistic photo",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "📜",
+          "text": "1659年 ピレネー条約"
+        }
+      }
+    },
+    {
+      "narration": "戦争を終わらせた島は、今も2つの国で[仲良くシェア]されているんです。",
+      "visual": {
+        "type": "text",
+        "text": "戦争を終わらせた島は今も2国でシェア",
+        "emoji": "🤝"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Pheasant_Island",
+    "https://en.wikipedia.org/wiki/France%E2%80%93Spain_border",
+    "https://de.wikipedia.org/wiki/Fasaneninsel_(Baskenland)",
+    "https://www.euronews.com/2024/07/30/spanish-or-french-pheasant-island-is-about-to-swap-nationalities-again",
+    "https://www.thelocal.com/20230522/the-tiny-island-that-is-spanish-for-half-the-year-and-french-the-other-half",
+    "https://www.encyclopedia.com/history/modern-europe/treaties-and-alliances/peace-pyrenees",
+    "https://www.ebsco.com/research-starters/history/treaty-pyrenees/"
+  ]
+}
