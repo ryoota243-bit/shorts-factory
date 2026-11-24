@@ -133,5 +133,7 @@
     "読み方に「グリニッジ標準時」を追加。",
     "出典から確認できなかった science.nasa.gov と NASA Facts and Figures を外し、JAXA・ESA・NASA NTRSを追加。",
     "時速約2万8000キロは二次情報でしか確認できず、裏付けの出典もないため、公開前にNASAの公式ページで確認して出典に加えるよう注記。"
-  ]
+  ],
+  "thumb_text": "1日に[16回]も朝が来る？",
+  "thumb_prompt": "Spectacular orbital sunrise over the curved horizon of Earth seen from space, glowing thin blue atmosphere, deep black space with stars"
 }

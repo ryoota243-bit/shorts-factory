@@ -17,6 +17,7 @@
 - **台本AIの比較**：`Run workflow` で「比較モード」にチェックすると、同じお題を Claude と Gemini の両方で台本化して2本ずつ作ります
 - **台本AIの切り替え**：`config.json` の `script_writer` を `gemini+claude`（標準：Gemini が執筆→Claude が校閲）/ `claude` / `gemini` に
 - **自動チェック**：毎回、Claude が完成動画のコマと台本を見て問題点を洗い出し、Releases のノートに載せます
+- **サムネイル**：毎回 `〜.thumb.png`（AI画像＋キャッチコピー）を Releases に置きます。動画の最初の0.5秒も同じ画面なので、アプリの「カバー」で選べます
 - **読み間違い対策**：VOICEVOX の実際の読みを Claude が確認し、誤読は `dictionary.json`（辞書）に登録します。手で追記もできます
 - **自分で書いた台本を優先する**：`scripts/queue/` に JSON を置くと、次の回で使われます
 - **使い終わった台本**：`scripts/archive/` に、作成済みテーマは `history.json` に残ります

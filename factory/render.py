@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from . import assets, bgm, reading, tts, visuals as V
+from . import assets, bgm, reading, thumbnail, tts, visuals as V
 
 SR = tts.SR
 DEFAULT_THEME = {"bg": ["#1e3c72", "#6a1b9a"], "accent": "#ffd600"}
@@ -120,7 +120,9 @@ def make_layer(scene, theme, seed, cfg, root, credits, fps):
         credits.append(found["credit"])
         if found["kind"] == "video":
             return V.VideoLayer(v, theme, seed, found["path"], fps)
-        return V.PhotoLayer(v, theme, seed, found["path"])
+        layer = V.PhotoLayer(v, theme, seed, found["path"])
+        layer.src_path = found["path"]
+        return layer
     if v.get("type") in ("photo", "video", "ai"):
         v = v.get("fallback") or {"type": "illustration", "emoji": v.get("emoji", "🔍"),
                                   "text": v.get("query", "")}
@@ -200,6 +202,8 @@ def render(script_path, cfg, root, out_dir):
     for st, _ in scenes_t[1:]:
         s = int(st * SR); mix[s:s + len(pop)] += pop[: max(0, min(len(pop), n - s))]
     mix = np.tanh(mix * 1.1) / np.tanh(1.1)
+    T0 = float(cfg["video"].get("thumb_seconds", 0.5))  # thumbnail shown before the first scene
+    mix = np.concatenate([np.zeros(int(T0 * SR), np.float32), mix])
     wav = out_dir / f"{name}.wav"
     write_wav(wav, mix)
 
@@ -216,6 +220,13 @@ def render(script_path, cfg, root, out_dir):
     title = V.rich_text(script.get("title", ""), 76, 960, hi=V.hex2rgb(theme["accent"]), stroke=0)
     band = V.rounded((min(1040, title.width + 70), title.height + 40), 30, (0, 0, 0, 170))
     band.paste(title, ((band.width - title.width) // 2, 20), title)
+    thumb_img = None
+    try:
+        thumb_img, tcredit = thumbnail.build(script, theme, cfg, root, layers, out_dir / f"{name}.thumb.png")
+        if tcredit:
+            credits.append(tcredit)
+    except Exception as e:
+        print(f"  [thumb] skipped: {e}")
     sub_cache = {}
 
     def sub_img(s):
@@ -230,11 +241,15 @@ def render(script_path, cfg, root, out_dir):
            "-crf", str(cfg["video"]["crf"]), "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
            "-shortest", "-movflags", "+faststart", str(mp4)]
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
-    nframes = int(total * fps)
-    print(f"[{name}] rendering {total:.1f}s / {nframes} frames...")
+    nframes = int((total + T0) * fps)
+    print(f"[{name}] rendering {total + T0:.1f}s / {nframes} frames...")
     si, prev_last = 0, None
+    thumb_frames = int(T0 * fps)
     for fi in range(nframes):
-        tt = fi / fps
+        if fi < thumb_frames:
+            proc.stdin.write((thumb_img or layers[0].frame(0, 1)).tobytes())
+            continue
+        tt = fi / fps - T0
         while si < len(scenes_t) - 1 and tt >= scenes_t[si][1]:
             si += 1
         s0, s1 = scenes_t[si]
@@ -277,7 +292,7 @@ def render(script_path, cfg, root, out_dir):
     if os.environ.get("ANTHROPIC_API_KEY") and cfg.get("qa", True):
         try:
             from . import qa
-            qa_issues = qa.review(mp4, script, scenes_t, subs)
+            qa_issues = qa.review(mp4, script, scenes_t, subs, offset=T0)
             for q in qa_issues:
                 print(f"  [qa] {q['severity']} シーン{q['scene']}: {q['issue']}")
         except Exception as e:
@@ -294,6 +309,8 @@ def render(script_path, cfg, root, out_dir):
         "duration": round(total, 2),
         "bgm": bgm_name,
         "credits": sorted(set(credits)),
+        "thumbnail": f"{name}.thumb.png" if thumb_img is not None else "",
+        "thumb_text": re.sub(r"[\[\]]", "", script.get("thumb_text") or script.get("title", "")),
     }
     (out_dir / f"{name}.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[{name}] done -> {mp4} ({time.time() - t0:.0f}s)")

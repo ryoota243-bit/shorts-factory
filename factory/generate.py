@@ -63,6 +63,8 @@ class Script(BaseModel):
     pronunciations: List[Pron]
     scenes: List[Scene]
     sources: List[str]
+    thumb_text: str
+    thumb_prompt: str
 
 
 RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャンネルの構成作家です。
@@ -92,6 +94,9 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
   illustration（絵文字1〜2個＋短い文字）/ text（大きな文字）。
   photo と ai を合わせて全体の3〜4割、図解系（number/compare/list/pie）を最低2つ入れる。
 - 画面上部のタイトル（title）は15文字以内、[ ]で1か所強調。
+- サムネイル: thumb_text は思わず見たくなる8〜12文字のキャッチコピー（疑問や驚き。[ ]で1か所強調。
+  内容と食い違う誇張はしない）。thumb_prompt はサムネイル背景用の英語の画像指示（主役を大きく、
+  印象的で高コントラスト、画像内に文字を入れない、実在の人物の顔は描かない）。
 - youtube_title は末尾に #雑学 #shorts。description は2〜3行＋ハッシュタグ。
 - number の label は数字の説明として単独で意味が通る見出しにする（例「対象年齢」「必要な空気量」。
   「までの〜」「以上の〜」のように数字の続きから始めない）。
@@ -114,7 +119,7 @@ FORMAT_PROMPT = """次の台本案を、指定のJSONスキーマに変換して
   list: items(emoji, text) / pie: segments(label, value, color), center
   illustration: emoji, text / text: text, emoji
 - color は #RRGGBB。bg_colors は背景グラデーション用の暗めの2色。accent は明るい強調色。
-- sources は出典URLの配列。topic はテーマを短く。
+- sources は出典URLの配列。topic はテーマを短く。thumb_text / thumb_prompt はサムネイル用。
 
 # 台本案
 {draft}"""
@@ -196,6 +201,8 @@ def assemble(s: Script, category, outro, writer):
         "pronunciations": {p.word: p.reading for p in s.pronunciations},
         "scenes": [{"narration": sc.narration, "visual": _visual(sc.visual)} for sc in s.scenes] + [outro],
         "sources": s.sources,
+        "thumb_text": s.thumb_text,
+        "thumb_prompt": s.thumb_prompt,
     }
 
 

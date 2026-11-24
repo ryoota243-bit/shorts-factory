@@ -81,6 +81,6 @@ jobs:
           files=(output/*.mp4)
           [ ${#files[@]} -eq 0 ] && { echo "no videos"; exit 0; }
           tag="v$(TZ=Asia/Tokyo date +%Y%m%d-%H%M)"
-          gh release create "$tag" output/*.mp4 output/*.json \
+          gh release create "$tag" output/*.mp4 output/*.json output/*.thumb.png \
             --title "$(TZ=Asia/Tokyo date +%Y-%m-%d) のショート" \
             --notes-file output/RELEASE_NOTES.md

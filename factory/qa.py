@@ -40,6 +40,8 @@ PROMPT = """これは日本語の雑学ショート動画（縦型）から等�
 - フェード・スライド・拡大などのアニメーション途中のコマや、シーン切り替え（約0.2秒のクロスフェード）
   のコマで要素が半透明・移動途中なのは正常。崩れとして指摘しない。
 - 数字のカウントアップ途中の値が見えるのは演出で正常。
+- 冒頭0.5秒はサムネイル用の静止画面（大きなキャッチコピー）で、意図した演出。文字の大きさや
+  キャッチコピーの言い過ぎ・内容との食い違いは指摘してよい。
 
 軽微な好みの問題は「低」、視聴者が気づく見た目の崩れや分かりにくさは「中」、
 事実の誤り・文字化け・大きな崩れは「高」。問題がなければ issues は空配列。
@@ -60,13 +62,17 @@ def _sheet(mp4, duration, out_png):
     return [(k + 0.5) * duration / n for k in range(n)]
 
 
-def review(mp4, script, scenes_t, subs):
-    """Return a list of issue dicts (empty when nothing found)."""
-    duration = scenes_t[-1][1]
+def review(mp4, script, scenes_t, subs, offset=0.0):
+    """Return a list of issue dicts (empty when nothing found). offset = thumbnail lead-in seconds."""
+    duration = scenes_t[-1][1] + offset
     png = Path(mp4).with_suffix(".sheet.png")
     times = _sheet(mp4, duration, png)
     lines = []
     for k, t in enumerate(times):
+        if t < offset:
+            lines.append(f"コマ{k + 1}: {t:.1f}秒 冒頭のサムネイル画面（キャッチコピー: {script.get('thumb_text') or script.get('title')}）")
+            continue
+        t -= offset
         sc = next((i for i, (a, b) in enumerate(scenes_t) if a <= t < b), len(scenes_t) - 1)
         sub = next((s for a, b, s in subs if a - 0.05 <= t < b + 0.1), "")
         lines.append(f"コマ{k + 1}: {t:.1f}秒 シーン{sc + 1} 字幕「{sub}」")

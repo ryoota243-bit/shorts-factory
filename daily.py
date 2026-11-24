@@ -110,7 +110,9 @@ def main():
     lines = []
     for n in made:
         m = json.loads((out / f"{n}.json").read_text(encoding="utf-8"))
-        lines += [f"## {n}.mp4", "", f"台本: {m.get('writer') or '手動'}", "", "**タイトル**", "```", m["title"] or "", "```", "**概要欄**", "```",
+        lines += [f"## {n}.mp4", "", f"台本: {m.get('writer') or '手動'}", "",
+                  (f"サムネイル: {m['thumbnail']}（動画の最初のコマも同じ画面です。アプリでカバーに選べます）"
+                   if m.get("thumbnail") else ""), "", "**タイトル**", "```", m["title"] or "", "```", "**概要欄**", "```",
                   m["description"], "```", "**タグ**: " + ", ".join(m["tags"]), ""]
         if m.get("factcheck"):
             lines += ["**Claude 校閲メモ**", ""] + [f"- {x}" for x in m["factcheck"]] + [""]

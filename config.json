@@ -31,7 +31,8 @@
   },
   "video": {
     "fps": 30,
-    "crf": 20
+    "crf": 20,
+    "thumb_seconds": 0.5
   },
   "daily": {
     "count": 1
