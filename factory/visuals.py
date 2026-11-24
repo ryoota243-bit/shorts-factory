@@ -102,6 +102,7 @@ def glen(fnt, ch):
     return fnt.size * 1.05 if is_emoji(ch) else font_for(fnt, ch).getlength(ch)
 
 
+OPENERS = set("「『（(［[【〈《“‘")
 ASCIIISH = re.compile(r"[0-9０-９A-Za-zＡ-Ｚａ-ｚ.,．，%％:/+\-]+")
 
 
@@ -135,7 +136,8 @@ def break_points(plain):
                 pts.add(pos + len(f["string"]))
             prev, prev_num, prev_g1, prev_str = f["pos"], False, f.get("pos_group1", ""), f["string"]
             pos += len(f["string"])
-    return pts
+    # never leave an opening bracket at a line end
+    return {p for p in pts if p < len(plain) and plain[p - 1] not in OPENERS}
 
 
 def _wrap_target(chars, fnt, target, pts):

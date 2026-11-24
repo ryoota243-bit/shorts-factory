@@ -90,6 +90,8 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
   photo と ai を合わせて全体の3〜4割、図解系（number/compare/list/pie）を最低2つ入れる。
 - 画面上部のタイトル（title）は15文字以内、[ ]で1か所強調。
 - youtube_title は末尾に #雑学 #shorts。description は2〜3行＋ハッシュタグ。
+- number の label は数字の説明として単独で意味が通る見出しにする（例「対象年齢」「必要な空気量」。
+  「までの〜」「以上の〜」のように数字の続きから始めない）。
 - 画面の文字は短く: compare の label は8文字・value は6文字・note は14文字まで、
   pie の center は6文字まで（例「約3割」）、list の各 text は14文字まで、illustration/text の text は12文字まで。
 - 画面に出す文字（text, label, items の text など）に絵文字は入れない。絵文字は emoji 欄だけに。
