@@ -1,0 +1,5 @@
+pillow
+numpy
+pyopenjtalk-plus
+anthropic>=2.13
+pydantic>=2

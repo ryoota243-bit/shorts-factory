@@ -1,0 +1,49 @@
+{
+  "tts": {
+    "backend": "voicevox",
+    "openjtalk": {
+      "speed": 1.12,
+      "half_tone": 0.0
+    },
+    "voicevox": {
+      "url": "http://127.0.0.1:50021",
+      "speaker": 3,
+      "speed": 1.2,
+      "credit": "VOICEVOX:ずんだもん"
+    },
+    "google": {
+      "voice": "ja-JP-Neural2-B",
+      "rate": 1.15
+    }
+  },
+  "assets": {
+    "order": [
+      "local",
+      "pexels",
+      "pixabay",
+      "ai"
+    ],
+    "prefer_video": false,
+    "ai_model": "gemini-2.5-flash-image"
+  },
+  "bgm": {
+    "dir": "bgm",
+    "volume": 0.12
+  },
+  "video": {
+    "fps": 30,
+    "crf": 20
+  },
+  "daily": {
+    "count": 1
+  },
+  "outro": {
+    "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+    "visual": {
+      "type": "text",
+      "emoji": "👆",
+      "text": "フォローで\n[毎日雑学]"
+    },
+    "hold": 0.8
+  }
+}
