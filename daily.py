@@ -22,7 +22,7 @@ def main():
     cfg = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
     ap = argparse.ArgumentParser()
     ap.add_argument("--count", type=int, default=cfg.get("daily", {}).get("count", 1))
-    ap.add_argument("--writer", choices=["claude", "gemini"], default=cfg.get("script_writer", "claude"))
+    ap.add_argument("--writer", choices=["claude", "gemini", "gemini+claude"], default=cfg.get("script_writer", "claude"))
     ap.add_argument("--compare", action="store_true",
                     help="同じお題を Claude と Gemini の両方で台本化して2本ずつ作る")
     a = ap.parse_args()
@@ -99,6 +99,12 @@ def main():
         m = json.loads((out / f"{n}.json").read_text(encoding="utf-8"))
         lines += [f"## {n}.mp4", "", f"台本: {m.get('writer') or '手動'}", "", "**タイトル**", "```", m["title"] or "", "```", "**概要欄**", "```",
                   m["description"], "```", "**タグ**: " + ", ".join(m["tags"]), ""]
+        if m.get("factcheck"):
+            lines += ["**Claude 校閲メモ**", ""] + [f"- {x}" for x in m["factcheck"]] + [""]
+        if m.get("qa"):
+            lines += ["**自動チェックで見つかった問題**", ""]
+            lines += [f"- [{q['severity']}] シーン{q['scene']}: {q['issue']}" for q in m["qa"]] or ["- なし"]
+            lines += [""]
         if m.get("sources"):
             lines += ["<details><summary>出典（事実確認用）</summary>", ""]
             lines += [f"- {s}" for s in m["sources"]] + ["", "</details>", ""]

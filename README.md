@@ -2,7 +2,7 @@
 
 毎朝 5:17（日本時間）に GitHub Actions が自動で動き、雑学ショート動画（縦型 1080×1920）を作ります。
 
-1. Claude が Web 検索で事実を確かめながら雑学の台本を書く（過去のテーマとは重複しない）
+1. Gemini が Google 検索で調べて雑学の台本を書き、Claude が Web 検索で事実を校閲・修正する（過去のテーマとは重複しない）
 2. VOICEVOX（ずんだもん）でナレーションを作る
 3. 写真・動画を Pexels / Pixabay から探し、見つからなければ Gemini で AI 画像を作り、それも無理なら図解にする
 4. 字幕・図解・BGM・効果音を合成して MP4 にする
@@ -15,7 +15,9 @@
 
 - **今すぐ作る**：Actions → `daily-shorts` → `Run workflow`（本数も指定できます）
 - **台本AIの比較**：`Run workflow` で「比較モード」にチェックすると、同じお題を Claude と Gemini の両方で台本化して2本ずつ作ります
-- **台本AIの切り替え**：`config.json` の `script_writer` を `claude` / `gemini` に
+- **台本AIの切り替え**：`config.json` の `script_writer` を `gemini+claude`（標準：Gemini が執筆→Claude が校閲）/ `claude` / `gemini` に
+- **自動チェック**：毎回、Claude が完成動画のコマと台本を見て問題点を洗い出し、Releases のノートに載せます
+- **読み間違い対策**：VOICEVOX の実際の読みを Claude が確認し、誤読は `dictionary.json`（辞書）に登録します。手で追記もできます
 - **自分で書いた台本を優先する**：`scripts/queue/` に JSON を置くと、次の回で使われます
 - **使い終わった台本**：`scripts/archive/` に、作成済みテーマは `history.json` に残ります
 

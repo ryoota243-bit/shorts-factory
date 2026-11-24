@@ -45,7 +45,7 @@
     },
     "hold": 0.8
   },
-  "script_writer": "claude",
+  "script_writer": "gemini+claude",
   "gemini": {
     "text_model": "auto",
     "image_model": "auto"

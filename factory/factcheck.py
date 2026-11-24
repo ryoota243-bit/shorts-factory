@@ -1,0 +1,40 @@
+"""Claude fact-checks a script written by another model (plan C: Gemini writes, Claude checks)."""
+import json
+import re
+
+import anthropic
+
+from .generate import research, to_script
+
+CHECK_PROMPT = """あなたは日本語の雑学ショート動画の校閲担当です。別のAIが書いた次の台本（JSON）の事実関係を、
+web検索で信頼できる情報源（公的機関・大学・百科事典・専門メディア・企業の公式情報）にあたって確認してください。
+
+# 確認すること
+- ナレーションと画面の文字（title, text, label, value, note, items, segments, center, number, unit）の
+  主張・数字・単位・固有名詞・年・順序
+- 言い過ぎや誤解を招く表現（例: 任意の規格を「義務」、「世界初」「必ず」「唯一」の根拠、因果関係の誇張、
+  諸説あるものの断定）
+- 図解の使い方が内容と合っているか（pie は全体に対する割合のときだけ）
+- sources が主張を裏付けているか
+
+# 手順
+1. 主張ごとに確認し、誤り・不確かな点と修正案を挙げる。
+2. 修正を反映した台本全体を書き直して示す。元の構成・シーン数・長さ・語り口（物語性やオチ）は
+   できるだけ保つ。確認できない主張は削るか、断定しない表現にする。出典URLは確認に使ったものに更新する。
+3. 最後に「## 校閲メモ」という見出しを付け、直した点を1行ずつ箇条書き（直す点がなければ「- 修正なし」）。
+
+# 台本
+{script}"""
+
+
+def check(script_model):
+    """Return (fixed Script, list of review notes)."""
+    client = anthropic.Anthropic()
+    payload = json.dumps(script_model.model_dump(), ensure_ascii=False, indent=1)
+    report = research(client, CHECK_PROMPT.format(script=payload))
+    notes = []
+    m = re.search(r"##\s*校閲メモ\s*\n(.*)", report, re.S)
+    if m:
+        notes = [l.strip(" -・*\t") for l in m.group(1).splitlines() if l.strip(" -・*\t")]
+    fixed = to_script(client, report)
+    return fixed, notes

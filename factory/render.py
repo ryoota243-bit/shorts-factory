@@ -1,5 +1,6 @@
 """Turn a script JSON into a vertical MP4."""
 import json
+import os
 import re
 import subprocess
 import time
@@ -211,11 +212,22 @@ def render(script_path, cfg, root, out_dir):
         credit = cfg["tts"]["voicevox"].get("credit", "VOICEVOX")
         if credit not in desc:
             desc += f"\n\n{credit}"
+    qa_issues = []
+    if os.environ.get("ANTHROPIC_API_KEY") and cfg.get("qa", True):
+        try:
+            from . import qa
+            qa_issues = qa.review(mp4, script, scenes_t, subs)
+            for q in qa_issues:
+                print(f"  [qa] {q['severity']} シーン{q['scene']}: {q['issue']}")
+        except Exception as e:
+            print(f"  [qa] skipped: {e}")
     meta = {
         "title": script.get("youtube_title") or script.get("title"),
         "description": desc,
         "tts": sorted(tts.USED),
         "writer": script.get("writer", ""),
+        "factcheck": script.get("factcheck", []),
+        "qa": qa_issues,
         "sources": script.get("sources", []),
         "tags": script.get("tags", []),
         "duration": round(total, 2),

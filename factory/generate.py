@@ -101,6 +101,7 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
 最後に、使った事実・数字と出典URLを箇条書きでまとめてください。"""
 
 FORMAT_PROMPT = """次の台本案を、指定のJSONスキーマに変換してください。
+（校閲レポートの場合は、修正を反映して書き直した最終版の台本を使ってください。）
 - 使わない項目は空文字・空配列・0 にする。
 - visual.type ごとに使う項目:
   photo / ai: query, ai_prompt, emoji, text（emoji と text は画像が用意できない時の代わりのイラスト用）
@@ -204,10 +205,20 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
     category = category or pick_category(seed, recent_categories)
     print(f"[generate:{writer}] category: {category}" + (f" / topic: {topic}" if topic else ""))
     prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic))
-    if writer == "gemini":
+    notes = None
+    if writer in ("gemini", "gemini+claude"):
         from . import gemini
         s = gemini.write_script(prompt, FORMAT_PROMPT, Script)
+        if writer == "gemini+claude":
+            from .factcheck import check
+            print("[generate] Claude fact-check...")
+            s, notes = check(s)
+            for n in notes:
+                print(f"  [factcheck] {n}")
     else:
         client = anthropic.Anthropic()
         s = to_script(client, research(client, prompt))
-    return assemble(s, category, outro, writer)
+    out = assemble(s, category, outro, writer)
+    if notes is not None:
+        out["factcheck"] = notes
+    return out
