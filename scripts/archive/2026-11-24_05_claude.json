@@ -1,0 +1,138 @@
+{
+  "topic": "輸出バナナはほぼすべてクローン",
+  "category": "食べ物",
+  "writer": "claude",
+  "title": "バナナの[クローン]問題",
+  "youtube_title": "輸出バナナのほぼすべてが同じ遺伝子のクローンだった #雑学 #shorts",
+  "description": "輸出されるバナナのほぼすべてが、同じ遺伝子を持つ「キャベンディッシュ」という品種です。\n1950年代までの主役だった品種は病気で壊滅し、今のバナナも新しい病気にねらわれています。\n#雑学 #バナナ #食べ物 #豆知識 #へぇ",
+  "tags": [
+    "雑学",
+    "バナナ",
+    "食べ物",
+    "豆知識",
+    "へぇ",
+    "キャベンディッシュ",
+    "パナマ病",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#2B2410",
+      "#14110A"
+    ],
+    "accent": "#FFD93B"
+  },
+  "pronunciations": {
+    "1950〜60年代": "せんきゅうひゃくごじゅうからろくじゅうねんだい",
+    "1950年代": "せんきゅうひゃくごじゅうねんだい",
+    "2019年": "にせんじゅうきゅうねん",
+    "約3分の2": "やくさんぶんのに",
+    "TR4": "てぃーあーるふぉー",
+    "中南米": "ちゅうなんべい",
+    "親株": "おやかぶ"
+  },
+  "scenes": [
+    {
+      "narration": "輸出されるバナナのほぼすべてが、実は[クローン]だって知ってました？",
+      "visual": {
+        "type": "photo",
+        "query": "banana bunch",
+        "ai_prompt": "A bunch of ripe yellow bananas on a wooden table, soft natural light, realistic photo, shallow depth of field, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🍌",
+          "text": "ほぼ全部クローン？"
+        }
+      }
+    },
+    {
+      "narration": "その品種はキャベンディッシュ。世界の生産量の[約半分]を占め、輸出用はほぼこれ一択です。",
+      "visual": {
+        "type": "pie",
+        "center": "約5割",
+        "segments": [
+          {
+            "label": "キャベンディッシュ",
+            "value": 50.0,
+            "color": "#FFD93B"
+          },
+          {
+            "label": "その他の品種",
+            "value": 50.0,
+            "color": "#6B7A3A"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "でも1950年代まで、世界の主役は[グロスミシェル]という別の品種。今より甘く、濃厚な味でした。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "昔の主役",
+            "value": "より甘い",
+            "color": "#E8A33D",
+            "note": "グロスミシェル",
+            "emoji": "🍌"
+          },
+          {
+            "label": "今の主役",
+            "value": "病気に強い",
+            "color": "#FFD93B",
+            "note": "キャベンディッシュ",
+            "emoji": "🍌"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "ところが土の中のカビが起こす[パナマ病]で、1950〜60年代に壊滅してしまいました。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A vast tropical banana plantation in the mid-20th century with wilting, yellowing and collapsing banana plants, dry brown leaves, overcast sky, realistic vintage photo style, no people, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🥀",
+          "text": "パナマ病で壊滅"
+        }
+      }
+    },
+    {
+      "narration": "そして今、新型の病気[TR4]がキャベンディッシュを襲い、2019年には輸出の約3分の2を担う中南米にも上陸しました。",
+      "visual": {
+        "type": "number",
+        "value": 2019,
+        "unit": "年",
+        "label": "中南米に上陸"
+      }
+    },
+    {
+      "narration": "種がなく親株の芽などで増やす、いわば全員クローン。だから[まとめて]やられやすいんです。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🍌🧬",
+        "text": "全員クローン"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.fao.org/tr4gn/tr4-basics/en/",
+    "https://www.ippc.int/en/core-activities/capacity-development/programmes/ippc-global-coordination-on-fusarium-oxysporum-f-sp-cubense-tropical-race-4-tr4/",
+    "https://www.fao.org/transboundary-plant-pests-diseases/news/detail/fighting-the-deadly-disease-that-is-killing-the-world-s-most-exported-fruit/en",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6156769/",
+    "https://www.britannica.com/plant/Gros-Michel",
+    "https://www.britannica.com/science/Panama-disease",
+    "https://theconversation.com/the-quest-to-save-the-banana-from-extinction-112256"
+  ]
+}

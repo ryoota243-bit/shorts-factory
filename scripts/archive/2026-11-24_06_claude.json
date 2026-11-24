@@ -1,0 +1,126 @@
+{
+  "topic": "金星の1日と1年",
+  "category": "科学",
+  "writer": "claude",
+  "title": "金星は[1日が1年より長い]",
+  "youtube_title": "金星では1日が1年より長い！？太陽は西から昇る #雑学 #shorts",
+  "description": "金星は1回自転するのに約243日かかりますが、太陽を1周する1年は約225日です。\nしかも逆向きに自転しているので、太陽は西から昇ります。\n#雑学 #科学 #宇宙 #金星 #shorts",
+  "tags": [
+    "雑学",
+    "科学",
+    "宇宙",
+    "金星",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#2A1A0A",
+      "#0B0B1E"
+    ],
+    "accent": "#FFC94D"
+  },
+  "pronunciations": {
+    "金星": "きんせい",
+    "1日": "いちにち",
+    "1年": "いちねん",
+    "1回": "いっかい",
+    "1周": "いっしゅう",
+    "243日": "にひゃくよんじゅうさんにち",
+    "225日": "にひゃくにじゅうごにち",
+    "117日": "ひゃくじゅうななにち",
+    "2回": "にかい",
+    "昇って": "のぼって",
+    "沈む": "しずむ",
+    "覆われて": "おおわれて"
+  },
+  "scenes": [
+    {
+      "narration": "金星ではなんと、[1日より1年のほうが短い]って知ってました？",
+      "visual": {
+        "type": "ai",
+        "query": "Venus planet",
+        "ai_prompt": "Photorealistic view of planet Venus glowing yellowish-white in deep space, thick swirling cloud layers, the bright Sun on one side, dramatic cinematic lighting, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🪐",
+          "text": "金星の1日は1年より長い"
+        }
+      }
+    },
+    {
+      "narration": "金星が1回自転するのにかかるのは、地球の日数で約243日。でも太陽を1周する1年は、約[225日]しかありません。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "自転1回",
+            "value": "約243日",
+            "color": "#FF8C42",
+            "note": "自転のほうが長い",
+            "emoji": "🔄"
+          },
+          {
+            "label": "公転1周",
+            "value": "約225日",
+            "color": "#4DA8FF",
+            "note": "これが金星の1年",
+            "emoji": "☀️"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "しかも金星は、ほかのほとんどの惑星とは[逆向き]に自転しています。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🪐🔄",
+        "text": "まさかの逆回転"
+      }
+    },
+    {
+      "narration": "そのため金星では、太陽が[西から昇って]東に沈むんです。",
+      "visual": {
+        "type": "ai",
+        "query": "Venus surface landscape",
+        "ai_prompt": "Photorealistic barren rocky volcanic landscape under a thick hazy orange sky, a faint diffuse sun rising low on the horizon, hot and alien atmosphere, wide-angle, no text, no people",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🌅",
+          "text": "太陽は西から昇る"
+        }
+      }
+    },
+    {
+      "narration": "さらに、日の出から次の日の出までは約[117日]。1年のうちに朝が2回しか来ない計算です。",
+      "visual": {
+        "type": "number",
+        "value": 117,
+        "unit": "日",
+        "label": "日の出から次の日の出まで"
+      }
+    },
+    {
+      "narration": "ただ、分厚い雲に覆われているので、地上から太陽は[見えない]んですけどね。",
+      "visual": {
+        "type": "text",
+        "text": "でも太陽は見えない",
+        "emoji": "☁️"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://spaceplace.nasa.gov/all-about-venus/en/",
+    "https://www.jaxa.jp/countdown/f17/overview/venus_j.html",
+    "https://www.nasa.gov/wp-content/uploads/2009/12/venus_lithograph.pdf",
+    "https://www.isas.jaxa.jp/topics/002365.html"
+  ]
+}

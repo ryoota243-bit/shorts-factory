@@ -1,0 +1,136 @@
+{
+  "topic": "アリの総数と総重量",
+  "category": "昆虫",
+  "writer": "claude",
+  "title": "[アリ]は地球の重量級",
+  "youtube_title": "野生の鳥と哺乳類を全部合わせてもアリより軽い!? #雑学 #shorts",
+  "description": "地球上のアリは少なくとも2京匹。\n全部合わせた重さは、野生の哺乳類と鳥類の合計を上回るそうです。\n#雑学 #昆虫 #アリ #生き物 #豆知識 #shorts",
+  "tags": [
+    "雑学",
+    "昆虫",
+    "アリ",
+    "生き物",
+    "豆知識",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#1A1208",
+      "#3A2A12"
+    ],
+    "accent": "#FFC233"
+  },
+  "pronunciations": {
+    "哺乳類": "ほにゅうるい",
+    "2022年": "にせんにじゅうにねん",
+    "2京匹": "にけいひき",
+    "1人": "ひとり",
+    "250万匹": "にひゃくごじゅうまんびき",
+    "1200万トン": "せんにひゃくまんとん",
+    "900万トン": "きゅうひゃくまんとん",
+    "2割": "にわり",
+    "足元": "あしもと",
+    "大物": "おおもの"
+  },
+  "scenes": [
+    {
+      "narration": "野生の鳥と哺乳類を全部合わせても、重さでは[アリ]に負けるって知ってましたか？",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A giant old-fashioned balance scale in a grassy field, one side piled with a crowd of ants tipping it down, the other side raised with miniature figures of wild birds, deer and elephants, photorealistic, dramatic natural lighting, shallow depth of field, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "⚖️",
+          "text": "アリ vs 鳥＋哺乳類"
+        }
+      }
+    },
+    {
+      "narration": "2022年に発表された研究によると、地球上のアリは少なくとも[2京匹]。人間1人あたり約250万匹の計算です。",
+      "visual": {
+        "type": "number",
+        "value": 2,
+        "unit": "京匹",
+        "label": "1人あたり約250万匹"
+      }
+    },
+    {
+      "narration": "炭素に換算した総重量は[約1200万トン]。野生の哺乳類と鳥類を合わせた約900万トンを上回ります。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "アリ",
+            "value": "1200万t",
+            "color": "#FFC233",
+            "note": "炭素換算の総重量",
+            "emoji": "🐜"
+          },
+          {
+            "label": "鳥＋哺乳類",
+            "value": "900万t",
+            "color": "#5AA9E6",
+            "note": "炭素換算の総重量",
+            "emoji": "🐦"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "これは、私たち人類全体の重さの[約2割]にあたります。",
+      "visual": {
+        "type": "pie",
+        "center": "約2割",
+        "segments": [
+          {
+            "label": "アリ",
+            "value": 20.0,
+            "color": "#FFC233"
+          },
+          {
+            "label": "人類の残り",
+            "value": 80.0,
+            "color": "#6B7280"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "しかもこれは控えめな推計で、データが少ない地域もあるため、実際は[もっと多い]可能性があるそうです。",
+      "visual": {
+        "type": "photo",
+        "query": "ants forest floor",
+        "ai_prompt": "Close-up macro photograph of countless ants marching across moss and fallen leaves on a tropical forest floor, soft natural light, photorealistic, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🐜",
+          "text": "実際はもっと多い？"
+        }
+      }
+    },
+    {
+      "narration": "足元の小さなアリ、実は地球の[大物]だったんですね。",
+      "visual": {
+        "type": "text",
+        "text": "小さな大物",
+        "emoji": "🐜"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.pnas.org/doi/10.1073/pnas.2201550119",
+    "https://www.pnas.org/doi/10.1073/pnas.2214825119",
+    "https://www.nikkei.com/article/DGXZQOUC21BC30R20C22A9000000/",
+    "https://www.afpbb.com/articles/-/3424658"
+  ]
+}
