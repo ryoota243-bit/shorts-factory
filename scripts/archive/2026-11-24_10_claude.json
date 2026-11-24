@@ -26,11 +26,11 @@
   },
   "scenes": [
     {
-      "narration": "ボールペンのキャップの先にある、この小さな[穴]。いったい何のためにあると思いますか？",
+      "narration": "ボールペンのキャップの[小さな穴]。実は、命を守るための穴なんです。",
       "visual": {
-        "type": "photo",
+        "type": "ai",
         "query": "pen cap closeup",
-        "ai_prompt": "Extreme close-up photo of a clear plastic ballpoint pen cap with a small hole at the tip, on a white desk, soft natural light, shallow depth of field, photorealistic, no text",
+        "ai_prompt": "Extreme macro photo of a white plastic ballpoint pen cap with a pocket clip, the rounded tip has one small round air hole clearly visible, soft studio light, clean background",
         "fallback": {
           "type": "illustration",
           "emoji": "🖊️",
@@ -39,7 +39,7 @@
       }
     },
     {
-      "narration": "実はこれ、キャップを誤って吸い込んだとき、[気道]が完全にふさがれないようにするための穴なんです。",
+      "narration": "キャップを誤って吸い込んだとき、[気道]が完全にふさがれないようにするためです。",
       "visual": {
         "type": "ai",
         "query": "",
@@ -57,7 +57,7 @@
         "type": "number",
         "value": 14,
         "unit": "歳",
-        "label": "までの子どもの筆記具が対象"
+        "label": "対象年齢"
       }
     },
     {
@@ -66,7 +66,7 @@
         "type": "number",
         "value": 8,
         "unit": "L/分",
-        "label": "以上の空気が通ること"
+        "label": "必要な空気量"
       }
     },
     {
@@ -117,5 +117,5 @@
     "https://patents.google.com/patent/JPH0911684A/ja"
   ],
   "thumb_text": "キャップの穴は[命綱]!?",
-  "thumb_prompt": "Extreme macro close-up of the tip of a plastic ballpoint pen cap showing a small air hole, dramatic rim lighting, dark background"
+  "thumb_prompt": "Extreme macro photo of a white plastic ballpoint pen cap with a pocket clip, the rounded tip has one small round air hole clearly visible, dramatic rim light, dark background"
 }

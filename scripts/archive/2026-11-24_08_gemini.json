@@ -25,7 +25,7 @@
   },
   "scenes": [
     {
-      "narration": "実は人間の体で、[空気から直接]息をしている場所があります。",
+      "narration": "黒目は、[空気から直接]呼吸しているんです。",
       "visual": {
         "type": "ai",
         "query": "human eye cornea",
@@ -38,7 +38,7 @@
       }
     },
     {
-      "narration": "それは黒目の表面にある角膜で、光を通すために[血管がゼロ]なんです。",
+      "narration": "その正体は、黒目の表面を覆う角膜。光を通すために[血管がゼロ]なんです。",
       "visual": {
         "type": "compare",
         "items": [
@@ -62,13 +62,13 @@
     {
       "narration": "普通の細胞は血液から酸素をもらいますが、角膜は[涙]に溶けた空気を直接吸っています。",
       "visual": {
-        "type": "photo",
-        "query": "eye tear drop",
-        "ai_prompt": "Extreme macro close-up of a human eye with a thin natural tear film layer over the cornea, soft gentle reflection, realistic photography, no text",
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Extreme macro close-up of the surface of a human eye with a thin glistening tear film over the cornea, iris in sharp detail, no face visible, soft light, realistic",
         "fallback": {
           "type": "illustration",
-          "emoji": "💧",
-          "text": "涙の層から酸素を吸収"
+          "emoji": "💧👁️",
+          "text": "涙の膜から酸素を吸収"
         }
       }
     },
@@ -95,7 +95,7 @@
       }
     },
     {
-      "narration": "もし酸欠が続くと、酸素を求めて黒目に[血管が侵入]してくることも。",
+      "narration": "コンタクトレンズのつけすぎなどで酸欠が続くと、酸素を求めて黒目に[血管が侵入]してくることも。",
       "visual": {
         "type": "list",
         "items": [
@@ -115,7 +115,7 @@
       }
     },
     {
-      "narration": "目もちゃんと呼吸しています。たまには[裸眼]で深呼吸させてあげましょう。",
+      "narration": "目もちゃんと呼吸しています。コンタクトの人は、たまには[裸眼]で休ませてあげましょう。",
       "visual": {
         "type": "illustration",
         "emoji": "👀",
