@@ -17,6 +17,20 @@ DEFAULT_THEME = {"bg": ["#1e3c72", "#6a1b9a"], "accent": "#ffd600"}
 XFADE = 0.18
 
 
+FULLWIDTH = re.compile(r"[０-９Ａ-Ｚａ-ｚ．％]")
+
+
+def normalize(obj):
+    """Full-width digits/latin -> half-width everywhere (３０日 -> 30日)."""
+    if isinstance(obj, str):
+        return FULLWIDTH.sub(lambda m: chr(ord(m.group(0)) - 0xFEE0), obj)
+    if isinstance(obj, list):
+        return [normalize(x) for x in obj]
+    if isinstance(obj, dict):
+        return {k: normalize(v) for k, v in obj.items()}
+    return obj
+
+
 MAX_CHUNK = 24
 
 
@@ -43,7 +57,20 @@ def _halve(marked):
         return [marked]
     mid = len(plain) / 2
     commas = [i + 1 for i, c in enumerate(plain) if c == "、" and 6 <= i + 1 <= len(plain) - 5]
+    inside_hi, n, depth = set(), 0, 0  # plain indices inside a [highlight]
+    for ch in marked:
+        if ch == "[":
+            depth = 1
+        elif ch == "]":
+            depth = 0
+        else:
+            n += 1
+            if depth:
+                inside_hi.add(n)  # a split *after* this char would cut the highlight
+
     def outside_brackets(p):
+        if p in inside_hi and (p + 1) in inside_hi:
+            return False
         head = plain[:p]
         return all(head.count(o) <= head.count(c) for o, c in ("「」", "『』", "（）", "()"))
     commas = [p for p in commas if outside_brackets(p)]
@@ -100,7 +127,7 @@ def write_wav(path, x):
 def render(script_path, cfg, root, out_dir):
     t0 = time.time()
     root = Path(root)
-    script = json.loads(Path(script_path).read_text(encoding="utf-8"))
+    script = normalize(json.loads(Path(script_path).read_text(encoding="utf-8")))
     name = Path(script_path).stem
     theme = {**DEFAULT_THEME, **script.get("theme", {})}
     prons = {**cfg.get("pronunciations", {}), **script.get("pronunciations", {})}
@@ -160,6 +187,13 @@ def render(script_path, cfg, root, out_dir):
     # ---- 3. layers / overlays ----
     credits = []
     layers = [make_layer(sc, theme, seed + i, cfg, root, credits, fps) for i, sc in enumerate(script["scenes"])]
+    for i, layer in enumerate(layers):  # reveal numbers when the narration says them
+        if isinstance(layer, V.NumberLayer):
+            s0, s1 = scenes_t[i]
+            key = re.sub(r"\.0$", "", str(layer.value))
+            hit = next((a for a, b, txt in subs if s0 <= a < s1 and key in txt.replace(",", "")), None)
+            if hit is not None and hit - s0 > 0.6:
+                layer.delay = hit - s0
     title = V.rich_text(script.get("title", ""), 76, 960, hi=V.hex2rgb(theme["accent"]), stroke=0)
     band = V.rounded((min(1040, title.width + 70), title.height + 40), 30, (0, 0, 0, 170))
     band.paste(title, ((band.width - title.width) // 2, 20), title)

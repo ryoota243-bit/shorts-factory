@@ -116,6 +116,7 @@ def break_points(plain):
     except Exception:
         return None
     pts, pos, prev, prev_num, prev_g1, prev_str = set(), 0, "", False, "", ""
+    noun_run = 0
     for m in re.finditer(ASCIIISH.pattern + r"|[^0-9０-９A-Za-zＡ-Ｚａ-ｚ.,．，%％:/+\-]+", plain):
         seg = m.group(0)
         if ASCIIISH.fullmatch(seg):
@@ -129,11 +130,14 @@ def break_points(plain):
         for f in feats:
             attach = (f["pos"] in ("助詞", "助動詞", "記号") or f.get("pos_group1") in ("接尾", "非自立")
                       or prev == "接頭詞" or prev_num or (prev_g1 == "サ変接続" and f["pos"] == "動詞")
-                      or (prev_str == "と" and f["string"].startswith("し")))
+                      or (prev_str == "と" and f["string"].startswith("し"))
+                      or (prev == "名詞" and f["pos"] == "名詞" and noun_run < 7
+                          and f.get("pos_group1") not in ("代名詞",) and prev_g1 not in ("代名詞",)))
             if pos and not attach and f["string"][0] not in NO_HEAD:
                 pts.add(pos)
             if f["pos"] == "記号" and f["string"] in "、。！？":
                 pts.add(pos + len(f["string"]))
+            noun_run = noun_run + len(f["string"]) if f["pos"] == "名詞" else 0
             prev, prev_num, prev_g1, prev_str = f["pos"], False, f.get("pos_group1", ""), f["string"]
             pos += len(f["string"])
     # never leave an opening bracket at a line end, never break inside quotes/parentheses
@@ -347,6 +351,7 @@ class NumberLayer(Layer):
         self.label = rich_text(spec.get("label", ""), 66, 900, stroke=0, fill=(30, 30, 30), hi=(220, 30, 60))
         self.pill = rounded((self.label.width + 70, self.label.height + 30), 50, (255, 255, 255, 240))
         self.cache = {}
+        self.delay = 0.0  # set by the renderer: seconds until the narration mentions the number
 
     def num_img(self, s):
         if s not in self.cache:
@@ -360,6 +365,11 @@ class NumberLayer(Layer):
         paste_center(im, self.pill, W / 2, CONTENT_Y[0] + 80, alpha=ease_out(t / 0.3))
         paste_center(im, self.label, W / 2, CONTENT_Y[0] + 80, alpha=ease_out(t / 0.3))
         v = self.value
+        t = t - self.delay
+        if t < 0:
+            q = fit_text("？", 300, 400, 400, stroke=14, fill=self.accent, shadow=True)
+            paste_center(im, q, W / 2, CONTENT_CY + 60, alpha=0.85)
+            return im
         if isinstance(v, (int, float)):
             p = ease_out((t - 0.1) / 0.9)
             cur = v * p
