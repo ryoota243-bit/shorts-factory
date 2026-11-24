@@ -1,0 +1,147 @@
+{
+  "topic": "ピラミッドとマンモス",
+  "category": "歴史",
+  "writer": "gemini+claude",
+  "title": "[ピラミッド]とマンモスの謎",
+  "youtube_title": "ピラミッド完成時、まだマンモスが生きていた！？ #雑学 #shorts",
+  "description": "エジプトの大ピラミッドが建てられた頃、北極海の島ではまだマンモスが生きていました。\n古代文明と氷河期の巨獣が同じ時代に存在した、驚きの歴史のタイムラインを解説します。\n#歴史 #ピラミッド #マンモス #雑学 #shorts",
+  "tags": [
+    "歴史",
+    "ピラミッド",
+    "マンモス",
+    "雑学",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#121b28",
+      "#080c14"
+    ],
+    "accent": "#f59e0b"
+  },
+  "pronunciations": {
+    "ギザ": "ぎざ",
+    "ウランゲリ島": "うらんげりとう",
+    "クフ王": "くふおう"
+  },
+  "scenes": [
+    {
+      "narration": "ピラミッドの時代、まだ[マンモス]は生きていた。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Cinematic close-up portrait of a majestic woolly mammoth with thick brown fur and curved tusks standing in snowy tundra, dramatic lighting, photorealistic, highly detailed, 8k resolution, National Geographic style, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🦣",
+          "text": "マンモス生存の謎"
+        }
+      }
+    },
+    {
+      "narration": "氷河期の終わりに消えたと思われがちですが、実は[生き残り]がいました。",
+      "visual": {
+        "type": "photo",
+        "query": "arctic tundra landscape",
+        "ai_prompt": "Vast barren arctic tundra landscape covered in light snow under a dramatic overcast sky, rugged wilderness, photorealistic, high quality, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "❄️",
+          "text": "氷河期と絶滅"
+        }
+      }
+    },
+    {
+      "narration": "エジプトのギザの大ピラミッドが完成したのは、およそ[4500年前]。",
+      "visual": {
+        "type": "number",
+        "value": 4500,
+        "unit": "年前",
+        "label": "大ピラミッド完成"
+      }
+    },
+    {
+      "narration": "一方、北極海の孤島で最後のマンモスが絶滅したのは、[約4000年前]。",
+      "visual": {
+        "type": "number",
+        "value": 4000,
+        "unit": "年前",
+        "label": "マンモスの絶滅"
+      }
+    },
+    {
+      "narration": "ピラミッドの完成後も、[数百年]は生き延びていたとみられます。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "ピラミッド",
+            "value": "4500年前",
+            "color": "#f59e0b",
+            "note": "クフ王の墓が完成",
+            "emoji": "🏛️"
+          },
+          {
+            "label": "マンモス",
+            "value": "4000年前",
+            "color": "#38bdf8",
+            "note": "北極の島で絶滅",
+            "emoji": "🦣"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "海面上昇で孤立した北極の島が、彼らの[最後のすみか]でした。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A small group of woolly mammoths walking across open arctic tundra with low hills on a remote misty island, grey sea on the horizon, photorealistic, historical documentary style, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🏝️",
+          "text": "最後のすみか"
+        }
+      }
+    },
+    {
+      "narration": "古代文明が栄える裏で、最後のマンモスは[ひっそり]生きていたのです。",
+      "visual": {
+        "type": "text",
+        "text": "歴史が重なる瞬間",
+        "emoji": "⏳"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.britannica.com/facts/Pyramids-of-Giza",
+    "https://www.worldhistory.org/Great_Pyramid_of_Giza/",
+    "https://www.cell.com/cell/fulltext/S0092-8674(24)00577-4",
+    "https://www.sciencedaily.com/releases/2024/06/240627172101.htm"
+  ],
+  "thumb_text": "ピラミッド時代も[マンモス]がいた！",
+  "thumb_prompt": "Split-screen composition: on the left, a massive woolly mammoth with giant curved tusks standing on a frozen arctic island; on the right, a generic silhouette of ancient desert pyramids under a warm twilight sky, clearly separated as two distant places, cinematic, high contrast, photorealistic, 8k, no text, no human faces",
+  "factcheck": [
+    "シーン2：「実は違います」は言い過ぎなので、「実は生き残りがいました」に直した（大半は約1万2000年前までに消えている）",
+    "シーン3：ピラミッドの完成年は年表によって違うため、「紀元前2560年頃」を「およそ4500年前」に変えた（number を 4500、unit を「年前」に）",
+    "シーン4：絶滅年「紀元前1700年頃」は裏付けがないので、Cell 2024 に合わせて「約4000年前」に直した",
+    "シーン5：「800年以上」は計算が合わないので「数百年」とし、断定しない言い方にした",
+    "シーン5：compare の value「約4500年前」は7文字で上限超えだったため「4500年前」「4000年前」にし、note も内容に合わせた",
+    "シーン6：「最後の楽園」は近親交配の事実と合わないので「最後のすみか」に直した",
+    "シーン6：ai_prompt の「dramatic cliffs」をやめ、一般的な北極の島の景色にした",
+    "シーン7：「太古の巨獣」を「最後のマンモス」にして、何の話かはっきりさせた",
+    "説明文：「交差する」を「同じ時代に存在した」に直し、生きていた場所（北極海の島）を書き足した",
+    "サムネ文字：今も生きているように読めるので、「ピラミッド時代も[マンモス]がいた！」に直した",
+    "サムネ画像：同じ場所にいたように見えないよう、左右に分ける構図にした",
+    "sources：主張を直接裏付ける Britannica のファクトページ、World History Encyclopedia、Cell、ScienceDaily に入れ替えた（Nature 1993 は外した）"
+  ]
+}
