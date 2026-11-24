@@ -54,6 +54,53 @@ def parse_marked(text, base, hi):
     return out
 
 
+SYMBOL_FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+
+
+@functools.lru_cache(None)
+def _cmap(path):
+    try:
+        from fontTools.ttLib import TTFont
+        return frozenset(TTFont(path, fontNumber=0, lazy=True).getBestCmap())
+    except Exception:
+        return frozenset()
+
+
+def _in_emoji_range(o):
+    return (0x1F000 <= o <= 0x1FAFF or 0x2600 <= o <= 0x27BF or 0x2B00 <= o <= 0x2BFF
+            or o in (0x203C, 0x2049, 0x2122, 0x2139, 0x231A, 0x231B, 0x23E9, 0x23F0, 0x23F3))
+
+
+@functools.lru_cache(None)
+def glyph_kind(ch):
+    """'emoji' (color emoji font), 'symbol' (DejaVu), or 'text' (Noto CJK)."""
+    o = ord(ch)
+    if _in_emoji_range(o) and o in _cmap(EMOJI_FONT):
+        return "emoji"
+    if o in _cmap(f"{FONT_DIR}NotoSansCJK-Black.ttc"):
+        return "text"
+    if o in _cmap(SYMBOL_FONT):
+        return "symbol"
+    return "text"
+
+
+def is_emoji(ch):
+    return glyph_kind(ch) == "emoji"
+
+
+@functools.lru_cache(None)
+def symbol_font(size):
+    return ImageFont.truetype(SYMBOL_FONT, int(size))
+
+
+def font_for(fnt, ch):
+    return symbol_font(fnt.size) if glyph_kind(ch) == "symbol" else fnt
+
+
+def glen(fnt, ch):
+    return fnt.size * 1.05 if is_emoji(ch) else font_for(fnt, ch).getlength(ch)
+
+
 @functools.lru_cache(4096)
 def break_points(plain):
     """Indices where a line may break (word starts that are not particles/symbols)."""
@@ -82,7 +129,7 @@ def _wrap_target(chars, fnt, target, pts):
     for idx, (ch, col) in enumerate(chars):
         if ch == "\n":
             lines.append([]); w = 0; last_ok = None; continue
-        cw = fnt.getlength(ch)
+        cw = glen(fnt, ch)
         ok = (pts is None or idx in pts) and ch not in NO_HEAD
         if w + cw > target and lines[-1]:
             if ok:
@@ -90,7 +137,7 @@ def _wrap_target(chars, fnt, target, pts):
             elif last_ok:
                 tail = lines[-1][last_ok:]
                 lines[-1] = lines[-1][:last_ok]
-                lines.append(tail); w = sum(fnt.getlength(c) for c, _ in tail)
+                lines.append(tail); w = sum(glen(fnt, c) for c, _ in tail)
                 last_ok = None
         if ok and lines[-1]:
             last_ok = len(lines[-1])
@@ -103,7 +150,7 @@ def wrap(chars, fnt, max_w):
     if "\n" in plain:
         return _wrap_target(chars, fnt, max_w, None)
     pts = break_points(plain)
-    total = sum(fnt.getlength(c) for c, _ in chars)
+    total = sum(glen(fnt, c) for c, _ in chars)
     n0 = max(1, math.ceil(total / max_w))
     for n in range(n0, n0 + 4):
         target = total / n + fnt.size * 0.6
@@ -121,10 +168,11 @@ def rich_text(text, size, max_w=980, fill=(255, 255, 255), hi=(255, 214, 0), str
               stroke_fill=(0, 0, 0), weight="Black", spacing=1.25, shadow=False):
     """Render text ("[...]" = highlight) to a tight RGBA image, centered lines."""
     f = font(size, weight)
+    text = text.replace("\ufe0f", "").replace("\u200d", "")
     chars = parse_marked(text, tuple(fill), tuple(hi))
     lines = wrap(chars, f, max_w)
     lh = int(size * spacing)
-    widths = [sum(f.getlength(c) for c, _ in l) for l in lines]
+    widths = [sum(glen(f, c) for c, _ in l) for l in lines]
     pad = stroke + 8 + (8 if shadow else 0)
     img_w = int(max(widths) + pad * 2)
     img_h = int(lh * (len(lines) - 1) + size * 1.2 + pad * 2)
@@ -141,14 +189,22 @@ def rich_text(text, size, max_w=980, fill=(255, 255, 255), hi=(255, 214, 0), str
             x = (img_w - widths[li]) / 2
             y = pad + li * lh - size * 0.08
             for ch, col in line:
+                if is_emoji(ch):
+                    if kind == "fill":
+                        e = emoji(ch, int(size * 0.95))
+                        img.paste(e, (int(x + (size * 1.05 - e.width) / 2), int(y + size * 0.2)), e)
+                    x += size * 1.05
+                    continue
+                cf = font_for(f, ch)
+                yy = y + (size * 0.12 if cf is not f else 0)
                 if kind == "shadow":
-                    d.text((x + off, y + off), ch, font=f, fill=(0, 0, 0, 140),
+                    d.text((x + off, yy + off), ch, font=cf, fill=(0, 0, 0, 140),
                            stroke_width=stroke, stroke_fill=(0, 0, 0, 140))
                 elif kind == "stroke":
-                    d.text((x, y), ch, font=f, fill=stroke_fill, stroke_width=stroke, stroke_fill=stroke_fill)
+                    d.text((x, yy), ch, font=cf, fill=stroke_fill, stroke_width=stroke, stroke_fill=stroke_fill)
                 else:
-                    d.text((x, y), ch, font=f, fill=col)
-                x += f.getlength(ch)
+                    d.text((x, yy), ch, font=cf, fill=col)
+                x += cf.getlength(ch)
     return img
 
 
@@ -265,6 +321,9 @@ class NumberLayer(Layer):
     def __init__(self, spec, theme, seed=0):
         super().__init__(spec, theme, seed)
         self.value = spec["value"]
+        unit = spec.get("unit", "")
+        self.count = spec.get("count", not (unit.startswith("年") and isinstance(self.value, (int, float))
+                                            and self.value > 1000))
         self.unit = rich_text(spec.get("unit", ""), 130, stroke=10, fill=self.accent) if spec.get("unit") else None
         self.label = rich_text(spec.get("label", ""), 66, 900, stroke=0, fill=(30, 30, 30), hi=(220, 30, 60))
         self.pill = rounded((self.label.width + 70, self.label.height + 30), 50, (255, 255, 255, 240))
@@ -272,7 +331,9 @@ class NumberLayer(Layer):
 
     def num_img(self, s):
         if s not in self.cache:
-            self.cache[s] = rich_text(s, 360, stroke=14, fill=self.accent, shadow=True, spacing=1.0)
+            im = rich_text(s, 360, max_w=5000, stroke=14, fill=self.accent, shadow=True, spacing=1.0)
+            limit = 900 - (self.unit.width if self.unit else 0)
+            self.cache[s] = scaled(im, min(1.0, limit / im.width))
         return self.cache[s]
 
     def frame(self, t, dur):
@@ -283,11 +344,14 @@ class NumberLayer(Layer):
         if isinstance(v, (int, float)):
             p = ease_out((t - 0.1) / 0.9)
             cur = v * p
-            s = f"{cur:,.0f}" if float(v).is_integer() else f"{cur:,.1f}"
+            if not self.count:
+                cur = v
+            sep = "," if abs(v) >= 10000 else ""
+            s = f"{cur:{sep}.0f}" if float(v).is_integer() else f"{cur:{sep}.1f}"
         else:
             s = str(v)
         n = self.num_img(s)
-        k = ease_back((t - 0.1) / 0.5) if not isinstance(v, (int, float)) else 1 + 0.08 * (1 - ease_out((t - 1.0) / 0.3)) * (t > 1.0)
+        k = ease_back((t - 0.1) / 0.5) if not (isinstance(v, (int, float)) and self.count) else 1 + 0.08 * (1 - ease_out((t - 1.0) / 0.3)) * (t > 1.0)
         n = scaled(n, max(0.01, k))
         uw = self.unit.width if self.unit else 0
         cx = W / 2 - uw / 2
@@ -372,19 +436,27 @@ class PieLayer(Layer):
         tot = sum(s["value"] for s in self.segs)
         self.fracs = [s["value"] / tot for s in self.segs]
         self.center = rich_text(spec.get("center", ""), 120, stroke=8, fill=self.accent)
+        texts = [rich_text(s.get("label", ""), 52, 5000, stroke=6) for s in self.segs]
+        # side by side when labels are short, otherwise one per line
+        self.vertical = len(texts) > 2 or any(t.width > 370 for t in texts)
+        self.R = 230 if self.vertical else 270
+        rw = 900 if self.vertical else 440
         self.legend = []
-        for s in self.segs:
-            row = Image.new("RGBA", (440, 80), (0, 0, 0, 0))
+        for s, txt in zip(self.segs, texts):
+            row = Image.new("RGBA", (rw, 80), (0, 0, 0, 0))
             d = ImageDraw.Draw(row)
             d.rounded_rectangle((0, 15, 50, 65), 10, fill=hex2rgb(s.get("color", "#ffffff")))
-            txt = rich_text(s.get("label", ""), 52, 380, stroke=6)
+            txt = scaled(txt, min(1.0, (rw - 70) / txt.width))
             row.paste(txt, (65, (80 - txt.height) // 2), txt)
+            if self.vertical:
+                row = row.crop((0, 0, 65 + txt.width, 80))
             self.legend.append(row)
 
     def frame(self, t, dur):
         im = self.background(t, dur)
-        R = 270
-        cy = CONTENT_CY - 70
+        R = self.R
+        n = len(self.legend)
+        cy = CONTENT_CY - (40 + 40 * n if self.vertical else 70)
         sweep = ease_out(t / 1.1) * 360
         layer = Image.new("RGBA", (R * 2 + 20, R * 2 + 20), (0, 0, 0, 0))
         d = ImageDraw.Draw(layer)
@@ -400,8 +472,11 @@ class PieLayer(Layer):
         paste_center(im, layer, W / 2, cy)
         paste_center(im, self.center, W / 2, cy, alpha=ease_out((t - 0.9) / 0.3))
         for i, row in enumerate(self.legend):
-            x = W / 2 + (i - (len(self.legend) - 1) / 2) * 460
-            paste_center(im, row, x, cy + R + 90, alpha=ease_out((t - 0.4 - i * 0.2) / 0.3))
+            a = ease_out((t - 0.4 - i * 0.2) / 0.3)
+            if self.vertical:
+                paste_center(im, row, W / 2, cy + R + 80 + i * 85, alpha=a)
+            else:
+                paste_center(im, row, W / 2 + (i - (n - 1) / 2) * 460, cy + R + 90, alpha=a)
         return im
 
 

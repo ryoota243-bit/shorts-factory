@@ -82,12 +82,14 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
 - シーン数5〜7、ナレーション合計200〜300文字。1シーンのナレーションは1〜2文。
 - ナレーションは話し言葉。強調したい語句は [ ] で囲む（各シーン1か所まで）。
 - 各シーンに映像を指定:
-  photo（実写写真。英語の検索語 query と、AI生成用の英語 ai_prompt も書く）/
+  photo（実写写真。query は素材サイトで確実に見つかる一般的な英語2〜3語。固有名詞・年代・型番は使わず、
+  例: "IBM 1401" ではなく "vintage computer"。AI生成用の英語 ai_prompt も書く）/
   number（数字を大きく）/ compare（2つの比較）/ list（2〜4項目）/ pie（割合）/
   illustration（絵文字1〜2個＋短い文字）/ text（大きな文字）。
   photo は全体の3〜4割、図解系（number/compare/list/pie）を最低2つ入れる。
 - 画面上部のタイトル（title）は15文字以内、[ ]で1か所強調。
 - youtube_title は末尾に #雑学 #shorts。description は2〜3行＋ハッシュタグ。
+- 画面に出す文字（text, label, items の text など）に絵文字は入れない。絵文字は emoji 欄だけに。
 - 読み間違えやすい語（数字＋助数詞、難読語）は pronunciations に読みをひらがなで。
 
 最後に、使った事実・数字と出典URLを箇条書きでまとめてください。"""

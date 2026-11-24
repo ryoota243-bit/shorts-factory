@@ -31,8 +31,14 @@ def main():
     today = dt.datetime.now(JST).strftime("%Y-%m-%d")
     made = []
 
+    used = {h["name"] for h in history} | {p.stem for p in archive.glob("*.json")}
+    n = 0
     for i in range(a.count):
-        name = f"{today}_{i + 1:02d}"
+        n += 1
+        while f"{today}_{n:02d}" in used:
+            n += 1
+        name = f"{today}_{n:02d}"
+        used.add(name)
         queue = sorted(queue_dir.glob("*.json"))
         if queue:
             script = json.loads(queue[0].read_text(encoding="utf-8"))
