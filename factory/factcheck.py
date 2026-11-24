@@ -16,11 +16,16 @@ web検索で信頼できる情報源（公的機関・大学・百科事典・�
   諸説あるものの断定）
 - 図解の使い方が内容と合っているか（pie は全体に対する割合のときだけ）
 - sources が主張を裏付けているか
+- 数字どうしの整合性（例: 昼＋夜の合計が1周の時間と合うか、ナレーションと画面の数字が一致するか）
+- 写真・AI画像の指定（query / ai_prompt）が、特定の機体・建物・場所の正確な見た目を必要としていないか
+  （必要なら一般的な情景に変える）
 
 # 手順
 1. 主張ごとに確認し、誤り・不確かな点と修正案を挙げる。
 2. 修正を反映した台本全体を書き直して示す。元の構成・シーン数・長さ・語り口（物語性やオチ）は
-   できるだけ保つ（1シーン目の映像は photo か ai のまま）。数字・英字は半角。確認できない主張は削るか、断定しない表現にする。出典URLは確認に使ったものに更新する。
+   できるだけ保つ（1シーン目の映像は photo か ai のまま）。数字・英字は半角。確認できない主張は削るか、断定しない表現にする（「公開前に要確認」のような保留は残さない）。
+   画面の文字数の上限（compare の value 6文字・note 12文字、pie の center 6文字、list の text 14文字、
+   1シーンのナレーション45文字）を守る。出典URLは確認に使ったものに更新する。
 3. 最後に「## 校閲メモ」という見出しを付け、直した点を1行ずつ箇条書き（直す点がなければ「- 修正なし」）。
 
 # 台本
@@ -31,7 +36,7 @@ def check(script_model):
     """Return (fixed Script, list of review notes)."""
     client = anthropic.Anthropic()
     payload = json.dumps(script_model.model_dump(), ensure_ascii=False, indent=1)
-    report = research(client, CHECK_PROMPT.format(script=payload))
+    report = research(client, CHECK_PROMPT.format(script=payload), max_uses=14)
     notes = []
     m = re.search(r"##\s*校閲メモ\s*\n(.*)", report, re.S)
     if m:

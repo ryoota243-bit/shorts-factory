@@ -77,7 +77,8 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
 - 構成: 1シーン目は強いフック（疑問や意外性）で、映像は photo か ai の印象的な画像にする。2〜6シーン目で事実を順に説明。最後は短いオチ。
   フォローの呼びかけは不要（自動で追加される）。
 - 同じ結論や同じ言い回しを2回繰り返さない。数字・英字は半角で書く。
-- シーン数5〜7、ナレーション合計200〜300文字。1シーンのナレーションは1〜2文。
+- シーン数5〜8、ナレーション合計200〜300文字。1シーンのナレーションは1〜2文・45文字以内
+  （長くなるならシーンを分ける。同じ画面が6秒以上続かないように）。
 - ナレーションは話し言葉。強調したい語句は [ ] で囲む（各シーン1か所まで）。
 - 各シーンに映像を指定:
   photo（素材サイトの実写写真。どこにでもある一般的なモノ・風景・動物向け。query は確実に見つかる
@@ -93,7 +94,9 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
 - youtube_title は末尾に #雑学 #shorts。description は2〜3行＋ハッシュタグ。
 - number の label は数字の説明として単独で意味が通る見出しにする（例「対象年齢」「必要な空気量」。
   「までの〜」「以上の〜」のように数字の続きから始めない）。
-- 画面の文字は短く: compare の label は8文字・value は6文字・note は14文字まで、
+- 写真や AI 画像は、特定の機体・建物・場所の正確な見た目が必要なもの（例: 国際宇宙ステーション、特定の滝）は
+  避け、一般的な情景（例: 宇宙から見た地球と日の出、熱帯雨林の川）にする。
+- 画面の文字は短く: compare の label は8文字・value は6文字・note は12文字まで、
   pie の center は6文字まで（例「約3割」）、list の各 text は14文字まで、illustration/text の text は12文字まで。
 - 画面に出す文字（text, label, items の text など）に絵文字は入れない。絵文字は emoji 欄だけに。
 - pronunciations には、難読語・固有名詞・外国語の略語など読み間違えやすい語だけを、
@@ -120,9 +123,9 @@ def _text(msg):
     return "".join(b.text for b in msg.content if b.type == "text")
 
 
-def research(client, prompt):
+def research(client, prompt, max_uses=8):
     messages = [{"role": "user", "content": prompt}]
-    tools = [{"type": "web_search_20260209", "name": "web_search", "max_uses": 8}]
+    tools = [{"type": "web_search_20260209", "name": "web_search", "max_uses": max_uses}]
     for _ in range(5):
         msg = client.beta.messages.create(
             model=MODEL, max_tokens=16000, messages=messages, tools=tools,

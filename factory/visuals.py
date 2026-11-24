@@ -102,7 +102,7 @@ def glen(fnt, ch):
     return fnt.size * 1.05 if is_emoji(ch) else font_for(fnt, ch).getlength(ch)
 
 
-OPENERS = set("「『（(［[【〈《“‘")
+OPENERS = set("「『（(［[【〈《“‘・")
 ASCIIISH = re.compile(r"[0-9０-９A-Za-zＡ-Ｚａ-ｚ.,．，%％:/+\-]+")
 
 
@@ -120,7 +120,7 @@ def break_points(plain):
     for m in re.finditer(ASCIIISH.pattern + r"|[^0-9０-９A-Za-zＡ-Ｚａ-ｚ.,．，%％:/+\-]+", plain):
         seg = m.group(0)
         if ASCIIISH.fullmatch(seg):
-            if pos and prev not in ("接頭詞",) and not plain[:pos].endswith(("分の", "約", "第", "No.")):
+            if pos and prev not in ("接頭詞",) and not plain[:pos].endswith(("分の", "約", "第", "No.", "万", "億", "兆", "時速", "秒速", "分速")):
                 pts.add(pos)
             pos += len(seg); prev, prev_num = "名詞", True
             continue
@@ -430,7 +430,8 @@ class CompareLayer(Layer):
                 d.ellipse((CW / 2 - 75, 135, CW / 2 + 75, 285), fill=col)
             put(card, fit_text(it.get("value", ""), 120, 410, 190, fill=readable_on_white(col)), 300, 190)
             if it.get("note"):
-                put(card, fit_text(it["note"], 42, 400, 120, fill=(80, 80, 80), weight="Bold"), 500, 125)
+                put(card, fit_text(it["note"], 44, 400, 135, min_size=36, fill=(70, 70, 70), weight="Bold"),
+                    495, 135)
             self.cols.append(card)
         self.vs = rich_text(spec.get("vs", "VS"), 100, stroke=10, fill=self.accent, shadow=True)
 

@@ -25,6 +25,8 @@ def main():
     ap.add_argument("--writer", choices=["claude", "gemini", "gemini+claude"], default=cfg.get("script_writer", "claude"))
     ap.add_argument("--compare", action="store_true",
                     help="同じお題を Claude と Gemini の両方で台本化して2本ずつ作る")
+    ap.add_argument("--rerender", nargs="*", default=[],
+                    help="scripts/archive の既存台本で動画だけ作り直す（例: 2026-11-24_12）")
     a = ap.parse_args()
     gemini.configure(cfg)
 
@@ -53,7 +55,18 @@ def main():
         except Exception as e:  # keep going with the next video
             print(f"[daily] render failed for {name}: {e}")
 
-    for i in range(a.count):
+    for name in a.rerender:  # re-render existing scripts with the latest code (no new script cost)
+        path = archive / f"{name}.json"
+        if not path.exists():
+            print(f"[daily] no such script: {name}")
+            continue
+        try:
+            render(path, cfg, ROOT, out)
+            made.append(name)
+        except Exception as e:
+            print(f"[daily] render failed for {name}: {e}")
+
+    for i in range(0 if a.rerender else a.count):
         seed = dt.date.today().toordinal() * 10 + i + len(history)
         recent = [h.get("category") for h in history[-6:] if h.get("category")]
         queue = sorted(queue_dir.glob("*.json"))

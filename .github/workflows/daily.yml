@@ -8,6 +8,9 @@ on:
       count:
         description: "作るお題の数"
         default: "1"
+      rerender:
+        description: "作り直す台本名（空白区切り、例: 2026-11-24_12 2026-11-24_13）。指定時は新規作成しない"
+        default: ""
       compare:
         description: "比較モード（同じお題を Claude と Gemini の両方で台本化）"
         type: boolean
@@ -59,6 +62,7 @@ jobs:
         run: |
           args="--count ${{ github.event.inputs.count || 1 }}"
           [ "${{ github.event.inputs.compare }}" = "true" ] && args="$args --compare"
+          [ -n "${{ github.event.inputs.rerender }}" ] && args="$args --rerender ${{ github.event.inputs.rerender }}"
           python daily.py $args
 
       - name: Save scripts and history

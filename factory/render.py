@@ -31,6 +31,15 @@ def normalize(obj):
     return obj
 
 
+JA = r"[ぁ-んァ-ヶー一-龯々〆、。！？「」『』（）\[\]]"
+
+
+def tidy(text):
+    """Drop spaces next to Japanese characters/brackets; keep spaces between latin words."""
+    text = re.sub(rf"\s+(?={JA})", "", text)
+    return re.sub(rf"(?<={JA})\s+", "", text).strip()
+
+
 MAX_CHUNK = 24
 
 
@@ -105,7 +114,8 @@ def subtitle_text(chunk):
 
 def make_layer(scene, theme, seed, cfg, root, credits, fps):
     v = dict(scene.get("visual") or {"type": "text", "text": scene.get("caption", "")})
-    found = assets.resolve(v, cfg, root / "cache", root)
+    found = assets.resolve(v, cfg, root / "cache", root,
+                           narration=re.sub(r"[\[\]]", "", scene.get("narration", "")))
     if found:
         credits.append(found["credit"])
         if found["kind"] == "video":
@@ -128,6 +138,8 @@ def render(script_path, cfg, root, out_dir):
     t0 = time.time()
     root = Path(root)
     script = normalize(json.loads(Path(script_path).read_text(encoding="utf-8")))
+    for sc in script["scenes"]:  # "約 [16回] も" -> "約[16回]も" (spaces break word detection)
+        sc["narration"] = tidy(sc.get("narration", ""))
     name = Path(script_path).stem
     theme = {**DEFAULT_THEME, **script.get("theme", {})}
     prons = {**cfg.get("pronunciations", {}), **script.get("pronunciations", {})}
@@ -166,6 +178,13 @@ def render(script_path, cfg, root, out_dir):
         voice_parts.append(np.zeros(int(tail * SR), np.float32)); t += tail
         scenes_t.append((start, t))
     total = t
+    # keep each subtitle on screen through short pauses (no blank flicker between lines)
+    held = []
+    for i, (a, b, txt) in enumerate(subs):
+        scene_end = next(e for st, e in scenes_t if st <= a < e)
+        nxt = subs[i + 1][0] if i + 1 < len(subs) else total
+        held.append((a, min(scene_end, nxt) - 0.02 if min(scene_end, nxt) - b < 0.8 else b + 0.1, txt))
+    subs = held
     voice = np.concatenate(voice_parts)
     voice = voice / (np.abs(voice).max() + 1e-9) * 0.9
 
@@ -220,6 +239,11 @@ def render(script_path, cfg, root, out_dir):
             si += 1
         s0, s1 = scenes_t[si]
         img = layers[si].frame(tt - s0, s1 - s0)
+        if not isinstance(layers[si], (V.PhotoLayer, V.VideoLayer)):  # slow push-in keeps diagrams alive
+            z = 1 + 0.04 * (tt - s0) / max(s1 - s0, 0.1)
+            cw, ch = int(V.W / z), int(V.H / z)
+            x0, y0 = (V.W - cw) // 2, (V.H - ch) // 2
+            img = img.crop((x0, y0, x0 + cw, y0 + ch)).resize((V.W, V.H), Image.BILINEAR)
         if si > 0 and tt - s0 < XFADE and prev_last is not None:
             img = Image.blend(prev_last, img, (tt - s0) / XFADE)
         if si < len(scenes_t) - 1 and s1 - tt <= 1.5 / fps:
@@ -228,7 +252,7 @@ def render(script_path, cfg, root, out_dir):
         if script.get("title"):
             img.paste(band, ((V.W - band.width) // 2, 150), band)
         for a, b, s in subs:
-            if a - 0.05 <= tt < b + 0.1:
+            if a - 0.05 <= tt < b:
                 si_img = sub_img(s)
                 k = 0.88 + 0.12 * V.ease_back((tt - a + 0.05) / 0.15)
                 V.paste_center(img, V.scaled(si_img, k), V.W / 2, 1330)
