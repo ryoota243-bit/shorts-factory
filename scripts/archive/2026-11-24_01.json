@@ -1,109 +1,129 @@
 {
-  "title": "タコの体の[ヤバい秘密]3選",
-  "youtube_title": "タコの体のヤバい秘密3選 #雑学 #shorts",
-  "description": "タコの心臓・血・腕に隠された驚きの事実を紹介！\n#雑学 #豆知識 #タコ #生き物",
+  "topic": "プチプチはもともと壁紙として発明された",
+  "category": "身近なモノ",
+  "title": "プチプチの正体は[壁紙]？",
+  "youtube_title": "プチプチ、実は失敗した壁紙だった!? #雑学 #shorts",
+  "description": "荷物を守るおなじみのプチプチ。実は最初は「壁紙」として発明されたものでした。\n大失敗から世界中で使われる梱包材になるまでを、40秒で紹介します。\n#雑学 #豆知識 #プチプチ #発明 #身近なモノ #shorts",
   "tags": [
     "雑学",
     "豆知識",
-    "タコ",
-    "生き物"
+    "プチプチ",
+    "発明",
+    "身近なモノ",
+    "shorts"
   ],
   "theme": {
     "bg": [
-      "#0f2027",
-      "#2c5364"
+      "#0F2A3D",
+      "#1B3B2F"
     ],
-    "accent": "#ffd600"
+    "accent": "#4FE3C1"
   },
   "pronunciations": {
-    "3分の2": "さんぶんのに",
-    "1つ": "ひとつ",
-    "2つ": "ふたつ"
+    "1957年": "せんきゅうひゃくごじゅうななねん",
+    "2人": "ふたり",
+    "凹凸": "おうとつ",
+    "2枚": "にまい",
+    "400以上": "よんひゃくいじょう",
+    "温室": "おんしつ",
+    "1401": "せんよんひゃくいち",
+    "梱包材": "こんぽうざい",
+    "約6割": "やくろくわり"
   },
   "scenes": [
     {
-      "narration": "タコの体には、[とんでもない秘密]が隠されているんです。",
+      "narration": "荷物を守るあのプチプチ、実はもともと[壁紙]として発明されたって知ってた？",
       "visual": {
         "type": "photo",
-        "query": "octopus",
-        "ai_prompt": "A cute red octopus underwater, cinematic light",
+        "query": "bubble wrap close up",
+        "ai_prompt": "Close-up photo of transparent bubble wrap sheet with soft natural light, shallow depth of field, clean background",
         "fallback": {
           "type": "illustration",
-          "emoji": "🐙",
-          "text": "タコの秘密"
+          "emoji": "🫧",
+          "text": "プチプチ＝壁紙？"
         }
       }
     },
     {
-      "narration": "まずひとつ目。タコには、なんと[心臓が3つ]あります。",
+      "narration": "1957年、アメリカの技術者2人が、凹凸のあるおしゃれな壁紙を作ろうとしていました。",
       "visual": {
         "type": "number",
-        "value": 3,
-        "unit": "つ",
-        "label": "タコの心臓の数"
+        "value": 1957,
+        "unit": "年",
+        "label": "凹凸のある壁紙を開発中"
       }
     },
     {
-      "narration": "全身に血液を送る心臓が1つ、えらに血液を送る心臓が2つ。役割を分担しているんです。",
+      "narration": "2枚のシャワーカーテンを熱で貼り合わせたら、[空気の泡]が閉じ込められたシートができたんです。",
+      "visual": {
+        "type": "photo",
+        "query": "plastic sheet air bubbles heat sealing",
+        "ai_prompt": "Vintage 1950s workshop, two engineers examining a clear plastic sheet filled with small trapped air bubbles, retro film photo style",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🚿",
+          "text": "シャワーカーテン2枚を貼り合わせ"
+        }
+      }
+    },
+    {
+      "narration": "でも壁紙としては大失敗。400以上の使い道を考え、温室の断熱材も試しましたが、これも[不発]でした。",
       "visual": {
         "type": "list",
         "items": [
           {
-            "emoji": "❤️",
-            "text": "全身に送る心臓 × [1]"
+            "emoji": "🧱",
+            "text": "壁紙 → ✕"
           },
           {
-            "emoji": "🫁",
-            "text": "えらに送る心臓 × [2]"
+            "emoji": "🌱",
+            "text": "温室の断熱材 → ✕"
+          },
+          {
+            "emoji": "💡",
+            "text": "考えた用途 400以上"
           }
         ]
       }
     },
     {
-      "narration": "ふたつ目。タコの血は[青い]んです。酸素を運ぶ成分に、鉄ではなく[銅]が使われているからです。",
+      "narration": "転機はIBMの新型コンピューター1401。輸送中に壊れないよう、[梱包材]として使われたんです。",
       "visual": {
-        "type": "compare",
-        "items": [
-          {
-            "label": "人間",
-            "value": "赤",
-            "color": "#e53935",
-            "note": "鉄（ヘモグロビン）"
-          },
-          {
-            "label": "タコ",
-            "value": "青",
-            "color": "#1e88e5",
-            "note": "銅（ヘモシアニン）"
-          }
-        ]
+        "type": "photo",
+        "query": "IBM 1401 computer",
+        "ai_prompt": "Vintage early 1960s mainframe computer being carefully wrapped in bubble wrap for shipping in a warehouse, retro photo style",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "💻",
+          "text": "IBM 1401の梱包材に"
+        }
       }
     },
     {
-      "narration": "みっつ目。タコの神経細胞の、[約3分の2]は腕にあります。",
+      "narration": "ちなみに日本の「プチプチ」は、あるメーカーの登録商標。そのメーカーは業界シェア[約6割]です。",
       "visual": {
         "type": "pie",
-        "center": "約2/3",
+        "center": "約6割",
         "segments": [
           {
-            "label": "腕",
-            "value": 2,
-            "color": "#ffb300"
+            "label": "「プチプチ」のメーカー",
+            "value": 60.0,
+            "color": "#4FE3C1"
           },
           {
-            "label": "脳など",
-            "value": 1,
-            "color": "#90a4ae"
+            "label": "その他",
+            "value": 40.0,
+            "color": "#5A6B7A"
           }
         ]
       }
     },
     {
-      "narration": "そのため腕は、脳の指示を待たずに、ある程度[自分で判断して]動けるといわれています。",
+      "narration": "失敗した壁紙が、世界中の荷物を守る[ヒーロー]になったわけです。",
       "visual": {
         "type": "illustration",
-        "emoji": "🧠",
-        "text": "腕が自分で考える？"
+        "emoji": "📦🦸",
+        "text": "失敗作 → ヒーロー"
       }
     },
     {
@@ -115,5 +135,11 @@
       },
       "hold": 0.8
     }
+  ],
+  "sources": [
+    "https://www.sealedair.com/products/brand/bubble-wrap",
+    "https://www.smithsonianmag.com/innovation/accidental-invention-bubble-wrap-180971325/",
+    "https://kahoku.news/entertainment/ori2483705.html",
+    "https://www.orix.co.jp/grp/move_on/entry/2025/12/17/100000"
   ]
 }
