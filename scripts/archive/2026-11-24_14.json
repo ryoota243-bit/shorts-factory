@@ -50,21 +50,15 @@
     {
       "narration": "これはゾウ[約100頭分]。世界最大の旅客機A380の最大離陸重量、575トンに迫る重さです。",
       "visual": {
-        "type": "compare",
+        "type": "list",
         "items": [
           {
-            "label": "積雲の水",
-            "value": "約500t",
-            "color": "#38bdf8",
-            "note": "縦横高さ1kmの場合",
-            "emoji": "☁️"
+            "emoji": "🐘",
+            "text": "ゾウ約100頭分"
           },
           {
-            "label": "ゾウ",
-            "value": "約100頭",
-            "color": "#f59e0b",
-            "note": "1頭5t換算",
-            "emoji": "🐘"
+            "emoji": "✈️",
+            "text": "A380(575t)に迫る"
           }
         ]
       }

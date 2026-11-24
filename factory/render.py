@@ -211,7 +211,7 @@ def render(script_path, cfg, root, out_dir):
             s0, s1 = scenes_t[i]
             key = re.sub(r"\.0$", "", str(layer.value))
             hit = next((a for a, b, txt in subs if s0 <= a < s1 and key in txt.replace(",", "")), None)
-            if hit is not None and hit - s0 > 0.6:
+            if hit is not None and 0.6 < hit - s0 <= 2.5:  # a long "?" looks broken
                 layer.delay = hit - s0
     title = V.rich_text(script.get("title", ""), 76, 960, hi=V.hex2rgb(theme["accent"]), stroke=0)
     band = V.rounded((min(1040, title.width + 70), title.height + 40), 30, (0, 0, 0, 170))
@@ -254,6 +254,9 @@ def render(script_path, cfg, root, out_dir):
         for a, b, s in subs:
             if a - 0.05 <= tt < b:
                 si_img = sub_img(s)
+                if isinstance(layers[si], (V.PhotoLayer, V.VideoLayer)):  # dark backing on busy photos
+                    box = V.rounded((min(V.W - 20, si_img.width + 40), si_img.height + 10), 28, (0, 0, 0, 110))
+                    img.paste(box, ((V.W - box.width) // 2, int(1330 - box.height / 2)), box)
                 k = 0.88 + 0.12 * V.ease_back((tt - a + 0.05) / 0.15)
                 V.paste_center(img, V.scaled(si_img, k), V.W / 2, 1330)
                 break

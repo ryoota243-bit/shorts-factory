@@ -130,7 +130,7 @@ def break_points(plain):
         for f in feats:
             attach = (f["pos"] in ("助詞", "助動詞", "記号") or f.get("pos_group1") in ("接尾", "非自立")
                       or prev == "接頭詞" or prev_num or (prev_g1 == "サ変接続" and f["pos"] == "動詞")
-                      or (prev_str == "と" and f["string"].startswith("し"))
+                      or (prev_str == "と" and f["string"][:1] in ("し", "い", "言"))
                       or (prev == "名詞" and f["pos"] == "名詞" and noun_run < 7
                           and f.get("pos_group1") not in ("代名詞",) and prev_g1 not in ("代名詞",)))
             if pos and not attach and f["string"][0] not in NO_HEAD:
@@ -405,7 +405,7 @@ def fit_text(text, size, max_w, max_h, min_size=24, **kw):
 
 def readable_on_white(rgb):
     lum = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255
-    return rgb if lum < 0.7 else tuple(int(c * 0.55) for c in rgb)
+    return rgb if lum < 0.5 else tuple(int(c * 0.5 / lum) for c in rgb)
 
 
 class CompareLayer(Layer):
@@ -430,8 +430,11 @@ class CompareLayer(Layer):
                 d.ellipse((CW / 2 - 75, 135, CW / 2 + 75, 285), fill=col)
             put(card, fit_text(it.get("value", ""), 120, 410, 190, fill=readable_on_white(col)), 300, 190)
             if it.get("note"):
-                put(card, fit_text(it["note"], 44, 400, 135, min_size=36, fill=(70, 70, 70), weight="Bold"),
-                    495, 135)
+                note = fit_text(it["note"], 44, 400, 135, min_size=40, fill=(70, 70, 70), weight="Bold")
+                if note.height >= 40 * 0.9:   # still readable on a phone; otherwise leave it out
+                    put(card, note, 495, 135)
+                else:
+                    print(f"  [visuals] compare note too long, omitted: {it['note']}")
             self.cols.append(card)
         self.vs = rich_text(spec.get("vs", "VS"), 100, stroke=10, fill=self.accent, shadow=True)
 
