@@ -2,5 +2,9 @@
   "A380": {
     "reading": "エーサンハチマル",
     "accent_type": 5
+  },
+  "ISO11540": {
+    "reading": "アイエスオーイチイチゴーヨンゼロ",
+    "accent_type": 15
   }
 }
