@@ -93,7 +93,8 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
 - 画面の文字は短く: compare の label は8文字・value は6文字・note は14文字まで、
   pie の center は6文字まで（例「約3割」）、list の各 text は14文字まで、illustration/text の text は12文字まで。
 - 画面に出す文字（text, label, items の text など）に絵文字は入れない。絵文字は emoji 欄だけに。
-- 読み間違えやすい語（数字＋助数詞、難読語）は pronunciations に読みをひらがなで。
+- pronunciations には、難読語・固有名詞・外国語の略語など読み間違えやすい語だけを、
+  ひらがなの読みで入れる（一般的な語や「1年」「2回」のような数字は入れない。1文字の英字は入れない）。
 
 最後に、使った事実・数字と出典URLを箇条書きでまとめてください。"""
 

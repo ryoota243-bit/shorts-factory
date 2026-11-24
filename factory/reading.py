@@ -54,7 +54,7 @@ PROMPT = """以下は、日本語の文と、音声合成エンジン（VOICEVOX
 
 アクセントの違いだけのもの、自然な揺れ（「〜という」→トユウ 等）、記法上の違いは誤読に含めない。
 誤読がなければ fixes は空配列にしてください。
-
+{hints}
 {pairs}"""
 
 
@@ -103,20 +103,24 @@ def load_dictionary():
     return json.loads(DICT_FILE.read_text(encoding="utf-8")) if DICT_FILE.exists() else {}
 
 
-def _review(pairs):
+def _review(pairs, hints=None):
     import anthropic
     client = anthropic.Anthropic()
     listing = "\n".join(f"{i + 1}. 文: {t}\n   読み: {k}" for i, (t, k) in enumerate(pairs))
+    hint_text = ""
+    if hints:
+        hint_text = ("\n台本作者が想定している読み（参考。エンジンの読みが既にこれと同じなら直さない）:\n" +
+                     "\n".join(f"- {w}: {r}" for w, r in hints.items()) + "\n")
     res = client.messages.parse(
         model=MODEL, max_tokens=8000, output_format=Review, output_config={"effort": "medium"},
-        messages=[{"role": "user", "content": PROMPT.format(pairs=listing)}])
+        messages=[{"role": "user", "content": PROMPT.format(pairs=listing, hints=hint_text)}])
     if res.stop_reason == "refusal" or res.parsed_output is None:
         return []
     return [f for f in res.parsed_output.fixes
             if f.surface and KATAKANA.match(f.reading) and 0 <= f.accent_type <= len(f.reading)]
 
 
-def prepare(lines, cfg):
+def prepare(lines, cfg, hints=None):
     """Return {line: text_to_speak}. Only lines that need a change are included."""
     if cfg["tts"]["backend"] != "voicevox":
         return {}
@@ -142,7 +146,7 @@ def prepare(lines, cfg):
     learned = 0
     for round_ in range(2):
         pairs = [(out[l], eng.kana(out[l])) for l in lines]
-        fixes = _review(pairs)
+        fixes = _review(pairs, hints)
         if not fixes:
             break
         for f in fixes:
@@ -171,7 +175,7 @@ if __name__ == "__main__":
     print("before:")
     for l in lines:
         print(f"  {l}\n    {eng.kana(l)}")
-    changed = prepare(lines, cfg)
+    changed = prepare(lines, cfg, hints=json.loads(os.environ.get("HINTS", "{}")))
     print("after:")
     for l in lines:
         t = changed.get(l, l)

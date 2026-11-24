@@ -106,12 +106,17 @@ def render(script_path, cfg, root, out_dir):
     # ---- 1. narration audio + timeline ----
     print(f"[{name}] TTS ({cfg['tts']['backend']})...")
     tts.USED.clear()
-    spoken = [tts_text(ch, prons) for sc in script["scenes"] for ch in split_sentences(sc.get("narration", ""))]
-    try:
-        fixed = reading.prepare(spoken, cfg)
-    except Exception as e:
-        print(f"  [reading] check skipped: {e}")
-        fixed = {}
+    # With VOICEVOX, readings are checked against the engine (script pronunciations are only hints;
+    # blind text replacement broke word boundaries, e.g. 朝 read as チョウ). Other engines: replace.
+    use_check = cfg["tts"]["backend"] == "voicevox"
+    to_speak = (lambda ch: tts_text(ch, {})) if use_check else (lambda ch: tts_text(ch, prons))
+    spoken = [to_speak(ch) for sc in script["scenes"] for ch in split_sentences(sc.get("narration", ""))]
+    fixed = {}
+    if use_check:
+        try:
+            fixed = reading.prepare(spoken, cfg, hints=prons)
+        except Exception as e:
+            print(f"  [reading] check skipped: {e}")
     voice_parts, subs, scenes_t = [], [], []
     t = 0.0
     for si, sc in enumerate(script["scenes"]):
@@ -119,7 +124,7 @@ def render(script_path, cfg, root, out_dir):
         lead = 0.12 if si else 0.05
         voice_parts.append(np.zeros(int(lead * SR), np.float32)); t += lead
         for ch in split_sentences(sc.get("narration", "")):
-            line = tts_text(ch, prons)
+            line = to_speak(ch)
             a = tts.synth(fixed.get(line, line), cfg)
             subs.append((t, t + len(a) / SR, subtitle_text(ch)))
             voice_parts.append(a); t += len(a) / SR
