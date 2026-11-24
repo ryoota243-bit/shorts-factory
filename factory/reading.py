@@ -27,6 +27,7 @@ KATAKANA = re.compile(r"^[ァ-ヴー]+$")
 
 
 class Fix(BaseModel):
+    line: int
     surface: str
     reading: str
     accent_type: int
@@ -46,6 +47,7 @@ PROMPT = """以下は、日本語の文と、音声合成エンジン（VOICEVOX
 - 固有名詞・外来語・アルファベット略語の誤読、送り仮名の誤読
 
 各誤読について:
+- line: その誤読があった文の番号
 - surface: 誤読された語を文中の表記どおりに。できるだけ短い単語単位で。
 - reading: その surface 全体の正しい読み（全角カタカナのみ、記号なし）
 - accent_type: アクセント核の位置（0=平板、1=頭高、2=2拍目の後で下がる…）
@@ -159,7 +161,9 @@ def prepare(lines, cfg, hints=None):
                     continue
                 except Exception as e:
                     print(f"  [reading] dictionary add failed ({e}); replacing in text instead")
-            for l in lines:  # context-dependent, or still wrong after the dictionary fix
+            # context-dependent, or still wrong after the dictionary fix: only the flagged line
+            targets = [lines[f.line - 1]] if 1 <= f.line <= len(lines) else lines
+            for l in targets:
                 if f.surface in out[l]:
                     out[l] = out[l].replace(f.surface, _hira(f.reading))
     if learned:
