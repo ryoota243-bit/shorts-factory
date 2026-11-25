@@ -131,6 +131,7 @@ def break_points(plain):
             attach = (f["pos"] in ("助詞", "助動詞", "記号") or f.get("pos_group1") in ("接尾", "非自立")
                       or prev == "接頭詞" or prev_num or (prev_g1 == "サ変接続" and f["pos"] == "動詞")
                       or (prev_str == "と" and f["string"][:1] in ("し", "い", "言"))
+                      or (prev in ("形容詞", "連体詞") and f["pos"] == "名詞")
                       or (prev == "名詞" and f["pos"] == "名詞" and noun_run < 7
                           and f.get("pos_group1") not in ("代名詞",) and prev_g1 not in ("代名詞",)))
             if pos and not attach and f["string"][0] not in NO_HEAD:
@@ -456,7 +457,7 @@ class CompareLayer(Layer):
             col = hex2rgb(it.get("color", "#333333"))
             card = rounded((CW, CH), 40, (255, 255, 255, 235))
             d = ImageDraw.Draw(card)
-            put(card, fit_text(it.get("label", ""), 64, 400, 100, fill=(40, 40, 40)), 20, 100)
+            put(card, fit_text(it.get("label", ""), 64, 410, 112, min_size=46, fill=(40, 40, 40)), 16, 112)
             if it.get("emoji"):
                 put(card, emoji(it["emoji"], 150), 130, 160)
             else:

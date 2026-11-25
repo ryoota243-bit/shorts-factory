@@ -117,10 +117,10 @@ def subtitle_text(chunk):
     return chunk.rstrip("。")
 
 
-def make_layer(scene, theme, seed, cfg, root, credits, fps):
+def make_layer(scene, theme, seed, cfg, root, credits, fps, topic=""):
     v = dict(scene.get("visual") or {"type": "text", "text": scene.get("caption", "")})
     found = assets.resolve(v, cfg, root / "cache", root,
-                           narration=re.sub(r"[\[\]]", "", scene.get("narration", "")))
+                           narration=re.sub(r"[\[\]]", "", scene.get("narration", "")), topic=topic)
     if found:
         credits.append(found["credit"])
         if found["kind"] == "video":
@@ -241,7 +241,8 @@ def render(script_path, cfg, root, out_dir):
 
     # ---- 3. layers / overlays ----
     credits = []
-    layers = [make_layer(sc, theme, seed + i, cfg, root, credits, fps) for i, sc in enumerate(script["scenes"])]
+    topic = re.sub(r"[\[\]]", "", f"{script.get('title', '')} / {script.get('topic', '')}")
+    layers = [make_layer(sc, theme, seed + i, cfg, root, credits, fps, topic) for i, sc in enumerate(script["scenes"])]
     for i, layer in enumerate(layers):  # reveal numbers when the narration says them
         if isinstance(layer, V.NumberLayer):
             s0, s1 = scenes_t[i]

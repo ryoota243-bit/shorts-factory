@@ -97,7 +97,7 @@ def _candidates(src, v, cfg, cache, root, want_video):
             yield r
 
 
-def resolve(v, cfg, cache, root, narration=""):
+def resolve(v, cfg, cache, root, narration="", topic=""):
     """Return {"kind": "image"|"video", "path", "credit"} or None.
 
     Every stock/AI candidate is checked by Claude against the narration; a mismatch moves on
@@ -114,14 +114,14 @@ def resolve(v, cfg, cache, root, narration=""):
             for cand in _candidates(src, v, cfg, cache, root, want_video):
                 if cand.get("trusted"):
                     return cand
-                ok, why = check(cand["path"], narration, want)
+                ok, why = check(cand["path"], narration, want, topic)
                 if ok:
                     return cand
                 print(f"  [assets] rejected {src} image: {why}")
                 if src == "ai":
                     retry = _ai(v, cfg, cache, avoid=f"The previous image was wrong: {why}. "
                                                     "Depict the subject accurately and generically.")
-                    if retry and check(retry["path"], narration, want)[0]:
+                    if retry and check(retry["path"], narration, want, topic)[0]:
                         return retry
                     print("  [assets] AI retry also rejected")
         except Exception as e:  # network/API errors -> try next source

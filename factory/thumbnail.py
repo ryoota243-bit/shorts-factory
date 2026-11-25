@@ -32,7 +32,8 @@ def build(script, theme, cfg, root, layers, out_png):
         v = {"type": "ai", "ai_prompt": prompt + ". Dramatic, high contrast, bold close-up subject, "
                                                  "uncluttered middle area, vertical poster composition"}
         try:
-            found = assets.resolve(v, cfg, root / "cache", root, narration=f"サムネイル: {plain}")
+            found = assets.resolve(v, cfg, root / "cache", root, narration=f"サムネイル: {plain}",
+                                   topic=re.sub(r"[\[\]]", "", f"{script.get('title', '')} / {script.get('topic', '')}"))
             if found and found["kind"] == "image":
                 bg, credit = Image.open(found["path"]).convert("RGB"), found["credit"]
         except Exception as e:
