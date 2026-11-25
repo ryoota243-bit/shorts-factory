@@ -219,6 +219,14 @@ def render(script_path, cfg, root, out_dir):
     env = np.convolve((env > 0.02).astype(np.float32), np.ones(9600) / 9600, mode="same")
     vol = cfg["bgm"]["volume"]
     mix = voice + music * vol * (1 - 0.45 * env)
+    beats = []
+    for a, b, txt in subs:
+        if "[" in txt and a > 3.0 and (not beats or a - beats[-1] >= 1.5):
+            beats.append(a)
+    print(f"  [beats] {', '.join(f'{b:.1f}s' for b in beats) or 'none'}")
+    tk = bgm.tick() * 0.16
+    for a in beats:  # soft accent on emphasised words
+        s_ = int(a * SR); mix[s_:s_ + len(tk)] += tk[: max(0, min(len(tk), n - s_))]
     hit = bgm.impact() * 0.55  # opening impact
     mix[: len(hit)] += hit[: len(mix)]
     pop = bgm.pop() * 0.25
@@ -296,8 +304,13 @@ def render(script_path, cfg, root, out_dir):
             si += 1
         s0, s1 = scenes_t[si]
         img = layers[si].frame(tt - s0, s1 - s0)
+        z = 1.0
         if not isinstance(layers[si], (V.PhotoLayer, V.VideoLayer)):  # slow push-in keeps diagrams alive
             z = 1 + 0.04 * max(0.0, tt - s0) / max(s1 - s0, 0.1)
+        bt = next((tt - a for a in beats if 0 <= tt - a < 0.45), None)
+        if bt is not None:  # "beat": quick 3 % punch-in when an emphasised word appears
+            z *= 1 + 0.03 * math.sin(math.pi * bt / 0.45)
+        if z > 1.0001:
             cw, ch = V.W / z, V.H / z
             img = V.view(img, (V.W - cw) / 2, (V.H - ch) / 2, cw, ch)  # sub-pixel: no jitter
         if si > 0 and tt - s0 < XFADE and prev_last is not None:
@@ -325,8 +338,14 @@ def render(script_path, cfg, root, out_dir):
                 if isinstance(layers[si], (V.PhotoLayer, V.VideoLayer)):  # dark backing on busy photos
                     box = V.rounded((min(V.W - 20, si_img.width + 40), si_img.height + 10), 28, (0, 0, 0, 110))
                     img.paste(box, ((V.W - box.width) // 2, int(1330 - box.height / 2)), box)
-                k = 0.88 + 0.12 * V.ease_back((tt - a + 0.05) / 0.15)
-                V.paste_center(img, V.scaled(si_img, k), V.W / 2, 1330)
+                if "[" in s and a in beats:  # emphasised line lands a little bigger, then settles
+                    k = 1.0 + 0.2 * (1 - V.ease_out((tt - a + 0.05) / 0.25))
+                else:
+                    k = 0.88 + 0.12 * V.ease_back((tt - a + 0.05) / 0.15)
+                if abs(k - 1) > 0.002:
+                    V.place(img, si_img, V.W / 2, 1330, k)
+                else:
+                    V.paste_center(img, si_img, V.W / 2, 1330)
                 break
         proc.stdin.write(img.tobytes())
     proc.stdin.close()

@@ -110,3 +110,10 @@ def impact(sr=SR, seed=1):
     crack[:n] = rng.standard_normal(n) * np.linspace(1, 0, n) * 0.5
     x = boom * 0.9 + hiss + crack
     return (x / (np.abs(x).max() + 1e-9)).astype(np.float32)
+
+
+def tick(sr=SR):
+    """Soft accent for emphasised words: short bright blip."""
+    t = np.arange(int(0.09 * sr)) / sr
+    x = np.sin(2 * np.pi * 1320 * t) * 0.6 + np.sin(2 * np.pi * 1980 * t) * 0.3
+    return (x * np.exp(-t * 45)).astype(np.float32)

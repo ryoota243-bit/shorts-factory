@@ -260,14 +260,27 @@ def view(src, x, y, w, h):
     return src.resize((W, H), Image.BILINEAR, box=(x, y, x + w, y + h))
 
 
-def place(dst, img, cx, cy, k=1.0):
-    """Paste img scaled by k with its centre at (cx, cy), at sub-pixel precision."""
-    w, h = img.width * k, img.height * k
-    x0, y0 = cx - w / 2, cy - h / 2
+def place(dst, img, cx, cy, k=1.0, rot=0.0, alpha=1.0):
+    """Paste img scaled by k and rotated by rot degrees, centred at (cx, cy), at sub-pixel precision.
+
+    Continuous motion (sway, bob, breathing) drawn this way moves smoothly instead of
+    snapping between whole pixels, which is what made animated elements look jittery."""
+    if k <= 0.01:
+        return
+    w, h = img.width, img.height
+    a = math.radians(rot)
+    ca, sa = math.cos(a), math.sin(a)
+    bw = (abs(w * ca) + abs(h * sa)) * k
+    bh = (abs(w * sa) + abs(h * ca)) * k
+    x0, y0 = cx - bw / 2, cy - bh / 2
     ix, iy = math.floor(x0), math.floor(y0)
-    fx, fy = x0 - ix, y0 - iy
-    ow, oh = math.ceil(w + fx) + 1, math.ceil(h + fy) + 1
-    out = img.transform((ow, oh), Image.AFFINE, (1 / k, 0, -fx / k, 0, 1 / k, -fy / k), resample=Image.BILINEAR)
+    ow, oh = math.ceil(bw + (x0 - ix)) + 2, math.ceil(bh + (y0 - iy)) + 2
+    c, s_ = ca / k, sa / k
+    ox, oy = ix - cx, iy - cy
+    coeffs = (c, s_, c * ox + s_ * oy + w / 2, -s_, c, -s_ * ox + c * oy + h / 2)
+    out = img.transform((ow, oh), Image.AFFINE, coeffs, resample=Image.BICUBIC)
+    if alpha < 1:
+        out.putalpha(out.getchannel("A").point(lambda v: int(v * alpha)))
     dst.paste(out, (ix, iy), out)
 
 
@@ -332,7 +345,7 @@ class TextLayer(Layer):
         cy = CONTENT_CY
         if self.emo:
             k = ease_back(t / 0.45)
-            paste_center(im, scaled(self.emo, max(0.01, k)), W / 2, cy - 170)
+            place(im, self.emo, W / 2, cy - 170 + math.sin(t * 3) * 12 * ease_out(t / 0.6), max(0.01, k))
             cy += 170
         paste_center(im, scaled(self.txt, max(0.01, ease_back((t - 0.15) / 0.4))), W / 2, cy)
         return im
@@ -351,11 +364,10 @@ class IllustrationLayer(Layer):
         im = self.background(t, dur)
         cy = CONTENT_CY - (60 if self.cap else 0)
         paste_center(im, self.glow, W / 2, cy)
-        k = ease_back(t / 0.5)
-        if k < 0.999 or t < 0.5:
-            paste_center(im, scaled(self.emo, max(0.01, k)), W / 2, cy)
-        else:  # settled: no wobble, rotation or breathing
-            paste_center(im, self.emo, W / 2, cy)
+        settle = ease_out(t / 0.6)  # idle motion fades in after the pop
+        k = ease_back(t / 0.5) * (1 + 0.03 * math.sin(t * 4) * settle)
+        rot = math.sin(t * 2.2) * 4 * settle
+        place(im, self.emo, W / 2, cy + math.sin(t * 2.5) * 14 * settle, max(0.01, k), rot)
         if self.cap:
             paste_center(im, self.cap, W / 2, CONTENT_Y[1] - 50, alpha=ease_out((t - 0.3) / 0.3))
         return im
