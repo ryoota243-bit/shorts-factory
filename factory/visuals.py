@@ -169,11 +169,19 @@ def _wrap_target(chars, fnt, target, pts):
     return [l for l in lines if l]
 
 
-def wrap(chars, fnt, max_w):
+def wrap(chars, fnt, max_w, hi=None):
     plain = "".join(c for c, _ in chars)
     if "\n" in plain:
         return _wrap_target(chars, fnt, max_w, None)
-    pts = break_points(plain)
+    if hi is not None:  # never split a highlighted phrase across lines
+        bp = break_points(plain)
+        if bp is not None:
+            bp = {p for p in bp if not (0 < p < len(chars) and chars[p - 1][1] == hi and chars[p][1] == hi)}
+        return _wrap_with(chars, fnt, max_w, bp)
+    return _wrap_with(chars, fnt, max_w, break_points(plain))
+
+
+def _wrap_with(chars, fnt, max_w, pts):
     total = sum(glen(fnt, c) for c, _ in chars)
     n0 = max(1, math.ceil(total / max_w))
     for n in range(n0, n0 + 4):
@@ -194,7 +202,7 @@ def rich_text(text, size, max_w=980, fill=(255, 255, 255), hi=(255, 214, 0), str
     f = font(size, weight)
     text = text.replace("\ufe0f", "").replace("\u200d", "")
     chars = parse_marked(text, tuple(fill), tuple(hi))
-    lines = wrap(chars, f, max_w)
+    lines = wrap(chars, f, max_w, hi=tuple(hi) if tuple(hi) != tuple(fill) else None)
     lh = int(size * spacing)
     widths = [sum(glen(f, c) for c, _ in l) for l in lines]
     pad = stroke + 8 + (8 if shadow else 0)
@@ -714,7 +722,7 @@ class PhotoLayer(Layer):
             bg = cover(img, W // 4, H // 4).filter(ImageFilter.GaussianBlur(6)).resize((W, H))
             self.bg = Image.blend(bg, Image.new("RGB", (W, H), (0, 0, 0)), 0.35)
             cw = 1000
-            card = cover(img, cw, min(int(cw * img.height / img.width), 760))
+            card = cover(img, cw, min(int(cw * img.height / img.width), 690))  # clear of 3-line subtitles
             mask = rounded(card.size, 36, (255, 255, 255, 255)).getchannel("A")
             card.putalpha(mask)
             self.card = card
@@ -738,9 +746,9 @@ class PhotoLayer(Layer):
             k *= 1 + 0.25 * (1 - ease_out(t / 1.2))
         kk = k * ease_back(t / 0.45)
         if t < 0.45:
-            paste_center(im, scaled(self.card, max(0.01, kk)), W / 2, CONTENT_CY)
+            paste_center(im, scaled(self.card, max(0.01, kk)), W / 2, CONTENT_CY - 30)
         else:
-            place(im, self.card, W / 2, CONTENT_CY, kk)
+            place(im, self.card, W / 2, CONTENT_CY - 30, kk)
         return im
 
 
