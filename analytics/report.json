@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-25T15:09",
+  "generated": "2026-11-25T21:05",
   "videos": [
     {
       "name": "2026-11-24_08",
@@ -51,6 +51,21 @@
       "video_id": "ShLQV19Ayk0",
       "topic": "ピラミッドとマンモス",
       "category": "歴史",
+      "format": "standard",
+      "writer": "gemini+claude",
+      "views": null,
+      "averageViewPercentage": null,
+      "averageViewDuration": null,
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "subscribersGained": null
+    },
+    {
+      "name": "2026-11-26_01",
+      "video_id": "2nq6f0tEj6k",
+      "topic": "大人の骨の数が減る理由",
+      "category": "人体",
       "format": "standard",
       "writer": "gemini+claude",
       "views": null,

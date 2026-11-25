@@ -1,0 +1,139 @@
+{
+  "topic": "蚊が雨でも飛べる理由",
+  "category": "昆虫",
+  "writer": "gemini+claude",
+  "title": "蚊が[雨でも飛べる]驚きの秘密",
+  "youtube_title": "蚊はなぜ大雨でも墜落せずに飛べるのか？ #雑学 #shorts",
+  "description": "雨粒の重さは蚊の約50倍にもなる！\n研究者いわく、人間なら車にぶつかられるようなもの。それでも蚊が雨の中を飛べるのはなぜでしょうか？\n2012年の研究で明らかになった仕組みを解説します。\n#雑学 #理科 #昆虫 #科学",
+  "tags": [
+    "雑学",
+    "理科",
+    "昆虫",
+    "科学",
+    "蚊"
+  ],
+  "theme": {
+    "bg": [
+      "#0F172A",
+      "#1E293B"
+    ],
+    "accent": "#38BDF8"
+  },
+  "pronunciations": {},
+  "scenes": [
+    {
+      "narration": "蚊は、雨粒でも墜落しない。雨の中でも[平気で飛べる]んです。",
+      "visual": {
+        "type": "photo",
+        "query": "mosquito rain droplets",
+        "ai_prompt": "Macro photo of a mosquito flying through falling raindrops, motion blur on water droplets, sharp focus on mosquito, dark natural green background, photorealistic",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🦟",
+          "text": "雨の中を飛ぶ蚊"
+        }
+      }
+    },
+    {
+      "narration": "雨粒は蚊の[約50倍]も重いことがあり、人なら車に衝突されるほどです。",
+      "visual": {
+        "type": "compare",
+        "relation": "vs",
+        "items": [
+          {
+            "label": "蚊の重さ",
+            "value": "1",
+            "color": "#60A5FA",
+            "note": "約2mg",
+            "emoji": "🦟"
+          },
+          {
+            "label": "雨粒の重さ",
+            "value": "約50倍",
+            "color": "#F87171",
+            "note": "人なら車の衝突級",
+            "emoji": "💧"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "なぜ無事なのか。蚊はとても軽く、雨粒に[逆らわない]からです。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Scientific high-speed photography style depiction of a tiny mosquito adhering to the surface of a falling large transparent water droplet in mid-air, photorealistic, dramatic lighting",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "💧",
+          "text": "軽いから逆らわない"
+        }
+      }
+    },
+    {
+      "narration": "胴体に直撃されると、雨粒に張り付いたまま体長の[最大20倍]も落下します。",
+      "visual": {
+        "type": "number",
+        "value": 20,
+        "unit": "倍",
+        "label": "雨粒と落ちる距離（体長比・最大）"
+      }
+    },
+    {
+      "narration": "でも長い脚と羽が空気を受けて体が回り、[横へスルリと脱出]します。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🦟",
+        "text": "横へスルリと脱出！"
+      }
+    },
+    {
+      "narration": "危ないのは低く飛ぶ時だけ。だから蚊は、雨粒でも[墜落しない]んです。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Photorealistic macro shot of a mosquito safely recovering flight and hovering in mid-air after slipping out of a raindrop, beautiful soft rainy background",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "✨",
+          "text": "雨粒から脱出して飛行"
+        }
+      }
+    },
+    {
+      "narration": "雨の日に蚊を見たことある？",
+      "visual": {
+        "type": "text",
+        "emoji": "💬",
+        "text": "雨の日に蚊を見たことある？",
+        "size": 96,
+        "sub": "▶ フォローで毎日雑学"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0,
+      "no_subtitle": true
+    }
+  ],
+  "comment_prompt": "雨の日に蚊を見たことある？",
+  "sources": [
+    "https://www.pnas.org/doi/10.1073/pnas.1205446109",
+    "https://www.newswise.com/articles/mosquitoes-fly-in-rain-thanks-to-low-mass",
+    "https://www.science.org/content/article/raindrops-dont-swat-down-mosquitoes",
+    "https://www.sciencedaily.com/releases/2012/11/121119104522.htm"
+  ],
+  "thumb_text": "蚊は[雨粒]でも墜落しない",
+  "thumb_prompt": "Extreme macro close-up of a mosquito flying through heavy rain, illuminated falling water droplets, dynamic and dramatic high contrast, photorealistic",
+  "format": "standard",
+  "factcheck": [
+    "「落ちない」を「墜落しない」に変更（実際は雨粒と一緒に下へ運ばれるため）：シーン1・6、thumb_text、youtube_title",
+    "シーン2：論文は「50倍以上」なので「最大50倍」を「約50倍」に変更し、descriptionも合わせて修正",
+    "シーン2：compare の値を「1」対「約50倍」にそろえ、noteに「約2mg」「人なら車の衝突級」を入れた",
+    "シーン2：「車に激突される規模」は研究者のたとえなので「衝突されるほど」に和らげた",
+    "シーン3：理由の中心である「とても軽く」を追加し、画面の文字も「軽いから逆らわない」に変更",
+    "シーン4：20倍は最大の値で胴体に直撃したときだけなので「胴体に直撃されると…最大20倍」に変更し、labelにも「最大」を追加",
+    "シーン4：「落下。」で終わる形を「落下します。」に直した",
+    "シーン5：「脚と羽をひねり」を「脚と羽が空気を受けて体が回り」に直した（蚊が自分でひねるのではなく空気抵抗で回る）",
+    "シーン6：「無敵」は言い過ぎなので削り、「危ないのは低く飛ぶ時だけ」に変更",
+    "sources：確認できなかったgatech.eduのURLを外し、Newswise（Georgia Techの発表）、Science、ScienceDailyに差し替え"
+  ]
+}
