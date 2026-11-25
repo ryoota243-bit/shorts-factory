@@ -1,0 +1,150 @@
+{
+  "topic": "同じ植物からできた野菜",
+  "category": "食べ物",
+  "writer": "gemini+claude",
+  "title": "[同じ植物]からできた野菜",
+  "youtube_title": "実はこれ全部同じ植物？キャベツとブロッコリーの秘密 #雑学 #shorts",
+  "description": "キャベツ、ブロッコリー、カリフラワー、ケールは、実はすべて同じ種（Brassica oleracea）の野菜です。\nヨーロッパの海岸に生える野生種から、人間が食べたい部位ごとに選抜を重ねた結果、これほど多様な姿になったとされています。\n#雑学 #食べ物 #野菜 #植物 #shorts",
+  "tags": [
+    "雑学",
+    "食べ物",
+    "野菜",
+    "植物",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#142416",
+      "#0c150e"
+    ],
+    "accent": "#4ade80"
+  },
+  "pronunciations": {
+    "ヤセイカンラン": "やせいかんらん"
+  },
+  "scenes": [
+    {
+      "narration": "これ全部、[同じ植物]。形も味も違うのに、生物学上は同じ種なんです。",
+      "visual": {
+        "type": "photo",
+        "query": "cabbage broccoli cauliflower kale",
+        "ai_prompt": "A beautiful flat lay of whole cabbage, broccoli florets, cauliflower, and kale leaves neatly arranged on a dark rustic wooden background, cinematic lighting, sharp food photography",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🥬",
+          "text": "同じ植物の野菜たち"
+        }
+      }
+    },
+    {
+      "narration": "その野菜とはキャベツ、ブロッコリー、カリフラワー、[ケール]など。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "🥬",
+            "text": "キャベツ（葉）"
+          },
+          {
+            "emoji": "🥦",
+            "text": "ブロッコリー（つぼみ）"
+          },
+          {
+            "emoji": "⚪",
+            "text": "カリフラワー（未熟な花芽）"
+          },
+          {
+            "emoji": "🌿",
+            "text": "ケール（原種に近い葉）"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "祖先はヨーロッパの海岸に生える、[ヤセイカンラン]などの野生種とされます。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A wild cabbage-like plant with tough bluish-green leaves and small yellow flowers growing on rocky coastal cliffs in Europe, sea in the background, bright daylight, natural nature photography",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🌱",
+          "text": "ヤセイカンラン"
+        }
+      }
+    },
+    {
+      "narration": "葉が玉になる株を選び続ければキャベツ、[つぼみ]が密集する株ならブロッコリーに。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "キャベツ",
+            "value": "葉",
+            "color": "#4ade80",
+            "note": "葉が重なり結球",
+            "emoji": "🥬"
+          },
+          {
+            "label": "ブロッコリー",
+            "value": "つぼみ",
+            "color": "#22c55e",
+            "note": "つぼみが密集",
+            "emoji": "🥦"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "犬で言えば、チワワとグレート・デーンが姿は違っても[同じ種]なのと同じです。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🐶🥦",
+        "text": "種は同じ、姿は別"
+      }
+    },
+    {
+      "narration": "八百屋に並ぶこの仲間たちは、人間の[品種改良の歴史]そのものなんですね。",
+      "visual": {
+        "type": "text",
+        "text": "人類の品種改良の歴史",
+        "emoji": "🥬"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.botanic.cam.ac.uk/learning/trails/dnatrail/cabbage/",
+    "https://vegetable.alic.go.jp/yasaijoho/yasai/0512_yasai1.html",
+    "https://vegetable.alic.go.jp/yasaijoho/yasai/0602_yasai1.html",
+    "https://www.takii.co.jp/tsk/manual/broccoli_cauliflower.html",
+    "https://www.kagome.co.jp/vegeday/grow/202609/15149/",
+    "https://natgeo.nikkeibp.co.jp/atcl/news/21/061700305/",
+    "https://www.nationalgeographic.com/animals/mammals/facts/domestic-dog"
+  ],
+  "thumb_text": "これ全部[同じ植物]!?",
+  "thumb_prompt": "Dramatic close-up shot showing fresh cabbage and vibrant broccoli heads side by side, bright vivid colors, studio lighting, high contrast, dark moody background, sharp details, commercial food photography",
+  "factcheck": [
+    "description の「同一の植物」を「同じ種（Brassica oleracea）」に直し、祖先の説明に「とされています」を付けて断定を避けた",
+    "シーン1のナレーション「同一の種」を「同じ種」にした",
+    "シーン1の query を4品目指定にし、無関係な野菜が写らないようにした",
+    "シーン3の自生地「地中海沿岸」を「ヨーロッパの海岸」に広げ、祖先は諸説あるので「ひとつの野草」をやめて「ヤセイカンランなどの野生種とされます」にした",
+    "シーン3の ai_prompt を、場所を地中海に限らない一般的なヨーロッパの海岸の崖にした",
+    "list の「カリフラワー（花）」を、食べている部位に合わせて「カリフラワー（未熟な花芽）」に直した",
+    "list の「ケール（原種の葉）」は誤りなので「ケール（原種に近い葉）」に直した",
+    "list の emoji を、カリフラワーは🥦から⚪に、ケールは🥗から🌿に変えた",
+    "シーン4の「葉を太らせれば」「葉を巨大化」を、結球と品種改良の実態に合わせて「葉が玉になる株を選び続ければ」「葉が重なり結球」にした",
+    "シーン4の note「花のつぼみが密集」を、ナレーションに合わせて「つぼみが密集」にした",
+    "シーン5の「大型犬」を「グレート・デーン」にし、「同じイヌ」を「同じ種」、画面の文字を「種は同じ、姿は別」にした",
+    "シーン6の対象を「野菜コーナー」全体から「この仲間たち」に絞った",
+    "sources を、中身を確認できた出典（ケンブリッジ大学植物園、ALIC、タキイ、カゴメ、ナショジオ）に入れ替えた。NYBGの元URLは見つからず、農水省・ALIC 0910・UFのページは検索上限のため確認できなかった"
+  ]
+}
