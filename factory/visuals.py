@@ -446,6 +446,23 @@ def readable_on_white(rgb):
     return rgb if lum < 0.5 else tuple(int(c * 0.5 / lum) for c in rgb)
 
 
+RELATION_SYMBOLS = {"vs": "VS", "arrow": "→", "equal": "＝", "plus": "＋", "not_equal": "≠", "none": ""}
+
+
+def infer_relation(labels):
+    """Best guess for scripts written before 'relation' existed; unsure -> no symbol."""
+    a, b = (labels + ["", ""])[:2]
+    both = a + b
+    if any(w in a for w in ("誤解", "俗説", "嘘", "ウソ", "思われがち")) and any(w in b for w in ("真実", "本当", "実際", "正解")):
+        return "not_equal"
+    if (any(w in a for w in ("昔", "以前", "かつて", "旧", "前", "まで", "当時")) and
+            any(w in b for w in ("今", "現在", "後", "以降", "新", "現代"))):
+        return "arrow"
+    if any(w in both for w in ("VS", "vs", "対")):
+        return "vs"
+    return "none"
+
+
 class CompareLayer(Layer):
     CW, CH = 440, 640
 
@@ -474,7 +491,10 @@ class CompareLayer(Layer):
                 else:
                     print(f"  [visuals] compare note too long, omitted: {it['note']}")
             self.cols.append(card)
-        self.vs = rich_text(spec.get("vs", "VS"), 100, stroke=10, fill=self.accent, shadow=True)
+        rel = spec.get("relation") or infer_relation([i.get("label", "") for i in spec["items"][:2]])
+        sym = RELATION_SYMBOLS.get(rel, "")
+        self.vs = (rich_text(sym, 100 if rel == "vs" else 130, stroke=10, fill=self.accent, shadow=True)
+                   if sym else None)
 
     def frame(self, t, dur):
         im = self.background(t, dur)
@@ -483,7 +503,8 @@ class CompareLayer(Layer):
             x = W / 2 + (-1 if i == 0 else 1) * 245
             paste_center(im, scaled(card, max(0.01, k)), x, CONTENT_CY)
         vs_y = CONTENT_CY - self.CH / 2 + 210   # level with the icons, clear of the card text
-        paste_center(im, scaled(self.vs, max(0.01, ease_back((t - 0.5) / 0.4))), W / 2, vs_y)
+        if self.vs is not None:
+            paste_center(im, scaled(self.vs, max(0.01, ease_back((t - 0.5) / 0.4))), W / 2, vs_y)
         return im
 
 

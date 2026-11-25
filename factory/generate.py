@@ -42,6 +42,7 @@ class Visual(BaseModel):
     center: str
     items: List[Item]
     segments: List[Segment]
+    relation: Literal["vs", "arrow", "equal", "plus", "not_equal", "none"]
 
 
 class Scene(BaseModel):
@@ -126,7 +127,10 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
   比喩的なイメージなど）/
   photo と ai の両方に、英語の ai_prompt（写実的な写真風。画像内に文字を入れない。実在の人物の顔は描かない）を書く /
   number（数字を大きく。そのシーンのナレーションはその数字の話だけにする）/
-  compare（性質の違う2つの対比だけ。同じ量の言い換え（500t＝ゾウ100頭）には使わない）/ list（2〜4項目）/
+  compare（2つを並べて見せる。relation で2つの関係を必ず選ぶ: vs＝対決・対比（人間の血 vs タコの血）/
+  arrow＝変化・時間の流れ（昔→今、原因→結果）/ equal＝同じ量の言い換え（500t＝ゾウ100頭分）/
+  plus＝内訳・合計（昼＋夜で1周）/ not_equal＝誤解と真実 / none＝単に条件や種類を並べるだけ。
+  迷ったら none。勝ち負けや対立がないのに vs を使わない）/ list（2〜4項目）/
   pie（「全体のうち何割か」を示す時だけ。A は B の何割、のような別物同士の比較には compare を使う）/
   illustration（絵文字1〜2個＋短い文字）/ text（大きな文字）/
   quiz・quiz_answer（クイズ形式のときだけ。使い方は「今回の形式」に従う）。
@@ -157,7 +161,8 @@ FORMAT_PROMPT = """次の台本案を、指定のJSONスキーマに変換して
 - 使わない項目は空文字・空配列・0 にする。
 - visual.type ごとに使う項目:
   photo / ai: query, ai_prompt, emoji, text（emoji と text は画像が用意できない時の代わりのイラスト用）
-  number: number, unit, label / compare: items(2件: label, value, color, note, emoji)
+  number: number, unit, label / compare: items(2件: label, value, color, note, emoji), relation
+  （compare 以外の relation は none）
   list: items(emoji, text) / pie: segments(label, value, color), center
   illustration: emoji, text / text: text, emoji
   quiz / quiz_answer: text（問題文）, items（選択肢3つ。text のみ）, number（正解の番号 1〜3）
@@ -210,7 +215,7 @@ def _visual(v: Visual):
         n = int(v.number) if float(v.number).is_integer() else v.number
         return {"type": "number", "value": n, "unit": v.unit, "label": v.label}
     if t == "compare":
-        return {"type": "compare", "items": [
+        return {"type": "compare", "relation": v.relation, "items": [
             {k: getattr(i, k) for k in ("label", "value", "color", "note", "emoji") if getattr(i, k)}
             for i in v.items[:2]]}
     if t == "list":
