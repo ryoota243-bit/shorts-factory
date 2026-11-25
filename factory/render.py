@@ -167,6 +167,7 @@ def render(script_path, cfg, root, out_dir):
     theme = {**DEFAULT_THEME, **script.get("theme", {})}
     prons = {**cfg.get("pronunciations", {}), **script.get("pronunciations", {})}
     fps = cfg["video"]["fps"]
+    HOOK_ON = bool(cfg["video"].get("hook", False))  # opening flash / catch-copy slam / impact sound
     seed = abs(hash(name)) % 10000
     (root / "cache").mkdir(exist_ok=True)
     out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
@@ -189,7 +190,7 @@ def render(script_path, cfg, root, out_dir):
     t = 0.0
     for si, sc in enumerate(script["scenes"]):
         start = t
-        lead = 0.12 if si else 0.3  # let the opening hit land first
+        lead = 0.12 if si else (0.3 if HOOK_ON else 0.05)  # with the hook: let the opening hit land first
         voice_parts.append(np.zeros(int(lead * SR), np.float32)); t += lead
         for ch in split_sentences(sc.get("narration", "")):
             line = to_speak(ch)
@@ -234,8 +235,9 @@ def render(script_path, cfg, root, out_dir):
                     mix[s_:s_ + len(tk)] += (tk * 2.2)[: max(0, min(len(tk), n - s_))]
     for a in beats:  # soft accent on emphasised words
         s_ = int(a * SR); mix[s_:s_ + len(tk)] += tk[: max(0, min(len(tk), n - s_))]
-    hit = bgm.impact() * 0.55  # opening impact
-    mix[: len(hit)] += hit[: len(mix)]
+    if HOOK_ON:
+        hit = bgm.impact() * 0.55  # opening impact
+        mix[: len(hit)] += hit[: len(mix)]
     pop = bgm.pop() * 0.25
     for st, _ in scenes_t[1:]:
         s = int(st * SR); mix[s:s + len(pop)] += pop[: max(0, min(len(pop), n - s))]
@@ -288,10 +290,10 @@ def render(script_path, cfg, root, out_dir):
                 cache_bd[src] = V.backdrop(src, tint)
             l.bgimg = cache_bd[src]
     hook_copy = re.sub(r"\s+", "", script.get("thumb_text") or "")
-    hook_img = (V.fit_text(hook_copy, 170, 1000, 520, min_size=100, stroke=20, fill=(255, 255, 255),
+    hook_img = None if not HOOK_ON else (V.fit_text(hook_copy, 170, 1000, 520, min_size=100, stroke=20, fill=(255, 255, 255),
                            hi=V.hex2rgb(theme["accent"]), shadow=True, spacing=1.1) if hook_copy else None)
     HOOK = 2.7  # seconds the catch copy stays up at the start
-    if isinstance(layers[0], V.PhotoLayer):
+    if HOOK_ON and isinstance(layers[0], V.PhotoLayer):
         layers[0].punch = True
     thumb_img = None
     try:
