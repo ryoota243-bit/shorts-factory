@@ -250,6 +250,21 @@ def render(script_path, cfg, root, out_dir):
     credits = []
     topic = re.sub(r"[\[\]]", "", f"{script.get('title', '')} / {script.get('topic', '')}")
     layers = [make_layer(sc, theme, seed + i, cfg, root, credits, fps, topic) for i, sc in enumerate(script["scenes"])]
+    for i, layer in enumerate(layers):  # quiz: show each choice when the narration reads it
+        if isinstance(layer, V.QuizLayer) and not layer.reveal:
+            s0, s1 = scenes_t[i]
+            ch = (script["scenes"][i].get("visual") or {}).get("choices", [])
+            sc_subs = [(a, re.sub(r"[\[\]]", "", txt)) for a, b, txt in subs if s0 <= a < s1]
+            times, last = [], 0.0
+            for c in ch:
+                key = re.sub(r"\s", "", c)[:4]
+                hit = next((a - s0 for a, txt in sc_subs if key and key in txt and a - s0 >= last), None)
+                if hit is None:
+                    times = None
+                    break
+                times.append(hit)
+                last = hit
+            layer.choice_times = times
     for i, layer in enumerate(layers):  # reveal numbers when the narration says them
         if isinstance(layer, V.NumberLayer):
             s0, s1 = scenes_t[i]

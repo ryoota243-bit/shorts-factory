@@ -595,6 +595,7 @@ class QuizLayer(Layer):
         self.reveal = spec.get("reveal", False)
         self.countdown = spec.get("countdown", False)
         self.answer = max(1, min(3, int(spec.get("answer", 1)))) - 1
+        self.choice_times = None  # set by the renderer: when the narration reads each choice
         q = fit_text(spec.get("question", ""), 72, 940, 190, min_size=48, fill=(255, 255, 255), stroke=8)
         self.q = q
         self.cards = []
@@ -629,9 +630,15 @@ class QuizLayer(Layer):
                 else:
                     place(im, card, W / 2, cy, 0.96, alpha=0.4)
             else:
-                p = ease_out((t - 0.2 - i * 0.25) / 0.3)
+                t0 = self.choice_times[i] if self.choice_times else 0.2 + i * 0.25
+                p = ease_out((t - t0) / 0.3)
                 if p > 0:
-                    place(im, card, W / 2 + (1 - p) * 260, cy, 1.0, alpha=p)
+                    # the choice being read right now pulses slightly bigger
+                    nxt = (self.choice_times[i + 1] if self.choice_times and i + 1 < len(self.choice_times)
+                           else t0 + 1.2)
+                    reading = self.choice_times and t0 <= t < nxt and not (self.countdown and dur - t <= 3.0)
+                    k = 1.0 + (0.045 * (1 - ease_out((t - t0) / 0.6)) + 0.015 if reading else 0.0)
+                    place(im, card, W / 2 + (1 - p) * 260, cy, k, alpha=p)
         if self.countdown and not self.reveal:
             left = dur - t
             if 0 < left <= 3.0:
