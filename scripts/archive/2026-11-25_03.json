@@ -1,0 +1,138 @@
+{
+  "topic": "破れたお札の引換ルール",
+  "category": "お金・経済",
+  "writer": "gemini+claude",
+  "title": "破れたお札は[いくら]になる？",
+  "youtube_title": "破れたお札はいくらに戻る？灰でも交換できる場合がある驚きの引換ルール #雑学 #shorts",
+  "description": "破れたり燃えたりしたお札は、日本銀行に持っていくといくら戻る？\n表裏両面があれば、残った面積が3分の2以上で全額、5分の2以上3分の2未満で半額、5分の2未満は失効。\n灰もお札と確認できれば面積に含まれます。持ち込みは事前予約をお願いされています。\n#雑学 #お金 #豆知識 #shorts",
+  "tags": [
+    "雑学",
+    "お金",
+    "日本銀行",
+    "豆知識",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#0f172a",
+      "#1e293b"
+    ],
+    "accent": "#38bdf8"
+  },
+  "pronunciations": {
+    "日銀": "にちぎん"
+  },
+  "scenes": [
+    {
+      "narration": "3分の2残れば[全額]。破れたお札も日銀で新しいお札に無料で交換できます。",
+      "visual": {
+        "type": "photo",
+        "query": "torn banknote",
+        "ai_prompt": "Close-up photograph of a torn paper banknote neatly placed on a smooth wooden table surface, sharp focus, bright studio lighting, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "💴",
+          "text": "破れたお札の交換"
+        }
+      }
+    },
+    {
+      "narration": "表と裏の両面がそろい、面積が3分の2以上残っていれば額面の[全額]が戻ります。",
+      "visual": {
+        "type": "pie",
+        "center": "3分の2",
+        "segments": [
+          {
+            "label": "残った面積",
+            "value": 66.7,
+            "color": "#38bdf8"
+          },
+          {
+            "label": "失われた部分",
+            "value": 33.3,
+            "color": "#475569"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "5分の2以上3分の2未満なら[半額]。1万円札なら5千円に交換されます。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "3分の2以上",
+            "value": "全額",
+            "color": "#38bdf8",
+            "note": "額面どおり",
+            "emoji": "⭕"
+          },
+          {
+            "label": "5分の2～3分の2未満",
+            "value": "半額",
+            "color": "#f59e0b",
+            "note": "1万円なら5千円",
+            "emoji": "🔺"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "そして本当に驚きなのは、火事などで燃えて[灰]になったお札です。",
+      "visual": {
+        "type": "ai",
+        "query": "charred burnt banknote",
+        "ai_prompt": "Cinematic close-up photograph of a charred paper money banknote resting on a dark metallic surface, delicate gray ash and burnt edges, soft moody lighting, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🔥",
+          "text": "燃えたお札"
+        }
+      }
+    },
+    {
+      "narration": "その灰がお札だと確認できれば、[灰]も残った面積に含まれます。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🔍",
+        "text": "灰も面積に含む"
+      }
+    },
+    {
+      "narration": "燃えたらできるだけ崩さず、[箱]などに入れて日銀へ。粉々だと失効することも。",
+      "visual": {
+        "type": "text",
+        "text": "灰を崩さず日銀へ",
+        "emoji": "📦"
+      }
+    },
+    {
+      "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.8
+    }
+  ],
+  "sources": [
+    "https://www.boj.or.jp/about/services/bn/sonsyo.htm",
+    "https://www.boj.or.jp/about/services/bn/hikikae.htm",
+    "https://www.mof.go.jp/faq/currency/07ae.htm"
+  ],
+  "thumb_text": "3分の2残れば[全額]",
+  "thumb_prompt": "A dramatic macro photograph of a half-torn paper banknote resting on a dark slate background, high contrast, cinematic studio lighting, highly detailed paper texture, no text",
+  "factcheck": [
+    "S1: 「3分の2で全額」を「3分の2残れば全額」に直しました。「新品」は「新しいお札」に言い換えました。",
+    "S2: 「表と裏の両面がそろい」と、条件が分かる言い方にしました。",
+    "S2 pie: 2/3に合わせて66.7/33.3にし、凡例名を「残った面積／失われた部分」にしました。",
+    "S3: 半額の範囲を「5分の2以上3分の2未満」に直しました。compare の label も「5分の2～3分の2未満」にしました。",
+    "S5: 灰が面積に入る条件を、公式の「お札だと確認できれば」に合わせました。",
+    "S6: 根拠のない「絶対に触らず」「密閉容器」を「できるだけ崩さず、箱などに」に直しました。粉々だと失効することがある、という注意を足しました。",
+    "youtube_title: 「灰になってもお金になる」を「灰でも交換できる場合がある」に弱めました。",
+    "description: 5分の2未満は失効すること、事前予約が必要なことを足しました。",
+    "thumb_text: 「3分の2残れば[全額]」にして、基準をはっきりさせました。",
+    "sources: 見つからなかった2つのURLを、確認に使った日銀の2ページと財務省FAQ（07ae.htm）に差し替えました。"
+  ]
+}
