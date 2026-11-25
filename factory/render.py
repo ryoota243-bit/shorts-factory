@@ -307,6 +307,21 @@ def render(script_path, cfg, root, out_dir):
             sub_cache[s] = V.rich_text(s, 74, 960, hi=V.hex2rgb(theme["accent"]), stroke=11)
         return sub_cache[s]
 
+    # camera cuts: long scenes change framing at sentence boundaries so the screen keeps developing
+    FRAMINGS = [(1.0, 0, 0), (1.07, 0, 18), (1.06, 28, 10), (1.08, -26, 24)]  # dy >= 0: never push content down
+    CUT_MIN_SCENE, CUT_GAP = 4.5, 1.8
+    cuts = []
+    for i, (st, en) in enumerate(scenes_t):
+        c = []
+        if en - st >= CUT_MIN_SCENE and not script["scenes"][i].get("no_subtitle"):
+            last = st
+            for a, b, txt in subs:
+                if st + 0.8 < a < en - 0.8 and a - last >= CUT_GAP and not (i == 0 and a < HOOK):
+                    c.append(a)
+                    last = a
+        cuts.append(c)
+    print(f"  [cuts] {sum(len(c) for c in cuts)} framing changes")
+
     # ---- 4. render frames -> ffmpeg ----
     mp4 = out_dir / f"{name}.mp4"
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{V.W}x{V.H}",
@@ -333,9 +348,22 @@ def render(script_path, cfg, root, out_dir):
         bt = next((tt - a for a in beats if 0 <= tt - a < 0.45), None)
         if bt is not None:  # "beat": quick 3 % punch-in when an emphasised word appears
             z *= 1 + 0.03 * math.sin(math.pi * bt / 0.45)
-        if z > 1.0001:
+        n_cut = sum(1 for a in cuts[si] if a <= tt)
+        fz, fx, fy = FRAMINGS[n_cut % len(FRAMINGS)] if n_cut else FRAMINGS[0]
+        if n_cut:  # ease from the previous framing over 0.22 s
+            pz, px, py = FRAMINGS[(n_cut - 1) % len(FRAMINGS)]
+            e = V.ease_out((tt - cuts[si][n_cut - 1]) / 0.22)
+            fz, fx, fy = pz + (fz - pz) * e, px + (fx - px) * e, py + (fy - py) * e
+        if isinstance(layers[si], (V.IllustrationLayer, V.TextLayer, V.NumberLayer, V.PhotoLayer)):
+            fz, fx, fy = 1 + (fz - 1) * 2.0, fx * 1.4, fy * 1.6  # centred content: a clearly visible cut
+        z *= fz
+        if z > 1.0001 or fx or fy:
             cw, ch = V.W / z, V.H / z
-            img = V.view(img, (V.W - cw) / 2, (V.H - ch) / 2, cw, ch)  # sub-pixel: no jitter
+            # zoom around the content centre (not the frame centre) so captions never drift into the subtitles
+            ax, ay = V.W / 2, V.CONTENT_CY
+            x0 = min(max(ax - ax / z + fx, 0.0), V.W - cw)
+            y0 = min(max(ay - ay / z + fy, 0.0), V.H - ch)
+            img = V.view(img, x0, y0, cw, ch)  # sub-pixel: no jitter
         if si > 0 and tt - s0 < XFADE and prev_last is not None:
             img = Image.blend(prev_last, img, (tt - s0) / XFADE)
         if si < len(scenes_t) - 1 and s1 - tt <= 1.5 / fps:
