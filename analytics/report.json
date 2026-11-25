@@ -1,0 +1,68 @@
+{
+  "generated": "2026-11-25T06:56",
+  "videos": [
+    {
+      "name": "2026-11-24_08",
+      "video_id": "CHLRMedfJeo",
+      "topic": "角膜は空気から酸素をもらう",
+      "category": "人体",
+      "format": "standard",
+      "writer": "claude",
+      "views": null,
+      "averageViewPercentage": null,
+      "averageViewDuration": null,
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "subscribersGained": null
+    },
+    {
+      "name": "2026-11-24_09",
+      "video_id": "dkJtgG0tQnQ",
+      "topic": "回転寿司のルーツはビール工場",
+      "category": "日本の文化",
+      "format": "standard",
+      "writer": "claude",
+      "views": null,
+      "averageViewPercentage": null,
+      "averageViewDuration": null,
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "subscribersGained": null
+    },
+    {
+      "name": "2026-11-24_10",
+      "video_id": "0ctsd-zRksk",
+      "topic": "ボールペンのキャップの穴は窒息防止のため",
+      "category": "身近なモノ",
+      "format": "standard",
+      "writer": "claude",
+      "views": null,
+      "averageViewPercentage": null,
+      "averageViewDuration": null,
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "subscribersGained": null
+    },
+    {
+      "name": "2026-11-25_01",
+      "video_id": "ShLQV19Ayk0",
+      "topic": "ピラミッドとマンモス",
+      "category": "歴史",
+      "format": "standard",
+      "writer": "gemini+claude",
+      "views": null,
+      "averageViewPercentage": null,
+      "averageViewDuration": null,
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "subscribersGained": null
+    }
+  ],
+  "by_format": {},
+  "by_category": {},
+  "measured": 0
+}
