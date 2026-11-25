@@ -307,6 +307,7 @@ def render(script_path, cfg, root, out_dir):
             sub_cache[s] = V.rich_text(s, 74, 960, hi=V.hex2rgb(theme["accent"]), stroke=11)
         return sub_cache[s]
 
+    SUB_TOP = 1240  # top of a 3-line subtitle (centred at y=1330)
     # camera cuts: long scenes change framing at sentence boundaries so the screen keeps developing
     FRAMINGS = [(1.0, 0, 0), (1.07, 0, 18), (1.06, 28, 10), (1.08, -26, 24)]  # dy >= 0: never push content down
     CUT_MIN_SCENE, CUT_GAP = 4.5, 1.8
@@ -358,11 +359,23 @@ def render(script_path, cfg, root, out_dir):
             fz, fx, fy = 1 + (fz - 1) * 2.0, fx * 1.4, fy * 1.6  # centred content: a clearly visible cut
         z *= fz
         if z > 1.0001 or fx or fy:
+            full_photo = isinstance(layers[si], V.PhotoLayer) and layers[si].full
+            if not full_photo:
+                # keep the content block [CONTENT_Y] between the title band and the subtitles:
+                # cap the zoom to the free height and place the block inside it
+                top_free = (150 + band.height + 14) if script.get("title") else 120
+                bottom_free = SUB_TOP - 14
+                c0, c1 = V.CONTENT_Y
+                z = min(z, max(1.0, (bottom_free - top_free) / (c1 - c0)))
+                lo, hi = top_free, bottom_free - (c1 - c0) * z      # allowed range for the block's top
+                want = c0 - (V.CONTENT_CY - c0) * (z - 1) - fy * z  # zoom about the content centre, then nudge
+                top = min(max(want, lo), max(lo, hi))
+                y0 = c0 - top / z
+            else:
+                y0 = V.CONTENT_CY - V.CONTENT_CY / z + fy
             cw, ch = V.W / z, V.H / z
-            # zoom around the content centre (not the frame centre) so captions never drift into the subtitles
-            ax, ay = V.W / 2, V.CONTENT_CY
-            x0 = min(max(ax - ax / z + fx, 0.0), V.W - cw)
-            y0 = min(max(ay - ay / z + fy, 0.0), V.H - ch)
+            x0 = min(max(V.W / 2 - (V.W / 2) / z + fx, 0.0), V.W - cw)
+            y0 = min(max(y0, 0.0), V.H - ch)
             img = V.view(img, x0, y0, cw, ch)  # sub-pixel: no jitter
         if si > 0 and tt - s0 < XFADE and prev_last is not None:
             img = Image.blend(prev_last, img, (tt - s0) / XFADE)
