@@ -1,0 +1,159 @@
+{
+  "topic": "大相撲の行司が刀を持つ理由",
+  "category": "日本の文化",
+  "writer": "gemini+claude",
+  "title": "大相撲の[立行司]が刀を持つ理由",
+  "youtube_title": "最高位の行司が刀を持つ驚きの理由とは？ #雑学 #shorts",
+  "description": "大相撲の行司の最高位「立行司」の腰には、実は短刀が差されています。\n神聖な土俵上で刀を持つ、その意外な理由をクイズで解説します！\n#大相撲 #相撲 #日本文化 #雑学 #shorts",
+  "tags": [
+    "大相撲",
+    "相撲",
+    "行司",
+    "日本文化",
+    "雑学",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#1a1528",
+      "#0d131f"
+    ],
+    "accent": "#E63946"
+  },
+  "pronunciations": {
+    "立行司": "たてぎょうじ",
+    "行司": "ぎょうじ",
+    "軍配": "ぐんばい",
+    "進退伺": "しんたいうかがい",
+    "差し違え": "さしちがえ"
+  },
+  "scenes": [
+    {
+      "narration": "最高位の行司は刀を差す。立行司の腰にある[短刀]、その理由とは？",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Close-up side angle of a traditional Japanese sumo referee in a formal silk hitatare robe, a small short sword tucked into the front left of the waistband, cinematic lighting, shallow depth of field, realistic photograph style, no text, no letters, no flags, no visible face.",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🗡️",
+          "text": "立行司の短刀"
+        }
+      }
+    },
+    {
+      "narration": "問題。短刀を持つ理由は？1番、力士の制止。2番、切腹の覚悟。3番、懸賞金の護衛。",
+      "visual": {
+        "type": "quiz",
+        "question": "立行司が短刀を持つ理由は？",
+        "choices": [
+          "力士の制止",
+          "切腹の覚悟",
+          "懸賞金の護衛"
+        ],
+        "answer": 2,
+        "reveal": false,
+        "countdown": true
+      },
+      "hold": 3.3
+    },
+    {
+      "narration": "正解は、[2番の切腹の覚悟]！差し違えたら自ら腹を切る、という意思表示とされます。",
+      "visual": {
+        "type": "quiz",
+        "question": "立行司が短刀を持つ理由は？",
+        "choices": [
+          "力士の制止",
+          "切腹の覚悟",
+          "懸賞金の護衛"
+        ],
+        "answer": 2,
+        "reveal": true,
+        "countdown": false
+      }
+    },
+    {
+      "narration": "短刀を差せるのは、最高位の立行司だけ。その定員は[2名]です。",
+      "visual": {
+        "type": "number",
+        "value": 2,
+        "unit": "名",
+        "label": "立行司の定員"
+      }
+    },
+    {
+      "narration": "実際に切腹するわけではなく、差し違えると理事長へ[進退伺]を申し出る慣例です。",
+      "visual": {
+        "type": "compare",
+        "items": [
+          {
+            "label": "短刀の意味",
+            "value": "切腹の覚悟",
+            "color": "#E63946",
+            "note": "差し違えたら",
+            "emoji": "🗡️"
+          },
+          {
+            "label": "実際の慣例",
+            "value": "進退伺",
+            "color": "#457B9D",
+            "note": "理事長へ口頭で",
+            "emoji": "📜"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "軍配一つに進退を懸ける。だから今も、最高位の行司は[刀]を差すんです。",
+      "visual": {
+        "type": "photo",
+        "query": "sumo referee gunbai fan",
+        "ai_prompt": "Macro photo of an ornate traditional Japanese sumo referee fan made of dark lacquered wood with golden accents and a rich purple tassel, resting on a tatami mat, realistic documentary photography, no text, no letters.",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "⚖️",
+          "text": "命がけの軍配"
+        }
+      }
+    },
+    {
+      "narration": "行司の短刀、気づいてた？",
+      "visual": {
+        "type": "text",
+        "emoji": "💬",
+        "text": "行司の短刀、気づいてた？",
+        "size": 96,
+        "sub": "▶ フォローで毎日雑学"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0,
+      "no_subtitle": true
+    }
+  ],
+  "comment_prompt": "行司の短刀、気づいてた？",
+  "sources": [
+    "https://www.sumo.or.jp/Entertainment/quiz/406",
+    "https://sumo.or.jp/Entertainment/quiz/1364",
+    "https://sumo.or.jp/Entertainment/quiz/1218",
+    "https://sumo-guide.com/sumo-term-meaning-of-sashichigae",
+    "https://sumo-guide.com/term-tategyoji"
+  ],
+  "thumb_text": "最高位の行司が[刀]を持つ理由",
+  "thumb_prompt": "Dramatic close-up of a sumo referee in an elegant ornate traditional Japanese robe, focusing on a short sword tucked into the belt, high contrast, cinematic atmosphere, no text, no letters, no flags",
+  "format": "quiz",
+  "factcheck": [
+    "1シーン目の「行司の腰には、刀がある」を「最高位の行司は刀を差す。」に変更（短刀を差すのは立行司だけのため）",
+    "クイズの選択肢3を「厄除け」から「懸賞金の護衛」に変更（正解と紛れないように）。ナレーションと画面の表記もそろえた",
+    "正解の説明を「判定を間違えたら命を絶つ」から「差し違えたら自ら腹を切る、という意思表示とされます」に変更（言い方を正確にし、断定を弱めた）",
+    "number のシーンから「横綱戦などを裁く大役」を外し、定員2名の話だけにした",
+    "compare の「かつての覚悟／切腹」を「短刀の意味／切腹の覚悟」に変更（昔は実際に切腹していたという誤解を防ぐため）",
+    "進退伺の note を「協会へ提出」から「理事長へ口頭で」に変更し、ナレーションも「理事長へ申し出る」に変更",
+    "最後のシーンの誤り「軍配の裏に短刀」を削除し、1シーン目につながるループの文に変更",
+    "emoji を変更：🎎→⚖️、compare の⚔️→🗡️",
+    "description の「大相撲の最高位」を「行司の最高位」に変更し、「衝撃的」は「意外」に弱めた",
+    "thumb_text と youtube_title を「最高位の行司」に変更（立行司以外の行司まで含むような言い過ぎを防ぐため）",
+    "画像指定から「tanto」「court attire」などの指定を外して一般的な表現にし、no letters / no flags を追加",
+    "読み方に「差し違え」を追加",
+    "sources からトップページを外し、確認に使った公式クイズ（1364・1218）と解説ページ2件を追加"
+  ]
+}
