@@ -225,7 +225,8 @@ def render(script_path, cfg, root, out_dir):
     for st, _ in scenes_t[1:]:
         s = int(st * SR); mix[s:s + len(pop)] += pop[: max(0, min(len(pop), n - s))]
     mix = np.tanh(mix * 1.1) / np.tanh(1.1)
-    T0 = float(cfg["video"].get("thumb_seconds", 0.5))  # thumbnail shown before the first scene
+    fps_ = cfg["video"]["fps"]
+    T0 = round(float(cfg["video"].get("thumb_seconds", 0.5)) * fps_) / fps_  # whole frames of thumbnail
     mix = np.concatenate([np.zeros(int(T0 * SR), np.float32), mix])
     wav = out_dir / f"{name}.wav"
     write_wav(wav, mix)
@@ -285,21 +286,20 @@ def render(script_path, cfg, root, out_dir):
     nframes = int((total + T0) * fps)
     print(f"[{name}] rendering {total + T0:.1f}s / {nframes} frames...")
     si, prev_last = 0, None
-    thumb_frames = int(T0 * fps)
+    thumb_frames = round(T0 * fps)
     for fi in range(nframes):
         if fi < thumb_frames:
             proc.stdin.write((thumb_img or layers[0].frame(0, 1)).tobytes())
             continue
-        tt = fi / fps - T0
+        tt = (fi - thumb_frames) / fps
         while si < len(scenes_t) - 1 and tt >= scenes_t[si][1]:
             si += 1
         s0, s1 = scenes_t[si]
         img = layers[si].frame(tt - s0, s1 - s0)
         if not isinstance(layers[si], (V.PhotoLayer, V.VideoLayer)):  # slow push-in keeps diagrams alive
-            z = 1 + 0.04 * (tt - s0) / max(s1 - s0, 0.1)
-            cw, ch = int(V.W / z), int(V.H / z)
-            x0, y0 = (V.W - cw) // 2, (V.H - ch) // 2
-            img = img.crop((x0, y0, x0 + cw, y0 + ch)).resize((V.W, V.H), Image.BILINEAR)
+            z = 1 + 0.04 * max(0.0, tt - s0) / max(s1 - s0, 0.1)
+            cw, ch = V.W / z, V.H / z
+            img = V.view(img, (V.W - cw) / 2, (V.H - ch) / 2, cw, ch)  # sub-pixel: no jitter
         if si > 0 and tt - s0 < XFADE and prev_last is not None:
             img = Image.blend(prev_last, img, (tt - s0) / XFADE)
         if si < len(scenes_t) - 1 and s1 - tt <= 1.5 / fps:

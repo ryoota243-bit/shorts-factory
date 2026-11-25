@@ -255,6 +255,22 @@ def paste_center(dst, img, cx, cy, alpha=1.0):
     dst.paste(img, (int(cx - img.width / 2), int(cy - img.height / 2)), img)
 
 
+def view(src, x, y, w, h):
+    """Sub-pixel crop+resize of src to the full frame (no 1-px stepping in slow pans/zooms)."""
+    return src.resize((W, H), Image.BILINEAR, box=(x, y, x + w, y + h))
+
+
+def place(dst, img, cx, cy, k=1.0):
+    """Paste img scaled by k with its centre at (cx, cy), at sub-pixel precision."""
+    w, h = img.width * k, img.height * k
+    x0, y0 = cx - w / 2, cy - h / 2
+    ix, iy = math.floor(x0), math.floor(y0)
+    fx, fy = x0 - ix, y0 - iy
+    ow, oh = math.ceil(w + fx) + 1, math.ceil(h + fy) + 1
+    out = img.transform((ow, oh), Image.AFFINE, (1 / k, 0, -fx / k, 0, 1 / k, -fy / k), resample=Image.BILINEAR)
+    dst.paste(out, (ix, iy), out)
+
+
 def rounded(size, radius, fill):
     im = Image.new("RGBA", size, (0, 0, 0, 0))
     ImageDraw.Draw(im).rounded_rectangle((0, 0, size[0] - 1, size[1] - 1), radius, fill=fill)
@@ -294,11 +310,11 @@ class Layer:
 
     def background(self, t, dur):
         if self.bgimg is not None:
-            off = int((self.bgimg.height - H) * min(1.0, t / max(dur, 0.1)))
-            return self.bgimg.crop((0, off, W, off + H))
+            off = (self.bgimg.height - H) * min(1.0, t / max(dur, 0.1))
+            return view(self.bgimg, 0, off, W, H)
         bg = gradient_bg(self.theme["bg"][0], self.theme["bg"][1], self.seed)
-        off = int((bg.height - H) * (0.5 + 0.5 * math.sin(self.seed + t * 0.25)))
-        return bg.crop((0, off, W, off + H))
+        off = (bg.height - H) * (0.5 + 0.5 * math.sin(self.seed + t * 0.25))
+        return view(bg, 0, off, W, H)
 
     def frame(self, t, dur):
         return self.background(t, dur)
@@ -316,8 +332,7 @@ class TextLayer(Layer):
         cy = CONTENT_CY
         if self.emo:
             k = ease_back(t / 0.45)
-            bob = math.sin(t * 3) * 12
-            paste_center(im, scaled(self.emo, max(0.01, k)), W / 2, cy - 170 + bob)
+            paste_center(im, scaled(self.emo, max(0.01, k)), W / 2, cy - 170)
             cy += 170
         paste_center(im, scaled(self.txt, max(0.01, ease_back((t - 0.15) / 0.4))), W / 2, cy)
         return im
@@ -336,10 +351,11 @@ class IllustrationLayer(Layer):
         im = self.background(t, dur)
         cy = CONTENT_CY - (60 if self.cap else 0)
         paste_center(im, self.glow, W / 2, cy)
-        k = ease_back(t / 0.5) * (1 + 0.03 * math.sin(t * 4))
-        rot = math.sin(t * 2.2) * 4
-        e = scaled(self.emo, max(0.01, k)).rotate(rot, resample=Image.BICUBIC, expand=True)
-        paste_center(im, e, W / 2, cy + math.sin(t * 2.5) * 14)
+        k = ease_back(t / 0.5)
+        if k < 0.999 or t < 0.5:
+            paste_center(im, scaled(self.emo, max(0.01, k)), W / 2, cy)
+        else:  # settled: no wobble, rotation or breathing
+            paste_center(im, self.emo, W / 2, cy)
         if self.cap:
             paste_center(im, self.cap, W / 2, CONTENT_Y[1] - 50, alpha=ease_out((t - 0.3) / 0.3))
         return im
@@ -605,18 +621,22 @@ class PhotoLayer(Layer):
             z = 1.15 - 0.12 * p
             if self.punch:
                 z /= 1 + 0.28 * (1 - ease_out(t / 1.4))
-            cw, ch = int(self.big.width * z / 1.15), int(self.big.height * z / 1.15)
+            cw, ch = self.big.width * z / 1.15, self.big.height * z / 1.15
             mx, my = (self.big.width - cw) / 2, (self.big.height - ch) / 2
             x = mx + self.dir[0] * mx * (p - 0.5)
             y = my + self.dir[1] * my * (p - 0.5)
-            im = self.big.crop((int(x), int(y), int(x) + cw, int(y) + ch)).resize((W, H), Image.BILINEAR)
+            im = view(self.big, x, y, cw, ch)
             im.paste(shade(), (0, 0), shade())
             return im
         im = self.bg.copy()
         k = 1.0 + 0.05 * p
         if self.punch:
             k *= 1 + 0.25 * (1 - ease_out(t / 1.2))
-        paste_center(im, scaled(self.card, k * ease_back(t / 0.45)), W / 2, CONTENT_CY)
+        kk = k * ease_back(t / 0.45)
+        if t < 0.45:
+            paste_center(im, scaled(self.card, max(0.01, kk)), W / 2, CONTENT_CY)
+        else:
+            place(im, self.card, W / 2, CONTENT_CY, kk)
         return im
 
 
