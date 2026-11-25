@@ -1,0 +1,158 @@
+{
+  "topic": "大人の骨の数が減る理由",
+  "category": "人体",
+  "writer": "gemini+claude",
+  "title": "大人はなぜ[骨の数]が減るのか？",
+  "youtube_title": "骨の数が大人になると減る理由とは？ #雑学 #shorts",
+  "description": "実は赤ちゃんの骨は大人より100個近くも多いんです！\n成長するとなぜ骨の数が減るのか、人体の不思議な仕組みを解説します。\n#雑学 #人体 #骨 #豆知識 #shorts",
+  "tags": [
+    "雑学",
+    "人体",
+    "骨",
+    "豆知識",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#0B132B",
+      "#1C2541"
+    ],
+    "accent": "#00E5FF"
+  },
+  "pronunciations": {
+    "頭蓋骨": "ずがいこつ",
+    "骨盤": "こつばん",
+    "仙骨": "せんこつ",
+    "寛骨": "かんこつ",
+    "前頭骨": "ぜんとうこつ",
+    "産道": "さんどう"
+  },
+  "scenes": [
+    {
+      "narration": "大人は[骨の数が減る]。270〜300個あった赤ちゃんの骨が、206個ほどになります。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Split screen cinematic concept art of a glowing newborn baby skeleton beside a glowing adult human skeleton, anatomical model style, dramatic dark blue background, bioluminescent neon lighting, ultra-detailed, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🦴",
+          "text": "大人は骨の数が減る？"
+        }
+      }
+    },
+    {
+      "narration": "体は大きくなるのに、なぜ骨の数は[100個近く]も減るのでしょうか？",
+      "visual": {
+        "type": "compare",
+        "relation": "arrow",
+        "items": [
+          {
+            "label": "赤ちゃんの骨",
+            "value": "300個近く",
+            "color": "#48CAE4",
+            "note": "出生時(270〜300)",
+            "emoji": "👶"
+          },
+          {
+            "label": "大人の骨",
+            "value": "206個",
+            "color": "#FFB703",
+            "note": "成人の標準的な数",
+            "emoji": "🧍"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "実は骨が消えるのではなく、成長につれて[骨同士がくっつく]からです。",
+      "visual": {
+        "type": "list",
+        "items": [
+          {
+            "emoji": "💀",
+            "text": "頭蓋骨の一部（前頭骨など）"
+          },
+          {
+            "emoji": "🩻",
+            "text": "骨盤の寛骨（3つが合体）"
+          },
+          {
+            "emoji": "🦴",
+            "text": "背骨の下部（仙骨など）"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "赤ちゃんの[頭蓋骨]はすき間が閉じきっておらず、産道を通るとき形を変えられます。",
+      "visual": {
+        "type": "photo",
+        "query": "newborn baby sleeping",
+        "ai_prompt": "A peaceful newborn baby sleeping gently on a soft blanket, close up shot focusing on baby head, warm natural lighting, high quality realistic photography",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "👶",
+          "text": "頭蓋骨の柔軟性"
+        }
+      }
+    },
+    {
+      "narration": "骨盤の寛骨は3つ、仙骨は5つの骨がくっつき、体をしっかり支える[大きな骨]になります。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🦴",
+        "text": "くっついて大きな骨に"
+      }
+    },
+    {
+      "narration": "骨の数が減るのは、赤ちゃんの骨格が[大人の骨格]へ育った証なんですね。",
+      "visual": {
+        "type": "text",
+        "text": "骨の数が減る＝成長の証",
+        "emoji": "✨"
+      }
+    },
+    {
+      "narration": "減る理由知ってた？コメントで教えて！",
+      "visual": {
+        "type": "text",
+        "emoji": "💬",
+        "text": "減る理由知ってた？コメントで教えて！",
+        "size": 96,
+        "sub": "▶ フォローで毎日雑学"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0,
+      "no_subtitle": true
+    }
+  ],
+  "comment_prompt": "減る理由知ってた？コメントで教えて！",
+  "sources": [
+    "https://health.clevelandclinic.org/how-many-bones-does-a-baby-have",
+    "https://my.clevelandclinic.org/health/body/25176-bones",
+    "https://www.ncbi.nlm.nih.gov/sites/books/NBK542197/",
+    "https://www.contemporarypediatrics.com/view/evaluating-fontanels-newborn-skull",
+    "https://openstax.org/books/anatomy-and-physiology-2e/pages/7-2-the-skull",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6420466/",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sacrum"
+  ],
+  "thumb_text": "大人は[骨の数]が減る！？",
+  "thumb_prompt": "High contrast medical art showing glowing bones of a tiny baby curled up next to a tall standing adult skeleton, dramatic cinematic blue and white neon lighting, clean dark background, no text, no human faces",
+  "format": "standard",
+  "factcheck": [
+    "「骨が減る」が骨密度の低下と取り違えられないよう、title・topic・thumb_text・シーン1・シーン6の文字を「骨の数が減る」に直した",
+    "赤ちゃんの骨の数を「約300個」から出典どおり「270〜300個」に直した（ナレーション、compareのvalueは「300個近く」、noteは「出生時(270〜300)」）",
+    "大人の骨の数を「206個ほど」とし、noteを「成人の標準的な数」にした（206〜213個と個人差があるため）",
+    "「約100個も減る／多い」を「100個近く」に直した（ナレーションと説明文）",
+    "「頭蓋骨（複数から1つへ）」は誤り（大人も22個の骨）なので、「頭蓋骨の一部（前頭骨など）」に直した",
+    "「骨盤（3つの骨が合体）」を、正しい部位の「骨盤の寛骨（3つが合体）」に直した",
+    "シーン3の見出しを「主な部位」から「くっつく骨の例」にした",
+    "シーン4を、頭蓋骨が「分かれている」から「すき間が閉じきっておらず形を変えられる」に直した",
+    "シーン5の「重い体重を支える頑丈な骨」を「体をしっかり支える大きな骨」に弱め、仙骨は5つの骨がくっつくことを足した",
+    "シーン6の「骨が減ることで強くて頑丈な体」という言い過ぎの因果関係を「大人の骨格へ育った証」に直した（画面の文字も同じ趣旨に変更）",
+    "ナレーション合計を229文字から217文字に縮めて150〜220文字の範囲に収めた",
+    "読み仮名に寛骨・前頭骨・産道を足した",
+    "出典を、主張を裏付けない・実在を確認できなかったURL（NIAMS、Cleveland Clinicの旧URL、学研トップページ）から、確認に使ったページに差し替えた"
+  ]
+}
