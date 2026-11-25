@@ -340,7 +340,8 @@ def render(script_path, cfg, root, out_dir):
                 b = band.copy()
                 b.putalpha(b.getchannel("A").point(lambda v, f=V.clamp((tt - HOOK) / 0.3): int(v * f)))
             img.paste(b, ((V.W - b.width) // 2, 150), b)
-        for a, b, s in subs:
+        show_subs = not script["scenes"][si].get("no_subtitle")
+        for a, b, s in (subs if show_subs else ()):
             if a - 0.05 <= tt < b:
                 si_img = sub_img(s)
                 if isinstance(layers[si], (V.PhotoLayer, V.VideoLayer)):  # dark backing on busy photos

@@ -2,6 +2,7 @@
 import datetime as dt
 import json
 import random
+import re
 from typing import List, Literal
 
 import anthropic
@@ -104,9 +105,10 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
   最初の一言と同じ驚きを短く表す。その後のシーンで事実を順に説明し、最後は短いオチ。
 - 最後まで見たくなる仕掛け: 途中（2〜3シーン目）で「最後にもっと驚く事実がある」のように予告してもよいが、
   予告したら必ず最後に回収する（回収しない予告や大げさな煽りは禁止）。
-- ループ: 最後のシーンの一言は、冒頭の一言にそのまま戻れる言い回しにする（例: 最後「…だから、雲1つで」→
-  冒頭「500トン。」のように、2周目が自然につながると理想的。無理につなげて不自然になるなら、冒頭の事実を
-  短く言い直して締める）。
+- ループ: 最後のシーンは、冒頭の驚きの事実を短く言い直して締める完結した文にする（例: 冒頭「雲1つで、500トン。」
+  → 最後「見上げた雲にも、500トンの水があるんです。」）。2周目の冒頭と自然につながると理想的。
+  文を「、」や「だから」などで途中で止める終わり方は禁止。すべてのシーンのナレーションは「。」「！」「？」で終える。
+- コメントの問いかけ（「コメントで教えて」など）はシーンのナレーションに書かない。comment_prompt にだけ書く。
 - comment_prompt: 動画の最後に読み上げる、思わずコメントしたくなる短い問いかけ（20文字以内。
   例「知ってた？コメントで教えて」「あなたはどっち派？」「他に知ってる雑学ある？」）。フォローの呼びかけは
   自動で画面に出るので書かない。
@@ -114,7 +116,7 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
   （2つの数字を並べたいときは1つの compare にまとめる）。
 - emoji は内容をそのまま表すものを選ぶ（例: ピラミッドに 🏛️ は使わない。ぴったりの絵文字が無いときは
   🏜️ のように場所や雰囲気を表すものにする）。数字・英字は半角で書く。
-- シーン数5〜7、ナレーション合計150〜220文字（30〜40秒）。1シーンのナレーションは1〜2文・40文字以内
+- シーン数5〜7、ナレーション合計150〜220文字（30〜40秒。クイズ形式はカウントダウンが入るので130〜190文字）。1シーンのナレーションは1〜2文・40文字以内
   （長くなるならシーンを分ける。同じ画面が6秒以上続かないように）。
 - ナレーションは話し言葉。強調したい語句は [ ] で囲む（各シーン1か所まで）。
 - 各シーンに映像を指定:
@@ -233,12 +235,35 @@ def theme_line(category=None, history=(), topic=None):
             f"作ってください。\n\n# 重複禁止（過去に扱ったテーマ）\n{hist}")
 
 
-def _scene(sc):
+CTA_RE = re.compile(r"[^。！？!?]*(コメント|フォロー|チャンネル登録)[^。！？!?]*[。！？!?]?")
+
+
+def clean_narration(text, comment_prompt=""):
+    """Drop CTA sentences (they belong to the outro) and any trailing unfinished fragment."""
+    t = text
+    if comment_prompt:
+        t = t.replace(comment_prompt, "")
+    t = CTA_RE.sub("", t).strip()
+    m = re.search(r"^(.*[。！？!?」])", t, re.S)
+    if m and m.group(1) != t:  # trailing fragment such as "だから憧れの、"
+        t = m.group(1)
+    t = t.strip().lstrip("。！？!?、 ")
+    return t if re.search(r"[^\s。！？!?、」「]", t) else ""
+
+
+def _scene(sc, comment_prompt=""):
     v = _visual(sc.visual)
-    out = {"narration": sc.narration, "visual": v}
+    out = {"narration": clean_narration(sc.narration, comment_prompt), "visual": v}
     if v.get("type") == "quiz" and v.get("countdown"):
         out["hold"] = 3.3  # room for the 3-2-1 countdown
     return out
+
+
+def outro_scene(outro, comment_prompt):
+    """Last scene: the spoken comment prompt is also what the screen shows; follow line underneath."""
+    cp = (comment_prompt or outro.get("narration", "")).strip()
+    vis = {"type": "text", "emoji": "💬", "text": cp, "size": 96, "sub": "▶ フォローで毎日雑学"}
+    return dict(outro, narration=cp, visual=vis, no_subtitle=True)
 
 
 def assemble(s: Script, category, outro, writer):
@@ -252,7 +277,8 @@ def assemble(s: Script, category, outro, writer):
         "tags": s.tags,
         "theme": {"bg": (s.bg_colors + ["#1e3c72", "#6a1b9a"])[:2], "accent": s.accent or "#ffd600"},
         "pronunciations": {p.word: p.reading for p in s.pronunciations},
-        "scenes": [_scene(sc) for sc in s.scenes] + [dict(outro, narration=s.comment_prompt or outro.get("narration", ""))],
+        "scenes": [x for x in (_scene(sc, s.comment_prompt) for sc in s.scenes) if x["narration"]]
+                  + [outro_scene(outro, s.comment_prompt)],
         "comment_prompt": s.comment_prompt,
         "sources": s.sources,
         "thumb_text": s.thumb_text,

@@ -337,13 +337,17 @@ class Layer:
 class TextLayer(Layer):
     def __init__(self, spec, theme, seed=0):
         super().__init__(spec, theme, seed)
-        self.txt = rich_text(spec.get("text", ""), spec.get("size", 120), 940, hi=self.accent,
-                             stroke=10, shadow=True)
+        self.txt = fit_text(spec.get("text", ""), spec.get("size", 120), 960, 420, min_size=64,
+                            hi=self.accent, stroke=10, shadow=True)
         self.emo = emoji(spec["emoji"], spec.get("emoji_size", 300)) if spec.get("emoji") else None
+        self.sub = (rich_text(spec["sub"], 56, 900, fill=(255, 255, 255), hi=self.accent, stroke=6)
+                    if spec.get("sub") else None)
 
     def frame(self, t, dur):
         im = self.background(t, dur)
-        cy = CONTENT_CY
+        if self.sub:
+            place(im, self.sub, W / 2, CONTENT_Y[1] + 10, 1.0, alpha=ease_out((t - 0.35) / 0.3))
+        cy = CONTENT_CY - (40 if self.sub else 0)
         if self.emo:
             k = ease_back(t / 0.45)
             place(im, self.emo, W / 2, cy - 170 + math.sin(t * 3) * 12 * ease_out(t / 0.6), max(0.01, k))
@@ -612,9 +616,9 @@ class QuizLayer(Layer):
     def frame(self, t, dur):
         im = self.background(t, dur)
         place(im, self.q, W / 2, CONTENT_Y[0] + 70, max(0.01, ease_back(t / 0.4)))
-        y0 = CONTENT_Y[0] + 230
+        y0 = CONTENT_Y[0] + 215
         for i, card in enumerate(self.cards):
-            cy = y0 + i * 160
+            cy = y0 + i * 150
             if self.reveal:
                 if i == self.answer:
                     k = 1 + 0.06 * ease_back(t / 0.35)
@@ -634,8 +638,8 @@ class QuizLayer(Layer):
                 n = int(math.ceil(left))
                 frac = n - left  # 0 -> 1 within each second
                 k = 1.25 - 0.25 * ease_out(frac / 0.25)
-                place(im, self.ring, W / 2, CONTENT_Y[1] - 10, 1.0)
-                place(im, self.nums[n], W / 2, CONTENT_Y[1] - 10, k)
+                place(im, self.ring, W / 2, CONTENT_Y[1] + 35, 0.8)
+                place(im, self.nums[n], W / 2, CONTENT_Y[1] + 35, 0.8 * k)
         return im
 
 
