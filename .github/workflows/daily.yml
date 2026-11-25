@@ -8,6 +8,10 @@ on:
       count:
         description: "作るお題の数"
         default: "1"
+      analytics_only:
+        description: "YouTube の分析レポートだけ更新する（動画は作らない）"
+        type: boolean
+        default: false
       format:
         description: "台本の形式（空欄=日替わり / standard / quiz / myth）"
         default: ""
@@ -90,6 +94,7 @@ jobs:
           args="--count ${{ github.event.inputs.count || 1 }}"
           [ "${{ github.event.inputs.compare }}" = "true" ] && args="$args --compare"
           [ -n "${{ github.event.inputs.format }}" ] && args="$args --format ${{ github.event.inputs.format }}"
+          [ "${{ github.event.inputs.analytics_only }}" = "true" ] && args="$args --analytics-only"
           [ -n "${{ github.event.inputs.rerender }}" ] && args="$args --rerender ${{ github.event.inputs.rerender }}"
           [ -n "${{ github.event.inputs.upload_existing }}" ] && args="$args --upload-only ${{ github.event.inputs.upload_existing }}"
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.upload }}" = "true" ]; then
@@ -102,6 +107,7 @@ jobs:
           git config user.name "shorts-bot"
           git config user.email "shorts-bot@users.noreply.github.com"
           git add scripts history.json
+          [ -d analytics ] && git add analytics
           [ -f dictionary.json ] && git add dictionary.json
           git diff --cached --quiet || (git commit -m "daily: $(date -u +%F) scripts" && git push)
 

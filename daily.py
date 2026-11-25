@@ -28,6 +28,7 @@ def main():
     ap.add_argument("--rerender", nargs="*", default=[],
                     help="scripts/archive の既存台本で動画だけ作り直す（例: 2026-11-24_12）")
     ap.add_argument("--upload", action="store_true", help="作った動画を YouTube にアップロードする")
+    ap.add_argument("--analytics-only", action="store_true", help="YouTube の分析レポートだけ更新する")
     ap.add_argument("--format", choices=["standard", "quiz", "myth"], help="台本の形式を指定（省略時は日替わり）")
     ap.add_argument("--upload-only", nargs="*", default=[],
                     help="output/ にある完成済みの動画（例: 2026-11-24_08_gemini）をアップロードだけする")
@@ -58,6 +59,23 @@ def main():
             made.append(name)
         except Exception as e:  # keep going with the next video
             print(f"[daily] render failed for {name}: {e}")
+
+    tuned = {}
+    if not a.upload_only and not a.rerender and cfg.get("analytics", {}).get("enabled", True):
+        from factory import youtube as _yt
+        if _yt.configured():
+            try:
+                from factory import analytics
+                from factory.generate import FORMAT_WEIGHTS, CATEGORIES
+                rep = analytics.build(ROOT, history)
+                tuned = {"format_weights": analytics.tuned_weights(FORMAT_WEIGHTS, rep["by_format"]),
+                         "category_weights": analytics.tuned_weights({c: 1.0 for c in CATEGORIES},
+                                                                     rep["by_category"])}
+                print(f"[analytics] measured {rep['measured']} videos; format weights {tuned['format_weights']}")
+            except Exception as e:
+                print(f"[analytics] skipped: {e}")
+    if a.analytics_only:
+        return
 
     if a.upload_only:  # upload already-rendered videos (downloaded from Releases by the workflow)
         from factory.render import build_description, normalize
@@ -106,7 +124,7 @@ def main():
                 try:
                     if first is None:
                         s = generate(topics, cfg["outro"], seed=seed, recent_categories=recent, writer=w,
-                                     fmt=a.format)
+                                     fmt=a.format, **tuned)
                         first = s
                     else:  # same topic & category as the first writer
                         s = generate(topics, cfg["outro"], writer=w, fmt=first.get("format"),

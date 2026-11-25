@@ -286,19 +286,21 @@ def assemble(s: Script, category, outro, writer):
     }
 
 
-def pick_category(seed=None, recent_categories=()):
+def pick_category(seed=None, recent_categories=(), weights=None):
     rng = random.Random(seed or dt.date.today().toordinal())
     pool = [c for c in CATEGORIES if c not in set(recent_categories)] or CATEGORIES
-    return rng.choice(pool)
+    w = [(weights or {}).get(c, 1.0) for c in pool]
+    return rng.choices(pool, weights=w)[0]
 
 
 def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None,
-             fmt=None):
+             fmt=None, format_weights=None, category_weights=None):
     """Write a script. With topic set, write about that topic instead of choosing one."""
-    category = category or pick_category(seed, recent_categories)
+    category = category or pick_category(seed, recent_categories, category_weights)
     print(f"[generate:{writer}] category: {category}" + (f" / topic: {topic}" if topic else ""))
     rng = random.Random((seed or dt.date.today().toordinal()) * 7 + 3)
-    fmt = fmt if fmt in FORMATS else rng.choices(list(FORMAT_WEIGHTS), weights=list(FORMAT_WEIGHTS.values()))[0]
+    fw = format_weights or FORMAT_WEIGHTS
+    fmt = fmt if fmt in FORMATS else rng.choices(list(fw), weights=list(fw.values()))[0]
     print(f"[generate] format: {fmt}")
     prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic),
                                     format_name=FORMATS[fmt][0], format_guide=FORMATS[fmt][1])
