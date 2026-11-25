@@ -29,7 +29,8 @@ class Segment(BaseModel):
 
 
 class Visual(BaseModel):
-    type: Literal["photo", "video", "ai", "illustration", "number", "compare", "list", "pie", "text"]
+    type: Literal["photo", "video", "ai", "illustration", "number", "compare", "list", "pie", "text",
+                  "quiz", "quiz_answer"]
     emoji: str
     text: str
     query: str
@@ -65,10 +66,30 @@ class Script(BaseModel):
     sources: List[str]
     thumb_text: str
     thumb_prompt: str
+    comment_prompt: str
+
+
+FORMATS = {
+    "standard": ("通常", """意外な事実を言い切って始め、理由や仕組みを順に明かしていく。"""),
+    "quiz": ("クイズ", """3択クイズ形式。1シーン目で驚きの事実をにおわせつつ問題を出す（例:「タコの心臓、いくつ？」）。
+  2シーン目は visual.type=quiz で、text に問題文（20文字以内）、items に選択肢3つ（各8文字以内、text のみ）、
+  number に正解の番号（1〜3）。ナレーションは問題と3つの選択肢を読み上げ、最後に「正解は…」とは言わない
+  （このあと3秒のカウントダウンが自動で入る）。3シーン目は visual.type=quiz_answer（2シーン目と同じ text・
+  items・number）で、ナレーションは「正解は〇〇！」と言い切る。その後のシーンで理由を説明する。
+  不正解の選択肢も、もっともらしいものにする。"""),
+    "myth": ("誤解を正す", """多くの人が信じている「よくある誤解」を正す形式。1シーン目で誤解を否定して言い切る
+  （例:「ダチョウは砂に頭を埋めない。」）。どこから誤解が生まれたか→本当はどうか→なぜそうなのか、の順に説明する。
+  誤解と真実の対比には compare を使ってよい（label に「誤解」「真実」）。誤解が実際に広く信じられていることは
+  出典で確認できるものに限る。"""),
+}
+FORMAT_WEIGHTS = {"standard": 5, "quiz": 3, "myth": 2}
 
 
 RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャンネルの構成作家です。
 {theme_line}
+
+# 今回の形式：{format_name}
+{format_guide}
 
 # 手順
 1. web検索で、ネタの事実を信頼できる情報源（公的機関・大学・百科事典・専門メディア）で確認する。
@@ -80,13 +101,20 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
   数字をいきなり言い切る（例:「雲1つで、500トン。」「タコの心臓は、3つ。」）。「〜って知っていますか？」
   「実は〜」のような前置きから始めない。1シーン目のナレーションは35文字以内で、映像は photo か ai の
   一目で引き込まれる印象的な画像にする。thumb_text（キャッチコピー）は開始直後に画面に大きく出るので、
-  最初の一言と同じ驚きを短く表す。2〜6シーン目で事実を順に説明。最後は短いオチ。
-  フォローの呼びかけは不要（自動で追加される）。
+  最初の一言と同じ驚きを短く表す。その後のシーンで事実を順に説明し、最後は短いオチ。
+- 最後まで見たくなる仕掛け: 途中（2〜3シーン目）で「最後にもっと驚く事実がある」のように予告してもよいが、
+  予告したら必ず最後に回収する（回収しない予告や大げさな煽りは禁止）。
+- ループ: 最後のシーンの一言は、冒頭の一言にそのまま戻れる言い回しにする（例: 最後「…だから、雲1つで」→
+  冒頭「500トン。」のように、2周目が自然につながると理想的。無理につなげて不自然になるなら、冒頭の事実を
+  短く言い直して締める）。
+- comment_prompt: 動画の最後に読み上げる、思わずコメントしたくなる短い問いかけ（20文字以内。
+  例「知ってた？コメントで教えて」「あなたはどっち派？」「他に知ってる雑学ある？」）。フォローの呼びかけは
+  自動で画面に出るので書かない。
 - 同じ結論や同じ言い回しを2回繰り返さない。同じ種類の映像（例: number と number）を2シーン続けない
   （2つの数字を並べたいときは1つの compare にまとめる）。
 - emoji は内容をそのまま表すものを選ぶ（例: ピラミッドに 🏛️ は使わない。ぴったりの絵文字が無いときは
   🏜️ のように場所や雰囲気を表すものにする）。数字・英字は半角で書く。
-- シーン数5〜8、ナレーション合計200〜300文字。1シーンのナレーションは1〜2文・45文字以内
+- シーン数5〜7、ナレーション合計150〜220文字（30〜40秒）。1シーンのナレーションは1〜2文・40文字以内
   （長くなるならシーンを分ける。同じ画面が6秒以上続かないように）。
 - ナレーションは話し言葉。強調したい語句は [ ] で囲む（各シーン1か所まで）。
 - 各シーンに映像を指定:
@@ -98,13 +126,16 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
   number（数字を大きく。そのシーンのナレーションはその数字の話だけにする）/
   compare（性質の違う2つの対比だけ。同じ量の言い換え（500t＝ゾウ100頭）には使わない）/ list（2〜4項目）/
   pie（「全体のうち何割か」を示す時だけ。A は B の何割、のような別物同士の比較には compare を使う）/
-  illustration（絵文字1〜2個＋短い文字）/ text（大きな文字）。
+  illustration（絵文字1〜2個＋短い文字）/ text（大きな文字）/
+  quiz・quiz_answer（クイズ形式のときだけ。使い方は「今回の形式」に従う）。
   photo と ai を合わせて全体の3〜4割、図解系（number/compare/list/pie）を最低2つ入れる。
 - 画面上部のタイトル（title）は15文字以内、[ ]で1か所強調。
 - サムネイル: thumb_text は思わず見たくなる8〜12文字のキャッチコピー（疑問や驚き。[ ]で1か所強調。
   内容と食い違う誇張はしない）。thumb_prompt はサムネイル背景用の英語の画像指示（主役を大きく、
   印象的で高コントラスト、画像内に文字を入れない、実在の人物の顔は描かない）。
-- youtube_title は末尾に #雑学 #shorts。description は2〜3行＋ハッシュタグ。
+- youtube_title: 検索されやすいテーマの言葉（例「タコ」「回転寿司」）を前半に入れ、結末を言い切らずに想像させる
+  （例「タコの心臓はなぜ3つ？」）。内容と食い違う煽りや釣りはしない。本文は40文字以内、末尾に #雑学 #shorts。
+  description は2〜3行＋ハッシュタグ。
 - number の label は数字の説明として単独で意味が通る見出しにする（例「対象年齢」「必要な空気量」。
   「までの〜」「以上の〜」のように数字の続きから始めない）。
 - お金の話でも、紙幣・硬貨そのものは画像にしない（AI も素材サイトも日本の紙幣を正しく出せず、外国の
@@ -127,6 +158,8 @@ FORMAT_PROMPT = """次の台本案を、指定のJSONスキーマに変換して
   number: number, unit, label / compare: items(2件: label, value, color, note, emoji)
   list: items(emoji, text) / pie: segments(label, value, color), center
   illustration: emoji, text / text: text, emoji
+  quiz / quiz_answer: text（問題文）, items（選択肢3つ。text のみ）, number（正解の番号 1〜3）
+- comment_prompt は最後に読み上げる問いかけ。
 - color は #RRGGBB。bg_colors は背景グラデーション用の暗めの2色。accent は明るい強調色。
 - sources は出典URLの配列。topic はテーマを短く。thumb_text / thumb_prompt はサムネイル用。
 
@@ -183,6 +216,9 @@ def _visual(v: Visual):
     if t == "pie":
         return {"type": "pie", "center": v.center,
                 "segments": [{"label": s.label, "value": s.value, "color": s.color} for s in v.segments]}
+    if t in ("quiz", "quiz_answer"):
+        return {"type": "quiz", "question": v.text, "choices": [i.text for i in v.items[:3]],
+                "answer": int(v.number or 1), "reveal": t == "quiz_answer", "countdown": t == "quiz"}
     if t == "illustration":
         return {"type": "illustration", "emoji": v.emoji or "💡", "text": v.text}
     return {"type": "text", "text": v.text, "emoji": v.emoji}
@@ -197,6 +233,14 @@ def theme_line(category=None, history=(), topic=None):
             f"作ってください。\n\n# 重複禁止（過去に扱ったテーマ）\n{hist}")
 
 
+def _scene(sc):
+    v = _visual(sc.visual)
+    out = {"narration": sc.narration, "visual": v}
+    if v.get("type") == "quiz" and v.get("countdown"):
+        out["hold"] = 3.3  # room for the 3-2-1 countdown
+    return out
+
+
 def assemble(s: Script, category, outro, writer):
     return {
         "topic": s.topic,
@@ -208,7 +252,8 @@ def assemble(s: Script, category, outro, writer):
         "tags": s.tags,
         "theme": {"bg": (s.bg_colors + ["#1e3c72", "#6a1b9a"])[:2], "accent": s.accent or "#ffd600"},
         "pronunciations": {p.word: p.reading for p in s.pronunciations},
-        "scenes": [{"narration": sc.narration, "visual": _visual(sc.visual)} for sc in s.scenes] + [outro],
+        "scenes": [_scene(sc) for sc in s.scenes] + [dict(outro, narration=s.comment_prompt or outro.get("narration", ""))],
+        "comment_prompt": s.comment_prompt,
         "sources": s.sources,
         "thumb_text": s.thumb_text,
         "thumb_prompt": s.thumb_prompt,
@@ -221,11 +266,16 @@ def pick_category(seed=None, recent_categories=()):
     return rng.choice(pool)
 
 
-def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None):
+def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None,
+             fmt=None):
     """Write a script. With topic set, write about that topic instead of choosing one."""
     category = category or pick_category(seed, recent_categories)
     print(f"[generate:{writer}] category: {category}" + (f" / topic: {topic}" if topic else ""))
-    prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic))
+    rng = random.Random((seed or dt.date.today().toordinal()) * 7 + 3)
+    fmt = fmt if fmt in FORMATS else rng.choices(list(FORMAT_WEIGHTS), weights=list(FORMAT_WEIGHTS.values()))[0]
+    print(f"[generate] format: {fmt}")
+    prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic),
+                                    format_name=FORMATS[fmt][0], format_guide=FORMATS[fmt][1])
     notes = None
     if writer in ("gemini", "gemini+claude"):
         from . import gemini
@@ -240,6 +290,7 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
         client = anthropic.Anthropic()
         s = to_script(client, research(client, prompt))
     out = assemble(s, category, outro, writer)
+    out["format"] = fmt
     if notes is not None:
         out["factcheck"] = notes
     return out

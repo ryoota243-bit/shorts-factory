@@ -580,6 +580,65 @@ def backdrop(path, tint):
     return Image.blend(big, shade, 0.62)
 
 
+class QuizLayer(Layer):
+    """3-choice quiz. reveal=False: question + choices (+ 3-2-1 countdown at the end).
+    reveal=True: the correct choice lights up, the others fade."""
+    LETTERS = "ABC"
+    COLORS = [(37, 99, 235), (217, 119, 6), (22, 163, 74)]
+
+    def __init__(self, spec, theme, seed=0):
+        super().__init__(spec, theme, seed)
+        self.reveal = spec.get("reveal", False)
+        self.countdown = spec.get("countdown", False)
+        self.answer = max(1, min(3, int(spec.get("answer", 1)))) - 1
+        q = fit_text(spec.get("question", ""), 72, 940, 190, min_size=48, fill=(255, 255, 255), stroke=8)
+        self.q = q
+        self.cards = []
+        for i, ch in enumerate(spec.get("choices", [])[:3]):
+            card = rounded((900, 132), 34, (255, 255, 255, 240))
+            d = ImageDraw.Draw(card)
+            d.ellipse((22, 22, 110, 110), fill=self.COLORS[i])
+            letter = rich_text(self.LETTERS[i], 60, fill=(255, 255, 255))
+            card.paste(letter, (66 - letter.width // 2, 66 - letter.height // 2), letter)
+            txt = fit_text(ch, 60, 740, 110, min_size=40, fill=(25, 25, 25))
+            card.paste(txt, (140, (132 - txt.height) // 2), txt)
+            self.cards.append(card)
+        self.ok_badge = emoji("⭕", 120)
+        self.nums = {n: rich_text(str(n), 150, stroke=12, fill=self.accent, shadow=True) for n in (1, 2, 3)}
+        ring = Image.new("RGBA", (240, 240), (0, 0, 0, 0))
+        ImageDraw.Draw(ring).ellipse((6, 6, 234, 234), fill=(0, 0, 0, 150), outline=self.accent + (255,), width=10)
+        self.ring = ring
+
+    def frame(self, t, dur):
+        im = self.background(t, dur)
+        place(im, self.q, W / 2, CONTENT_Y[0] + 70, max(0.01, ease_back(t / 0.4)))
+        y0 = CONTENT_Y[0] + 230
+        for i, card in enumerate(self.cards):
+            cy = y0 + i * 160
+            if self.reveal:
+                if i == self.answer:
+                    k = 1 + 0.06 * ease_back(t / 0.35)
+                    hl = rounded((card.width + 20, card.height + 20), 42, (34, 197, 94, 255))
+                    place(im, hl, W / 2, cy, k)
+                    place(im, card, W / 2, cy, k)
+                    place(im, self.ok_badge, W / 2 + 400 * k, cy - 10, ease_back((t - 0.15) / 0.35))
+                else:
+                    place(im, card, W / 2, cy, 0.96, alpha=0.4)
+            else:
+                p = ease_out((t - 0.2 - i * 0.25) / 0.3)
+                if p > 0:
+                    place(im, card, W / 2 + (1 - p) * 260, cy, 1.0, alpha=p)
+        if self.countdown and not self.reveal:
+            left = dur - t
+            if 0 < left <= 3.0:
+                n = int(math.ceil(left))
+                frac = n - left  # 0 -> 1 within each second
+                k = 1.25 - 0.25 * ease_out(frac / 0.25)
+                place(im, self.ring, W / 2, CONTENT_Y[1] - 10, 1.0)
+                place(im, self.nums[n], W / 2, CONTENT_Y[1] - 10, k)
+        return im
+
+
 def cover(img, w, h):
     k = max(w / img.width, h / img.height)
     img = img.resize((math.ceil(img.width * k), math.ceil(img.height * k)), Image.LANCZOS)
@@ -674,4 +733,4 @@ class VideoLayer(Layer):
 
 
 LAYERS = {"text": TextLayer, "illustration": IllustrationLayer, "number": NumberLayer,
-          "compare": CompareLayer, "list": ListLayer, "pie": PieLayer}
+          "compare": CompareLayer, "list": ListLayer, "pie": PieLayer, "quiz": QuizLayer}

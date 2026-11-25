@@ -8,6 +8,9 @@ on:
       count:
         description: "作るお題の数"
         default: "1"
+      format:
+        description: "台本の形式（空欄=日替わり / standard / quiz / myth）"
+        default: ""
       rerender:
         description: "作り直す台本名（空白区切り、例: 2026-11-24_12 2026-11-24_13）。指定時は新規作成しない"
         default: ""
@@ -86,6 +89,7 @@ jobs:
         run: |
           args="--count ${{ github.event.inputs.count || 1 }}"
           [ "${{ github.event.inputs.compare }}" = "true" ] && args="$args --compare"
+          [ -n "${{ github.event.inputs.format }}" ] && args="$args --format ${{ github.event.inputs.format }}"
           [ -n "${{ github.event.inputs.rerender }}" ] && args="$args --rerender ${{ github.event.inputs.rerender }}"
           [ -n "${{ github.event.inputs.upload_existing }}" ] && args="$args --upload-only ${{ github.event.inputs.upload_existing }}"
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.upload }}" = "true" ]; then

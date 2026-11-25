@@ -225,6 +225,13 @@ def render(script_path, cfg, root, out_dir):
             beats.append(a)
     print(f"  [beats] {', '.join(f'{b:.1f}s' for b in beats) or 'none'}")
     tk = bgm.tick() * 0.16
+    for sc, (st, en) in zip(script["scenes"], scenes_t):  # quiz countdown: 3 ticks
+        v = sc.get("visual") or {}
+        if v.get("type") == "quiz" and v.get("countdown") and not v.get("reveal"):
+            for k in (3, 2, 1):
+                s_ = int((en - k) * SR)
+                if s_ > 0:
+                    mix[s_:s_ + len(tk)] += (tk * 2.2)[: max(0, min(len(tk), n - s_))]
     for a in beats:  # soft accent on emphasised words
         s_ = int(a * SR); mix[s_:s_ + len(tk)] += tk[: max(0, min(len(tk), n - s_))]
     hit = bgm.impact() * 0.55  # opening impact

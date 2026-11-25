@@ -28,6 +28,7 @@ def main():
     ap.add_argument("--rerender", nargs="*", default=[],
                     help="scripts/archive の既存台本で動画だけ作り直す（例: 2026-11-24_12）")
     ap.add_argument("--upload", action="store_true", help="作った動画を YouTube にアップロードする")
+    ap.add_argument("--format", choices=["standard", "quiz", "myth"], help="台本の形式を指定（省略時は日替わり）")
     ap.add_argument("--upload-only", nargs="*", default=[],
                     help="output/ にある完成済みの動画（例: 2026-11-24_08_gemini）をアップロードだけする")
     a = ap.parse_args()
@@ -104,10 +105,11 @@ def main():
             for w in writers:
                 try:
                     if first is None:
-                        s = generate(topics, cfg["outro"], seed=seed, recent_categories=recent, writer=w)
+                        s = generate(topics, cfg["outro"], seed=seed, recent_categories=recent, writer=w,
+                                     fmt=a.format)
                         first = s
                     else:  # same topic & category as the first writer
-                        s = generate(topics, cfg["outro"], writer=w,
+                        s = generate(topics, cfg["outro"], writer=w, fmt=first.get("format"),
                                      category=first["category"], topic=first["topic"])
                     scripts.append((s, f"_{w}" if a.compare else ""))
                 except Exception as e:

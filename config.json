@@ -38,13 +38,14 @@
     "count": 1
   },
   "outro": {
-    "narration": "面白い雑学を毎日投稿中。フォローして明日もチェックしてね！",
+    "narration": "知ってた？コメントで教えてね",
     "visual": {
       "type": "text",
       "emoji": "👆",
       "text": "フォローで\n[毎日雑学]"
     },
-    "hold": 0.8
+    "hold": 0.5,
+    "min_duration": 1.0
   },
   "script_writer": "gemini+claude",
   "gemini": {
