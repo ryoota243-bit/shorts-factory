@@ -36,6 +36,22 @@ def fetch(start="2026-11-01"):
     return {r[0]: dict(zip(cols[1:], r[1:])) for r in res.get("rows", [])}
 
 
+def _titles(ids):
+    """Titles for videos we did not upload ourselves (YouTube Data API, 1 unit per 50 ids)."""
+    out = {}
+    ids = list(ids)
+    if not ids:
+        return out
+    token = youtube.access_token()
+    for i in range(0, len(ids), 50):
+        q = urllib.parse.urlencode({"part": "snippet", "id": ",".join(ids[i:i + 50])})
+        req = urllib.request.Request(f"https://www.googleapis.com/youtube/v3/videos?{q}",
+                                     headers={"Authorization": f"Bearer {token}"})
+        for it in json.loads(youtube._open(req, 60).read()).get("items", []):
+            out[it["id"]] = it["snippet"]["title"]
+    return out
+
+
 def build(root, history):
     """Join analytics rows with our history/scripts and write analytics/report.{json,md}."""
     rows = fetch()
@@ -56,6 +72,17 @@ def build(root, history):
                            "category": h.get("category") or script.get("category", ""),
                            "format": script.get("format", "standard"), "writer": script.get("writer", ""),
                            **{k: m.get(k) for k in METRICS}})
+    known = {v["video_id"] for v in videos}
+    others = [vid for vid in rows if vid not in known]  # e.g. videos posted by hand
+    try:
+        titles = _titles(others)
+    except Exception as e:
+        print(f"[analytics] titles skipped: {e}")
+        titles = {}
+    for vid in others:
+        m = rows[vid]
+        videos.append({"name": "", "video_id": vid, "topic": re.sub(r"\s*#\S+", "", titles.get(vid, vid)),
+                       "category": "", "format": "手動投稿", "writer": "", **{k: m.get(k) for k in METRICS}})
     measured = [v for v in videos if v.get("views")]
 
     def group(key):
