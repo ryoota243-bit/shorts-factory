@@ -1,4 +1,20 @@
 {
+  "200g": {
+    "reading": "ニヒャクグラム",
+    "accent_type": 5
+  },
+  "50g": {
+    "reading": "ゴジュウグラム",
+    "accent_type": 4
+  },
+  "529g": {
+    "reading": "ゴヒャクニジュウキュウグラム",
+    "accent_type": 9
+  },
+  "6g": {
+    "reading": "ロクグラム",
+    "accent_type": 3
+  },
   "A380": {
     "reading": "エーサンハチマル",
     "accent_type": 5

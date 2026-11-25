@@ -1,0 +1,143 @@
+{
+  "topic": "オリンピックの金メダル",
+  "category": "スポーツ",
+  "writer": "gemini+claude",
+  "title": "五輪の[金メダル]の秘密",
+  "youtube_title": "五輪の金メダルに本物の金はどれだけ入ってる？ #雑学 #shorts",
+  "description": "誰もが憧れるオリンピックの金メダル。実は中身のほとんどは銀なんです！本物の金がどれくらい使われているか、3択クイズで確かめてみてください。\n\n#雑学 #shorts #オリンピック #スポーツ #クイズ",
+  "tags": [
+    "雑学",
+    "オリンピック",
+    "金メダル",
+    "スポーツ",
+    "クイズ"
+  ],
+  "theme": {
+    "bg": [
+      "#1C1B18",
+      "#0E0D0C"
+    ],
+    "accent": "#F1C40F"
+  },
+  "pronunciations": {
+    "IOC": "あいおーしー"
+  },
+  "scenes": [
+    {
+      "narration": "金メダル、中身は銀。では、[含まれる金の量]は次のうちどれ？",
+      "visual": {
+        "type": "photo",
+        "query": "gold medal ribbon close up",
+        "ai_prompt": "Dramatic close up of a shiny plain gold medal with a simple red ribbon on a dark background, warm cinematic lighting, photorealistic, no text, no logos, no symbols, no flags",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🥇",
+          "text": "金メダル"
+        }
+      }
+    },
+    {
+      "narration": "1番、約6g。2番、約50g。3番、[約200g]。どれだと思う？",
+      "visual": {
+        "type": "quiz",
+        "question": "金メダルに含まれる金の量は？",
+        "choices": [
+          "約6g",
+          "約50g",
+          "約200g"
+        ],
+        "answer": 1,
+        "reveal": false,
+        "countdown": true
+      },
+      "hold": 3.3
+    },
+    {
+      "narration": "正解は、[1番の約6g]！IOCの基準は6g以上で、金は[表面のメッキ]だけ。",
+      "visual": {
+        "type": "quiz",
+        "question": "金メダルに含まれる金の量は？",
+        "choices": [
+          "約6g",
+          "約50g",
+          "約200g"
+        ],
+        "answer": 1,
+        "reveal": true,
+        "countdown": false
+      }
+    },
+    {
+      "narration": "本体は純度92.5%以上の銀。パリ大会の529gのメダルなら、金は[約1%]だけ！",
+      "visual": {
+        "type": "pie",
+        "center": "約1%",
+        "segments": [
+          {
+            "label": "銀など",
+            "value": 98.9,
+            "color": "#A0A0A0"
+          },
+          {
+            "label": "金",
+            "value": 1.1,
+            "color": "#F1C40F"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "純金の金メダルは[1912年]の大会が最後。第一次大戦後、金が高すぎて変わったんだ。",
+      "visual": {
+        "type": "number",
+        "value": 1912,
+        "unit": "年",
+        "label": "純金の金メダル最後の大会"
+      }
+    },
+    {
+      "narration": "みんなは当たった？コメントで教えて！だから憧れの、",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "An ecstatic athlete in a plain sports uniform standing on a winner podium, proudly holding up a plain gold medal, blurry stadium crowd and camera flashes in background, realistic sports photography, no text, no logos, no flags, no national emblems",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🏅",
+          "text": "表彰台の選手"
+        }
+      }
+    },
+    {
+      "narration": "みんなは当たった？コメントで教えて",
+      "visual": {
+        "type": "text",
+        "emoji": "👆",
+        "text": "フォローで\n[毎日雑学]"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0
+    }
+  ],
+  "comment_prompt": "みんなは当たった？コメントで教えて",
+  "sources": [
+    "https://www.britannica.com/sports/Are-Olympic-Medals-Made-of-Gold",
+    "https://www.guinnessworldrecords.com/world-records/last-olympic-gold-medal",
+    "https://www.olympics.com/en/news/paris-2024-olympic-paralympic-medals-reveal-eiffel-tower",
+    "https://www.compoundchem.com/2024/07/30/paris2024medals/amp/"
+  ],
+  "thumb_text": "金メダルは[ほぼ銀]！？",
+  "thumb_prompt": "A close-up shot of a plain gold medal with a simple ribbon resting on a dark marble surface, dramatic golden side-lighting highlighting its reflective metallic texture, award-winning product photography, no text, no logos, no symbols, no flags",
+  "format": "quiz",
+  "factcheck": [
+    "シーン5：根拠の弱い「開催国の負担を減らすため」を、ブリタニカの説明に沿って「第一次大戦後、金が高すぎて変わった」に変更",
+    "シーン5：label を「純金の金メダル最後の年」から「純金の金メダル最後の大会」に変更",
+    "シーン4：「約1%」がどのメダルの話か分かるように「パリ大会の529gのメダル」を追加し、円グラフの数字を実際の比率（98.9 / 1.1）に修正",
+    "シーン3：「IOCの基準は6g以上」を追加し、「約6g」の根拠を示した（IOCの名前は読み方の指定と合わせてここに移動）",
+    "シーン4：「IOCの規定で〜と決まり」を、断定を弱めた形に変更（現在の憲章本文に条文がないという指摘があるため）",
+    "シーン1・6・サムネイル：「Olympic」を外し、一般的なメダル・表彰台の情景に変更。文字・ロゴ・国旗・国の紋章を入れない指定を追加",
+    "description：「別の金属」を、事実に合わせて「銀」に変更",
+    "sources：確認できなかった olympics.com のURLを差し替え、ブリタニカ・ギネス・IOC公式（パリ大会）・Compound Interest に更新",
+    "ナレーション合計198文字、各シーン45文字以内、形式・ループ・comment_prompt はそのまま"
+  ]
+}
