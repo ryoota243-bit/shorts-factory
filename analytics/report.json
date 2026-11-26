@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26T16:21",
+  "generated": "2026-11-26T21:03",
   "videos": [
     {
       "name": "2026-11-24_08",
@@ -17,8 +17,38 @@
       "subscribersGained": null
     },
     {
+      "name": "2026-11-24_08",
+      "video_id": "a_JVQScgODA",
+      "topic": "角膜は空気から酸素をもらう",
+      "category": "人体",
+      "format": "standard",
+      "writer": "claude",
+      "views": null,
+      "averageViewPercentage": null,
+      "averageViewDuration": null,
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "subscribersGained": null
+    },
+    {
       "name": "2026-11-24_09",
       "video_id": "dkJtgG0tQnQ",
+      "topic": "回転寿司のルーツはビール工場",
+      "category": "日本の文化",
+      "format": "standard",
+      "writer": "claude",
+      "views": null,
+      "averageViewPercentage": null,
+      "averageViewDuration": null,
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "subscribersGained": null
+    },
+    {
+      "name": "2026-11-24_09",
+      "video_id": "jEEJO6ajZQI",
       "topic": "回転寿司のルーツはビール工場",
       "category": "日本の文化",
       "format": "standard",
@@ -53,13 +83,13 @@
       "category": "歴史",
       "format": "standard",
       "writer": "gemini+claude",
-      "views": null,
-      "averageViewPercentage": null,
-      "averageViewDuration": null,
-      "likes": null,
-      "comments": null,
-      "shares": null,
-      "subscribersGained": null
+      "views": 2,
+      "averageViewPercentage": 100.85,
+      "averageViewDuration": 40,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 0
     },
     {
       "name": "2026-11-26_01",
@@ -90,9 +120,65 @@
       "comments": null,
       "shares": null,
       "subscribersGained": null
+    },
+    {
+      "name": "",
+      "video_id": "JmLBA11SXE8",
+      "topic": "1日に約16回も朝が来るヤバい場所",
+      "category": "",
+      "format": "手動投稿",
+      "writer": "",
+      "views": 1079,
+      "averageViewPercentage": 75.92,
+      "averageViewDuration": 31,
+      "likes": 6,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 1
+    },
+    {
+      "name": "",
+      "video_id": "SICoGggGPqw",
+      "topic": "フランスが最も長く国境を接する国はブラジル？",
+      "category": "",
+      "format": "手動投稿",
+      "writer": "",
+      "views": 1025,
+      "averageViewPercentage": 63.2,
+      "averageViewDuration": 23,
+      "likes": 8,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 1
     }
   ],
-  "by_format": {},
-  "by_category": {},
-  "measured": 0
+  "by_format": {
+    "standard": {
+      "videos": 1,
+      "views": 2,
+      "avg_views": 2.0,
+      "avg_view_percentage": 100.8
+    },
+    "手動投稿": {
+      "videos": 2,
+      "views": 2104,
+      "avg_views": 1052.0,
+      "avg_view_percentage": 69.6
+    }
+  },
+  "by_category": {
+    "歴史": {
+      "videos": 1,
+      "views": 2,
+      "avg_views": 2.0,
+      "avg_view_percentage": 100.8
+    },
+    "-": {
+      "videos": 2,
+      "views": 2104,
+      "avg_views": 1052.0,
+      "avg_view_percentage": 69.6
+    }
+  },
+  "measured": 3
 }
