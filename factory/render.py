@@ -173,6 +173,9 @@ def render(script_path, cfg, root, out_dir):
     script = normalize(json.loads(Path(script_path).read_text(encoding="utf-8")))
     for sc in script["scenes"]:  # "約 [16回] も" -> "約[16回]も" (spaces break word detection)
         sc["narration"] = tidy(sc.get("narration", ""))
+        v = sc.get("visual") or {}
+        if v.get("type") == "quiz" and not v.get("reveal"):  # a highlighted choice would give the answer away
+            sc["narration"] = re.sub(r"[\[\]]", "", sc["narration"])
     name = Path(script_path).stem
     theme = {**DEFAULT_THEME, **script.get("theme", {})}
     prons = {**cfg.get("pronunciations", {}), **script.get("pronunciations", {})}

@@ -103,6 +103,18 @@ def _zenkaku(s):
     return "".join(chr(ord(c) + 0xFEE0) if "!" <= c <= "~" else c for c in s)
 
 
+def _same_reading(want, kana):
+    """True when the engine's reading already contains the wanted reading (long vowels normalised)."""
+    norm = lambda x: re.sub(r"[ウオ]", "ー", x)
+    return want in kana or norm(want) in norm(kana)
+
+
+def _replace_word(text, surface, reading):
+    """Replace surface only where it is not part of a longer number or latin word (0本 inside 100本)."""
+    lead = r"(?<![0-9０-９A-Za-z.,])" if re.match(r"[0-9０-９A-Za-z]", surface) else ""
+    return re.sub(lead + re.escape(surface), reading, text)
+
+
 def load_dictionary():
     return json.loads(DICT_FILE.read_text(encoding="utf-8")) if DICT_FILE.exists() else {}
 
@@ -154,7 +166,14 @@ def prepare(lines, cfg, hints=None):
         fixes = _review(pairs, hints)
         if not fixes:
             break
+        kana_of = {l: re.sub(r"[^ァ-ヴー]", "", k).replace("ヲ", "オ") for l, k in zip(lines, (p[1] for p in pairs))}
         for f in fixes:
+            # skip "fixes" the engine already reads correctly (e.g. 0本 -> ゼロホン is already ゼロホン)
+            want = f.reading.replace("ヲ", "オ")
+            tl = [lines[f.line - 1]] if 1 <= f.line <= len(lines) else lines
+            if all(_same_reading(want, kana_of[l]) for l in tl):
+                print(f"  [reading] {f.surface}: already read as {f.reading}, skipped")
+                continue
             print(f"  [reading] {f.surface} → {f.reading}" + (" (辞書に登録)" if f.always else " (この文だけ)"))
             if f.always and round_ == 0:
                 try:
@@ -167,8 +186,7 @@ def prepare(lines, cfg, hints=None):
             # context-dependent, or still wrong after the dictionary fix: only the flagged line
             targets = [lines[f.line - 1]] if 1 <= f.line <= len(lines) else lines
             for l in targets:
-                if f.surface in out[l]:
-                    out[l] = out[l].replace(f.surface, _hira(f.reading))
+                out[l] = _replace_word(out[l], f.surface, _hira(f.reading))
     if learned:
         DICT_FILE.write_text(json.dumps(dict(sorted(saved.items())), ensure_ascii=False, indent=2),
                              encoding="utf-8")

@@ -399,11 +399,26 @@ class NumberLayer(Layer):
         self.cache = {}
         self.delay = 0.0  # set by the renderer: seconds until the narration mentions the number
 
+    def fmt(self, cur):
+        v = self.value
+        if abs(v) >= 10000:  # 20000 -> "2万", 15000 -> "1.5万"
+            m = v / 10000
+            return (f"{cur / 10000:.0f}万" if float(m).is_integer() else f"{cur / 10000:.1f}万")
+        return f"{cur:.0f}" if float(v).is_integer() else f"{cur:.1f}"
+
+    def scale(self):
+        """One scale for the whole count-up, sized so the final number + unit fit 900px."""
+        if not hasattr(self, "_k"):
+            final = self.fmt(self.value) if isinstance(self.value, (int, float)) else str(self.value)
+            im = rich_text(final, 360, max_w=5000, stroke=14, fill=self.accent, shadow=True, spacing=1.0)
+            uw = self.unit.width + 10 if self.unit else 0
+            self._k = min(1.0, 900 / (im.width + uw))
+        return self._k
+
     def num_img(self, s):
         if s not in self.cache:
             im = rich_text(s, 360, max_w=5000, stroke=14, fill=self.accent, shadow=True, spacing=1.0)
-            limit = 900 - (self.unit.width if self.unit else 0)
-            self.cache[s] = scaled(im, min(1.0, limit / im.width))
+            self.cache[s] = scaled(im, self.scale())
         return self.cache[s]
 
     def frame(self, t, dur):
@@ -418,22 +433,22 @@ class NumberLayer(Layer):
             return im
         if isinstance(v, (int, float)):
             p = ease_out((t - 0.1) / 0.9)
-            cur = v * p
-            if not self.count:
-                cur = v
-            sep = "," if abs(v) >= 10000 else ""
-            s = f"{cur:{sep}.0f}" if float(v).is_integer() else f"{cur:{sep}.1f}"
+            s = self.fmt(v * p if self.count else v)
         else:
             s = str(v)
         n = self.num_img(s)
         k = ease_back((t - 0.1) / 0.5) if not (isinstance(v, (int, float)) and self.count) else 1 + 0.08 * (1 - ease_out((t - 1.0) / 0.3)) * (t > 1.0)
         n = scaled(n, max(0.01, k))
-        uw = self.unit.width if self.unit else 0
-        cx = W / 2 - uw / 2
+        u = scaled(self.unit, max(0.6, self.scale()) * max(0.01, k)) if self.unit else None
+        uw = u.width if u else 0
+        total = n.width + (uw - 6 if u else 0)
+        left = W / 2 - total / 2
         cy = CONTENT_CY + 60
-        paste_center(im, n, cx, cy)
-        if self.unit:
-            paste_center(im, self.unit, cx + n.width / 2 + uw / 2 - 10, cy + 70, alpha=ease_out((t - 0.1) / 0.3))
+        paste_center(im, n, left + n.width / 2, cy)
+        if u:  # unit sits on the number's baseline, right next to it
+            base = cy + n.height / 2 - 0.16 * n.height
+            ucy = base - u.height / 2 + 0.12 * u.height
+            paste_center(im, u, left + n.width - 6 + uw / 2, ucy, alpha=ease_out((t - 0.1) / 0.3))
         return im
 
 
