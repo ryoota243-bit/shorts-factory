@@ -8,6 +8,8 @@ from typing import List, Literal
 import anthropic
 from pydantic import BaseModel
 
+from . import llm
+
 MODEL = "claude-opus-5-5"
 COLS, ROWS = 6, 3
 
@@ -94,13 +96,14 @@ def review(mp4, script, scenes_t, subs, offset=0.0):
     body = json.dumps({k: script[k] for k in ("title", "scenes") if k in script}, ensure_ascii=False)
     client = anthropic.Anthropic()
     res = client.messages.parse(
-        model=MODEL, max_tokens=8000, output_format=QA, output_config={"effort": "medium"},
+        model=llm.model("qa"), max_tokens=8000, output_format=QA, output_config={"effort": "medium"},
         messages=[{"role": "user", "content": [
             {"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": img}},
             {"type": "text", "text": PROMPT.format(n=len(times), cols=COLS, rows=ROWS,
                                                    frames="\n".join(lines), script=body)},
         ]}],
     )
+    llm.record("qa", res)
     if res.stop_reason == "refusal" or res.parsed_output is None:
         return []
     order = {"高": 0, "中": 1, "低": 2}

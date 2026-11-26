@@ -190,6 +190,10 @@ def notes_for(names, out, cfg):
                   (f"サムネイル: {m['thumbnail']}（動画の最初のコマも同じ画面です。アプリでカバーに選べます）"
                    if m.get("thumbnail") else ""), "", "**タイトル**", "```", m["title"] or "", "```",
                   "**概要欄**", "```", m["description"], "```", "**タグ**: " + ", ".join(m["tags"]), ""]
+        if m.get("cost"):
+            c = m["cost"]
+            lines += [f"Claude API の費用（推定）: 約{c['jpy']}円（$" + f"{c['usd']:.3f}）　" +
+                      " / ".join(f"{k} ${v:.3f}" for k, v in sorted(c["by_task"].items(), key=lambda x: -x[1])), ""]
         if m.get("factcheck"):
             lines += ["**Claude 校閲メモ**", ""] + [f"- {x}" for x in m["factcheck"]] + [""]
         if m.get("qa"):

@@ -7,6 +7,8 @@ import subprocess
 from PIL import Image
 from pydantic import BaseModel
 
+from . import llm
+
 MODEL = "claude-opus-5-5"
 
 
@@ -54,10 +56,11 @@ def check(path, narration, want, topic=""):
         return True, ""
     import anthropic
     res = anthropic.Anthropic().messages.parse(
-        model=MODEL, max_tokens=2000, output_format=Verdict, output_config={"effort": "low"},
+        model=llm.model("verify"), max_tokens=2000, output_format=Verdict, output_config={"effort": "low"},
         messages=[{"role": "user", "content": [
             {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": _thumb(path)}},
             {"type": "text", "text": PROMPT.format(narration=narration, want=want, topic=topic or "（不明）")}]}])
+    llm.record("verify", res)
     v = res.parsed_output
     if v is None:
         return True, ""

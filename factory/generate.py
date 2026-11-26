@@ -6,6 +6,8 @@ import re
 from typing import List, Literal
 
 import anthropic
+
+from . import llm
 from pydantic import BaseModel
 
 MODEL = "claude-opus-5-5"
@@ -198,15 +200,16 @@ def _text(msg):
     return "".join(b.text for b in msg.content if b.type == "text")
 
 
-def research(client, prompt, max_uses=8):
+def research(client, prompt, max_uses=8, task="factcheck"):
     messages = [{"role": "user", "content": prompt}]
     tools = [{"type": "web_search_20260209", "name": "web_search", "max_uses": max_uses}]
     for _ in range(5):
         msg = client.beta.messages.create(
-            model=MODEL, max_tokens=16000, messages=messages, tools=tools,
+            model=llm.model(task), max_tokens=16000, messages=messages, tools=tools,
             output_config={"effort": "high"},
             betas=["server-side-fallback-2026-07-01"], fallbacks="default",
         )
+        llm.record(task, msg)
         if msg.stop_reason == "refusal":
             raise RuntimeError(f"refused: {msg.stop_details}")
         if msg.stop_reason != "pause_turn":
@@ -217,10 +220,11 @@ def research(client, prompt, max_uses=8):
 
 def to_script(client, draft):
     res = client.messages.parse(
-        model=MODEL, max_tokens=16000, output_format=Script,
+        model=llm.model("convert"), max_tokens=16000, output_format=Script,
         output_config={"effort": "low"},
         messages=[{"role": "user", "content": FORMAT_PROMPT.format(draft=draft)}],
     )
+    llm.record("convert", res)
     if res.stop_reason == "refusal":
         raise RuntimeError(f"refused: {res.stop_details}")
     return res.parsed_output
@@ -321,6 +325,7 @@ def pick_category(seed=None, recent_categories=(), weights=None):
 def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None,
              fmt=None, format_weights=None, category_weights=None, style=""):
     """Write a script. With topic set, write about that topic instead of choosing one."""
+    llm.reset()
     category = category or pick_category(seed, recent_categories, category_weights)
     print(f"[generate:{writer}] category: {category}" + (f" / topic: {topic}" if topic else ""))
     rng = random.Random((seed or dt.date.today().toordinal()) * 7 + 3)
@@ -347,6 +352,7 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
         s = to_script(client, research(client, prompt))
     out = assemble(s, category, outro, writer)
     out["format"] = fmt
+    out["gen_cost"] = llm.cost_summary()
     if style:
         out["style"] = style
     if notes is not None:

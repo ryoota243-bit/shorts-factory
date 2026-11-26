@@ -35,6 +35,11 @@ web検索で信頼できる情報源（公的機関・大学・百科事典・�
 - 写真・AI画像の指定（query / ai_prompt）が、特定の機体・建物・場所の正確な見た目を必要としていないか
   （必要なら一般的な情景に変える）
 
+# 検索の節約（費用を抑えるため。確認の厳しさは下げない）
+- 台本の sources は、台本作成時に参照された出典です。まずそれで裏付けが取れる主張は、追加の検索をしなくてよい。
+- 検索は、数字・年・固有名詞・「世界初」「唯一」などの言い切りで、sources だけでは確かめられないものに使う。
+- 同じ主張を何度も検索しない。1回の検索で複数の主張をまとめて確認できるなら、まとめる。
+
 # 手順
 1. 主張ごとに確認し、誤り・不確かな点と修正案を挙げる。
 2. 修正を反映した台本全体を書き直して示す。元の構成・シーン数・長さ・語り口（物語性やオチ）は
@@ -54,7 +59,7 @@ def check(script_model):
     """Return (fixed Script, list of review notes)."""
     client = anthropic.Anthropic()
     payload = json.dumps(script_model.model_dump(), ensure_ascii=False, indent=1)
-    report = research(client, CHECK_PROMPT.format(script=payload), max_uses=14)
+    report = research(client, CHECK_PROMPT.format(script=payload), max_uses=8, task="factcheck")
     notes = []
     m = re.search(r"##\s*校閲メモ\s*\n(.*)", report, re.S)
     if m:

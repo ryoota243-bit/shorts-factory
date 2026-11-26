@@ -20,6 +20,8 @@ from typing import List
 
 from pydantic import BaseModel
 
+from . import llm
+
 ROOT = Path(__file__).resolve().parent.parent
 DICT_FILE = ROOT / "dictionary.json"
 MODEL = "claude-opus-5-5"
@@ -114,8 +116,9 @@ def _review(pairs, hints=None):
         hint_text = ("\n台本作者が想定している読み（参考。エンジンの読みが既にこれと同じなら直さない）:\n" +
                      "\n".join(f"- {w}: {r}" for w, r in hints.items()) + "\n")
     res = client.messages.parse(
-        model=MODEL, max_tokens=8000, output_format=Review, output_config={"effort": "medium"},
+        model=llm.model("reading"), max_tokens=8000, output_format=Review, output_config={"effort": "medium"},
         messages=[{"role": "user", "content": PROMPT.format(pairs=listing, hints=hint_text)}])
+    llm.record("reading", res)
     if res.stop_reason == "refusal" or res.parsed_output is None:
         return []
     return [f for f in res.parsed_output.fixes

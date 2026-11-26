@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from . import assets, bgm, reading, thumbnail, tts, visuals as V
+from . import assets, bgm, llm, reading, thumbnail, tts, visuals as V
 
 SR = tts.SR
 DEFAULT_THEME = {"bg": ["#1e3c72", "#6a1b9a"], "accent": "#ffd600"}
@@ -137,6 +137,15 @@ def make_layer(scene, theme, seed, cfg, root, credits, fps, topic="", style=""):
     return V.LAYERS[v["type"]](v, theme, seed)
 
 
+def merge_cost(gen, render_part):
+    """Script-writing cost (recorded when the script was generated) + rendering-time checks."""
+    by = dict((gen or {}).get("by_task", {}))
+    for k, v in render_part["by_task"].items():
+        by[k] = round(by.get(k, 0) + v, 4)
+    usd = round(sum(by.values()), 4)
+    return {"usd": usd, "jpy": round(usd * llm.USD_JPY), "by_task": by}
+
+
 def build_description(script, cfg, voicevox=True):
     """Video description: summary + main sources + channel footer + voice credit."""
     ch = cfg.get("channel", {})
@@ -163,6 +172,7 @@ def write_wav(path, x):
 def render(script_path, cfg, root, out_dir):
     t0 = time.time()
     root = Path(root)
+    llm.reset()
     script = normalize(json.loads(Path(script_path).read_text(encoding="utf-8")))
     for sc in script["scenes"]:  # "約 [16回] も" -> "約[16回]も" (spaces break word detection)
         sc["narration"] = tidy(sc.get("narration", ""))
@@ -454,6 +464,7 @@ def render(script_path, cfg, root, out_dir):
         "writer": script.get("writer", ""),
         "factcheck": script.get("factcheck", []),
         "qa": qa_issues,
+        "cost": merge_cost(script.get("gen_cost"), llm.cost_summary()),
         "sources": script.get("sources", []),
         "tags": script.get("tags", []),
         "duration": round(total, 2),
