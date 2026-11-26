@@ -177,7 +177,10 @@ def wrap(chars, fnt, max_w, hi=None):
         bp = break_points(plain)
         if bp is not None:
             bp = {p for p in bp if not (0 < p < len(chars) and chars[p - 1][1] == hi and chars[p][1] == hi)}
-        return _wrap_with(chars, fnt, max_w, bp)
+        lines = _wrap_with(chars, fnt, max_w, bp)
+        if max(sum(glen(fnt, c) for c, _ in l) for l in lines) <= max_w:
+            return lines
+        # the highlight is too long to keep on one line: allow breaks inside it after all
     return _wrap_with(chars, fnt, max_w, break_points(plain))
 
 
