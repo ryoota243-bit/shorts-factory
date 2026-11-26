@@ -8,10 +8,10 @@ from pathlib import Path
 
 DEFAULTS = {
     "factcheck": "claude-opus-5-5",   # research + fact-check: quality matters most
-    "convert": "claude-sonnet-5-5",   # turn a finished draft into JSON
-    "reading": "claude-sonnet-5-5",   # spot TTS misreadings
-    "qa": "claude-sonnet-5-5",        # review the rendered frames
-    "verify": "claude-haiku-5-5",     # does this image fit the scene? (yes/no)
+    "convert": "claude-opus-5-5",   # turn a finished draft into JSON
+    "reading": "claude-opus-5-5",   # spot TTS misreadings
+    "qa": "claude-opus-5-5",        # review the rendered frames
+    "verify": "claude-opus-5-5",     # does this image fit the scene? (yes/no)
 }
 # USD per 1M tokens (input, output, cache read) and per web search
 PRICES = {

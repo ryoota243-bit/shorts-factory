@@ -67,9 +67,9 @@
   },
   "models": {
     "factcheck": "claude-opus-5-5",
-    "convert": "claude-sonnet-5-5",
-    "reading": "claude-sonnet-5-5",
-    "qa": "claude-sonnet-5-5",
-    "verify": "claude-haiku-5-5"
+    "convert": "claude-opus-5-5",
+    "reading": "claude-opus-5-5",
+    "qa": "claude-opus-5-5",
+    "verify": "claude-opus-5-5"
   }
 }

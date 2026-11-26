@@ -57,7 +57,7 @@ def check(script_model):
     """Return (fixed Script, list of review notes)."""
     client = anthropic.Anthropic()
     payload = json.dumps(script_model.model_dump(), ensure_ascii=False, indent=1)
-    report = research(client, CHECK_PROMPT.format(script=payload), max_uses=6, task="factcheck")
+    report = research(client, CHECK_PROMPT.format(script=payload), max_uses=10, task="factcheck")
     notes = []
     m = re.search(r"##\s*校閲メモ\s*\n(.*)", report, re.S)
     if m:
