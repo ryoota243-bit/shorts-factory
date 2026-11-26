@@ -58,6 +58,14 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      # AI images, downloaded stock photos and image-check verdicts are kept between runs
+      - name: Restore image cache
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: images-${{ github.run_id }}
+          restore-keys: images-
+
       - name: Wait for VOICEVOX
         run: |
           for i in $(seq 1 60); do

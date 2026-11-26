@@ -1,5 +1,6 @@
 """Ask Claude whether an image fits the scene before it goes into the video."""
 import base64
+import json
 import io
 import os
 import subprocess
@@ -50,10 +51,37 @@ def _thumb(path):
     return base64.standard_b64encode(buf.getvalue()).decode()
 
 
+def _cache_file():
+    from pathlib import Path
+    return Path(__file__).resolve().parent.parent / "cache" / "verdicts.json"
+
+
+def _load():
+    try:
+        return json.loads(_cache_file().read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
 def check(path, narration, want, topic=""):
-    """Return (ok, reason). Without an API key every image passes."""
+    """Return (ok, reason). Without an API key every image passes. Verdicts are cached per
+    (image bytes, narration, topic) so re-renders do not pay for the same check twice."""
     if not os.environ.get("ANTHROPIC_API_KEY") or not narration:
         return True, ""
+    import hashlib
+    from pathlib import Path
+    key = hashlib.sha1(Path(path).read_bytes() + f"|{narration}|{want}|{topic}".encode()).hexdigest()
+    cache = _load()
+    if key in cache:
+        return tuple(cache[key])
+    ok, why = _check(path, narration, want, topic)
+    cache[key] = [ok, why]
+    _cache_file().parent.mkdir(exist_ok=True)
+    _cache_file().write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
+    return ok, why
+
+
+def _check(path, narration, want, topic):
     import anthropic
     res = anthropic.Anthropic().messages.parse(
         model=llm.model("verify"), max_tokens=2000, output_format=Verdict, output_config={"effort": "low"},
