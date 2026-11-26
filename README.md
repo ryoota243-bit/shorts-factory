@@ -15,6 +15,7 @@
 ノートにあるタイトル・概要欄をコピーして、YouTube アプリから投稿してください。
 
 - **今すぐ作る**：Actions → `daily-shorts` → `Run workflow`（本数も指定できます）
+- **一言雑学の連発**：`Run workflow` の「台本の形式」に `rapid` と入れると、一言で伝わる雑学を5〜6個、30〜40秒でテンポよく紹介する動画を作ります（画面に「雑学 1/5」の番号が出ます）。毎朝の自動実行でも、通常・クイズ・誤解を正す形式と日替わりで選ばれます（重みは `factory/generate.py` の `FORMAT_WEIGHTS`）
 - **台本AIの比較**：`Run workflow` で「比較モード」にチェックすると、同じお題を Claude と Gemini の両方で台本化して2本ずつ作ります
 - **台本AIの切り替え**：`config.json` の `script_writer` を `gemini+claude`（標準：Gemini が執筆→Claude が校閲）/ `claude` / `gemini` に
 - **自動チェック**：毎回、Claude が完成動画のコマと台本を見て問題点を洗い出し、Releases のノートに載せます

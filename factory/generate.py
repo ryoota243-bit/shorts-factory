@@ -87,9 +87,56 @@ FORMATS = {
   （例:「ダチョウは砂に頭を埋めない。」）。どこから誤解が生まれたか→本当はどうか→なぜそうなのか、の順に説明する。
   誤解と真実の対比には compare を使ってよい（label に「誤解」「真実」）。誤解が実際に広く信じられていることは
   出典で確認できるものに限る。"""),
+    "rapid": ("一言雑学の連発", """一言で伝わる雑学を5〜6個、テンポよく連続で紹介する形式（1シーン＝雑学1つ）。
+  詳しい条件は「台本の条件」の先頭に従う。"""),
 }
-FORMAT_WEIGHTS = {"standard": 5, "quiz": 3, "myth": 2}
+FORMAT_WEIGHTS = {"standard": 5, "quiz": 3, "myth": 2, "rapid": 3}
 
+# rapid: one-line facts, 5-6 per video, 30-40 s in total
+RAPID_ITEMS = (5, 6)
+RAPID_MAX_CHARS = 185  # narration budget for the facts (the outro adds ~3 s on top)
+
+
+STORY_RULES = """- 構成: 1シーン目（開始3秒）が最重要。最初の一言（最初の句読点まで）は10文字前後で、一番意外な事実や
+  数字をいきなり言い切る（例:「雲1つで、500トン。」「タコの心臓は、3つ。」）。「〜って知っていますか？」
+  「実は〜」のような前置きから始めない。1シーン目のナレーションは35文字以内で、映像は photo か ai の
+  一目で引き込まれる印象的な画像にする。thumb_text（キャッチコピー）は開始直後に画面に大きく出るので、
+  最初の一言と同じ驚きを短く表す。その後のシーンで事実を順に説明し、最後は短いオチ。
+- 最後まで見たくなる仕掛け: 途中（2〜3シーン目）で「最後にもっと驚く事実がある」のように予告してもよいが、
+  予告したら必ず最後に回収する（回収しない予告や大げさな煽りは禁止）。
+- ループ: 最後のシーンは、冒頭の驚きの事実を短く言い直して締める完結した文にする（例: 冒頭「雲1つで、500トン。」
+  → 最後「見上げた雲にも、500トンの水があるんです。」）。2周目の冒頭と自然につながると理想的。
+- 同じ結論や同じ言い回しを2回繰り返さない。同じ種類の映像（例: number と number）を2シーン続けない
+  （2つの数字を並べたいときは1つの compare にまとめる）。
+- 画面を単調にしない: 1シーンは約5秒（30文字前後）まで。説明が長くなるときはシーンを分け、前のシーンと
+  違う種類の映像にする（photo/ai → 図解 → photo/ai のように交互に）。絵文字だけの illustration や
+  文字だけの text は連続させず、それぞれ30文字以内の短いシーンにする。
+- シーン数5〜8、ナレーション合計150〜220文字（30〜40秒。クイズ形式はカウントダウンが入るので130〜190文字）。1シーンのナレーションは1〜2文・35文字以内
+  （長くなるならシーンを分ける。同じ画面が6秒以上続かないように）。
+  photo と ai を合わせて全体の3〜4割、図解系（number/compare/list/pie）を最低2つ入れる。
+"""
+
+RAPID_RULES = """（一言雑学の連発形式。この形式では、以下が後に続く共通の条件より優先する）
+- 構成: カテゴリの中で1つの切り口（例「動物の体のふしぎ」「コンビニの裏話」「宇宙のスケール」）を決め、
+  その切り口で一言で伝わる雑学を5〜6個、1シーンに1つずつ連続で紹介する。あいさつ・前置き・「〇連発！」のような
+  導入シーンは作らず、1シーン目からいきなり1つ目の雑学を言い切る（切り口と個数は画面上部の title で伝える）。
+- 各雑学のナレーションは1文で完結させ、18〜32文字（読み上げ約4〜5秒）。「実は」「なんと」「〜って知ってる？」
+  のような前置きや、理由の長い説明は入れない。2文以上の説明がないと誤解されるネタは選ばない。
+- 聞いた瞬間に「へぇ！」となり、具体的な数字や情景が浮かぶネタにする（例「タコの心臓は、3つある。」
+  「ラッコは、寝るとき手をつなぐ。」）。各雑学はそれぞれ単独で正しいこと。同じ動画の中で似たネタを重ねない。
+- 並び順: 1つ目は一番強いネタ（開始3秒で引き込む）、最後は2番目に強いネタ。最後のシーンも雑学1つで終え、
+  まとめ・オチ・ループの言い直しは付けない。予告（「最後のはすごい」など）も入れない。
+- 長さ（厳守）: 雑学5〜6個、ナレーション合計140〜180文字（フォロー呼びかけを含めて動画全体30〜40秒に収める）。
+- 映像: 各雑学の中身が一目でわかる映像にする。photo か ai を中心に（全体の半分以上）、数字が主役のネタは number、
+  2つの対比が主役のネタは compare を使ってよい。図解の同じ種類（number と number など）は2シーン続けない
+  （photo / ai が続くのはよい）。list・pie は使わない。illustration / text の text は、その雑学の要点を8文字前後で。
+- title: 切り口と個数がわかる見出し（例「[動物]のへぇ雑学5連発」）。thumb_text: 個数と切り口が伝わる
+  キャッチコピー（例「[5個]全部知ってる？」）。youtube_title: 切り口の言葉を前半に、個数を入れる
+  （例「思わず話したくなる動物の雑学5連発 #雑学 #shorts」）。
+- comment_prompt: 「いくつ知ってた？」のように、知っていた数を答えたくなる問いかけ。
+- topic: 切り口と、紹介した雑学の要点を「／」区切りで全部書く（例「動物の体: タコの心臓3つ／ラッコの手つなぎ／…」）。
+  次回以降の重複チェックに使う。
+"""
 
 RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャンネルの構成作家です。
 {theme_line}
@@ -103,29 +150,13 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
 2. 確認できた事実だけで台本を書く。
 
 # 台本の条件
-- 構成: 1シーン目（開始3秒）が最重要。最初の一言（最初の句読点まで）は10文字前後で、一番意外な事実や
-  数字をいきなり言い切る（例:「雲1つで、500トン。」「タコの心臓は、3つ。」）。「〜って知っていますか？」
-  「実は〜」のような前置きから始めない。1シーン目のナレーションは35文字以内で、映像は photo か ai の
-  一目で引き込まれる印象的な画像にする。thumb_text（キャッチコピー）は開始直後に画面に大きく出るので、
-  最初の一言と同じ驚きを短く表す。その後のシーンで事実を順に説明し、最後は短いオチ。
-- 最後まで見たくなる仕掛け: 途中（2〜3シーン目）で「最後にもっと驚く事実がある」のように予告してもよいが、
-  予告したら必ず最後に回収する（回収しない予告や大げさな煽りは禁止）。
-- ループ: 最後のシーンは、冒頭の驚きの事実を短く言い直して締める完結した文にする（例: 冒頭「雲1つで、500トン。」
-  → 最後「見上げた雲にも、500トンの水があるんです。」）。2周目の冒頭と自然につながると理想的。
-  文を「、」や「だから」などで途中で止める終わり方は禁止。すべてのシーンのナレーションは「。」「！」「？」で終える。
+{structure_rules}- 文を「、」や「だから」などで途中で止める終わり方は禁止。すべてのシーンのナレーションは「。」「！」「？」で終える。
 - コメントの問いかけ（「コメントで教えて」など）はシーンのナレーションに書かない。comment_prompt にだけ書く。
 - comment_prompt: 動画の最後に読み上げる、思わずコメントしたくなる短い問いかけ（20文字以内。
   例「知ってた？コメントで教えて」「あなたはどっち派？」「他に知ってる雑学ある？」）。フォローの呼びかけは
   自動で画面に出るので書かない。
-- 同じ結論や同じ言い回しを2回繰り返さない。同じ種類の映像（例: number と number）を2シーン続けない
-  （2つの数字を並べたいときは1つの compare にまとめる）。
 - emoji は内容をそのまま表すものを選ぶ（例: ピラミッドに 🏛️ は使わない。ぴったりの絵文字が無いときは
   🏜️ のように場所や雰囲気を表すものにする）。数字・英字は半角で書く。
-- 画面を単調にしない: 1シーンは約5秒（30文字前後）まで。説明が長くなるときはシーンを分け、前のシーンと
-  違う種類の映像にする（photo/ai → 図解 → photo/ai のように交互に）。絵文字だけの illustration や
-  文字だけの text は連続させず、それぞれ30文字以内の短いシーンにする。
-- シーン数5〜8、ナレーション合計150〜220文字（30〜40秒。クイズ形式はカウントダウンが入るので130〜190文字）。1シーンのナレーションは1〜2文・35文字以内
-  （長くなるならシーンを分ける。同じ画面が6秒以上続かないように）。
 - ナレーションは話し言葉。強調したい語句は [ ] で囲む（各シーン1か所まで）。
 - 各シーンに映像を指定:
   photo（素材サイトの実写写真。どこにでもある一般的なモノ・風景・動物向け。query は確実に見つかる
@@ -141,7 +172,6 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
   pie（「全体のうち何割か」を示す時だけ。A は B の何割、のような別物同士の比較には compare を使う）/
   illustration（絵文字1〜2個＋短い文字）/ text（大きな文字）/
   quiz・quiz_answer（クイズ形式のときだけ。使い方は「今回の形式」に従う）。
-  photo と ai を合わせて全体の3〜4割、図解系（number/compare/list/pie）を最低2つ入れる。
 - 画面上部のタイトル（title）は15文字以内、[ ]で1か所強調。
 - サムネイル: thumb_text は思わず見たくなる8〜12文字のキャッチコピー（疑問や驚き。[ ]で1か所強調。
   内容と食い違う誇張はしない）。thumb_prompt はサムネイル背景用の英語の画像指示（主役を大きく、
@@ -181,7 +211,7 @@ FORMAT_PROMPT = """次の台本案を、指定のJSONスキーマに変換して
 - color は #RRGGBB。bg_colors は背景グラデーション用の暗めの2色。accent は明るい強調色。
 - mood は動画の雰囲気: danger（危険・注意・毒など）/ nature（動物・植物）/ water_space（海・空・宇宙）/
   food（食べ物）/ history（歴史・文化）/ science（科学・人体・技術）/ fun（その他の楽しい話）。
-- sources は出典URLの配列。topic はテーマを短く。thumb_text / thumb_prompt はサムネイル用。
+- sources は出典URLの配列。topic はテーマを短く（一言雑学の連発形式では、切り口と雑学の要点を「／」区切りで全部）。thumb_text / thumb_prompt はサムネイル用。
 
 # 台本案
 {draft}"""
@@ -249,13 +279,36 @@ def _visual(v: Visual):
     return {"type": "text", "text": v.text, "emoji": v.emoji}
 
 
-def theme_line(category=None, history=(), topic=None):
+def theme_line(category=None, history=(), topic=None, fmt="standard"):
+    if fmt == "rapid":
+        if topic:
+            return (f"切り口「{topic}」（カテゴリ: {category}）で、一言で伝わる雑学を5〜6個、"
+                    f"30〜40秒でテンポよく紹介する台本を作ってください。")
+        hist = "\n".join(f"- {h}" for h in list(history)[-200:]) or "（なし）"
+        return (f"カテゴリ「{category}」から切り口を1つ決め、一言で伝わる雑学を5〜6個、30〜40秒でテンポよく"
+                f"紹介する台本を作ってください。\n\n# 重複禁止（過去に扱ったテーマ・雑学。同じ事実は使わない）\n{hist}")
     if topic:
         return (f"テーマ「{topic}」（カテゴリ: {category}）の雑学で、視聴者が「へぇ！」と驚く"
                 f"35〜50秒の台本を作ってください。")
     hist = "\n".join(f"- {h}" for h in list(history)[-200:]) or "（なし）"
     return (f"カテゴリ「{category}」から、視聴者が「へぇ！」と驚く雑学ネタを1つ選び、35〜50秒の台本を"
             f"作ってください。\n\n# 重複禁止（過去に扱ったテーマ）\n{hist}")
+
+
+def finish_rapid(script):
+    """rapid: keep 5-6 facts within the time budget and number them ("雑学 1/5" badge on screen)."""
+    facts, outro = script["scenes"][:-1], script["scenes"][-1:]
+    while len(facts) > RAPID_ITEMS[1] or (len(facts) > RAPID_ITEMS[0]
+                                           and sum(len(re.sub(r"[\[\]]", "", f["narration"])) for f in facts)
+                                           > RAPID_MAX_CHARS):
+        dropped = facts.pop(-2)  # keep the strong closer; drop the one before it
+        print(f"  [rapid] over budget, dropped: {dropped['narration']}")
+    for i, f in enumerate(facts, 1):
+        f["badge"] = f"雑学 {i}/{len(facts)}"
+    chars = sum(len(re.sub(r"[\[\]]", "", f["narration"])) for f in facts)
+    print(f"  [rapid] {len(facts)} facts, {chars} chars of narration")
+    script["scenes"] = facts + outro
+    return script
 
 
 CTA_RE = re.compile(r"[^。！？!?]*(コメント|フォロー|チャンネル登録)[^。！？!?]*[。！？!?]?")
@@ -327,8 +380,9 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
     fw = format_weights or FORMAT_WEIGHTS
     fmt = fmt if fmt in FORMATS else rng.choices(list(fw), weights=list(fw.values()))[0]
     print(f"[generate] format: {fmt}")
-    prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic),
-                                    format_name=FORMATS[fmt][0], format_guide=FORMATS[fmt][1])
+    prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic, fmt),
+                                    format_name=FORMATS[fmt][0], format_guide=FORMATS[fmt][1],
+                                    structure_rules=RAPID_RULES if fmt == "rapid" else STORY_RULES)
     notes = None
     if writer in ("gemini", "gemini+claude"):
         from . import gemini
@@ -336,7 +390,7 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
         if writer == "gemini+claude":
             from .factcheck import check
             print("[generate] Claude fact-check...")
-            s, notes = check(s)
+            s, notes = check(s, fmt)
             for n in notes:
                 print(f"  [factcheck] {n}")
     else:
@@ -344,6 +398,8 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
         s = to_script(client, research(client, prompt))
     out = assemble(s, category, outro, writer)
     out["format"] = fmt
+    if fmt == "rapid":
+        finish_rapid(out)
     out["gen_cost"] = llm.cost_summary()
     if notes is not None:
         out["factcheck"] = notes

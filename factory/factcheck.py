@@ -27,8 +27,7 @@ web検索で信頼できる情報源（公的機関・大学・百科事典・�
 - クイズ形式の場合、正解（number）が事実どおりか、不正解の選択肢が誤って正しくなっていないか
 - すべてのシーンのナレーションが完結した文で終わっているか（「、」で途切れていないか）、
   シーンのナレーションにコメントやフォローの呼びかけが混ざっていないか（混ざっていれば取り除く）
-- 形式（通常・クイズ・誤解を正す）、ループの言い回し、comment_prompt（20文字以内の問いかけ）、
-  ナレーション合計150〜220文字は保つ
+{format_note}
 - 数字どうしの整合性（例: 昼＋夜の合計が1周の時間と合うか、ナレーションと画面の数字が一致するか）
 - 写真・AI画像の指定（query / ai_prompt / thumb_prompt）が、紙幣・硬貨の図柄や外国の文字・国旗など
   別の国のものが写りやすい内容になっていないか（なっていれば一般的な情景に変える）
@@ -56,12 +55,21 @@ web検索で信頼できる情報源（公的機関・大学・百科事典・�
 # 台本
 {script}"""
 
+STORY_NOTE = """- 形式（通常・クイズ・誤解を正す）、ループの言い回し、comment_prompt（20文字以内の問いかけ）、
+  ナレーション合計150〜220文字は保つ"""
 
-def check(script_model):
+RAPID_NOTE = """- これは「一言雑学の連発」形式（1シーン＝独立した雑学1つ、5〜6個）。雑学ごとに個別に事実を確認し、
+  誤り・諸説ある・確認できない雑学は、確認できる別の雑学に差し替えるか削る（5個未満にはしない）。
+  各雑学は1文・18〜32文字、ナレーション合計140〜180文字を保つ（長い補足を足さない）。
+  1シーン目の映像を photo/ai にする条件、最初の一言を10文字前後にする条件、ループやオチは、この形式では不要。
+  topic は「切り口: 雑学の要点／…」の形で、差し替えた内容に合わせて更新する。comment_prompt は20文字以内"""
+
+
+def check(script_model, fmt="standard"):
     """Return (fixed Script, list of review notes)."""
     client = anthropic.Anthropic()
     payload = json.dumps(script_model.model_dump(), ensure_ascii=False, indent=1)
-    report = research(client, CHECK_PROMPT.format(script=payload), max_uses=10, task="factcheck")
+    report = research(client, CHECK_PROMPT.format(script=payload, format_note=RAPID_NOTE if fmt == "rapid" else STORY_NOTE), max_uses=10, task="factcheck")
     notes = []
     m = re.search(r"##\s*校閲メモ\s*\n(.*)", report, re.S)
     if m:

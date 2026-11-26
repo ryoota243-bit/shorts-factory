@@ -317,6 +317,16 @@ def render(script_path, cfg, root, out_dir):
         print(f"  [thumb] skipped: {e}")
     sub_cache = {}
 
+    # rapid format: "雑学 1/5" badge under the title band, popping in with each fact
+    def make_badge(label):
+        acc = V.hex2rgb(theme["accent"])
+        txt = V.rich_text(label, 52, 600, fill=(24, 24, 24), hi=(24, 24, 24), stroke=0)
+        b = V.rounded((txt.width + 48, txt.height + 12), (txt.height + 12) // 2, (*acc, 240))
+        b.paste(txt, (24, 6), txt)
+        return b
+    badges = [make_badge(sc["badge"]) if sc.get("badge") else None for sc in script["scenes"]]
+    BADGE_Y = (150 + band.height + 18) if script.get("title") else 150
+
     mcol = V.hex2rgb(theme["marker"]) if theme.get("marker") else V.marker_color(V.hex2rgb(theme["accent"]),
                                                                                  script.get("mood", ""))
     print(f"  [marker] mood={script.get('mood', '-')} colour=#{bytes(mcol).hex()}")
@@ -413,6 +423,9 @@ def render(script_path, cfg, root, out_dir):
                 b = band.copy()
                 b.putalpha(b.getchannel("A").point(lambda v, f=V.clamp((tt - HOOK) / 0.3): int(v * f)))
             img.paste(b, ((V.W - b.width) // 2, 150), b)
+        if badges[si] is not None:
+            bk = 0.6 + 0.4 * V.ease_back((tt - s0) / 0.25)
+            V.place(img, badges[si], V.W / 2, BADGE_Y + badges[si].height / 2, max(0.02, bk))
         show_subs = not script["scenes"][si].get("no_subtitle")
         for a, b, s in (subs if show_subs else ()):
             if a - 0.05 <= tt < b:

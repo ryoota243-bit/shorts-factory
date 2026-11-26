@@ -29,7 +29,8 @@ def main():
                     help="scripts/archive の既存台本で動画だけ作り直す（例: 2026-11-24_12）")
     ap.add_argument("--upload", action="store_true", help="作った動画を YouTube にアップロードする")
     ap.add_argument("--analytics-only", action="store_true", help="YouTube の分析レポートだけ更新する")
-    ap.add_argument("--format", choices=["standard", "quiz", "myth"], help="台本の形式を指定（省略時は日替わり）")
+    ap.add_argument("--format", choices=["standard", "quiz", "myth", "rapid"],
+                    help="台本の形式を指定（省略時は日替わり。rapid=一言雑学の連発）")
     ap.add_argument("--upload-only", nargs="*", default=[],
                     help="output/ にある完成済みの動画（例: 2026-11-24_08_gemini）をアップロードだけする")
     a = ap.parse_args()
