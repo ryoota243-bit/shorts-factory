@@ -295,19 +295,29 @@ def theme_line(category=None, history=(), topic=None, fmt="standard"):
             f"作ってください。\n\n# 重複禁止（過去に扱ったテーマ）\n{hist}")
 
 
-def finish_rapid(script, badge="雑学"):
-    """rapid: keep 5-6 facts within the time budget and number them ("雑学 1/5" badge on screen)."""
+def finish_rapid(script, badge="雑学", intro=False):
+    """rapid: keep 5-6 facts within the time budget and number them ("雑学 1/5" badge on screen).
+
+    intro=True opens with a short spoken title card ("動物のトリビア5連発！", card style)."""
     facts, outro = script["scenes"][:-1], script["scenes"][-1:]
+    budget = RAPID_MAX_CHARS - (12 if intro else 0)
     while len(facts) > RAPID_ITEMS[1] or (len(facts) > RAPID_ITEMS[0]
                                            and sum(len(re.sub(r"[\[\]]", "", f["narration"])) for f in facts)
-                                           > RAPID_MAX_CHARS):
+                                           > budget):
         dropped = facts.pop(-2)  # keep the strong closer; drop the one before it
         print(f"  [rapid] over budget, dropped: {dropped['narration']}")
     for i, f in enumerate(facts, 1):
         f["badge"] = f"{badge} {i}/{len(facts)}".strip()
     chars = sum(len(re.sub(r"[\[\]]", "", f["narration"])) for f in facts)
     print(f"  [rapid] {len(facts)} facts, {chars} chars of narration")
-    script["scenes"] = facts + outro
+    # the count in the title ("5連発") may have changed above
+    script["title"] = re.sub(r"\d+(連発|選)", f"{len(facts)}\\1", script.get("title", ""))
+    head = []
+    if intro:
+        title = re.sub(r"[\[\]]", "", script["title"])
+        head = [{"narration": title.rstrip("！!。") + "！", "visual": {"type": "text", "text": title},
+                 "card": "intro", "min_duration": 1.0, "hold": 0.15}]
+    script["scenes"] = head + facts + outro
     return script
 
 
@@ -371,7 +381,7 @@ def pick_category(seed=None, recent_categories=(), weights=None):
 
 
 def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None,
-             fmt=None, format_weights=None, category_weights=None, term="雑学"):
+             fmt=None, format_weights=None, category_weights=None, term="雑学", intro=False):
     """Write a script. With topic set, write about that topic instead of choosing one."""
     llm.reset()
     category = category or pick_category(seed, recent_categories, category_weights)
@@ -399,7 +409,7 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
     out = assemble(s, category, outro, writer)
     out["format"] = fmt
     if fmt == "rapid":
-        finish_rapid(out, badge=term)
+        finish_rapid(out, badge=term, intro=intro)
     out["gen_cost"] = llm.cost_summary()
     if notes is not None:
         out["factcheck"] = notes

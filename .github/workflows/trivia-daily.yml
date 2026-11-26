@@ -1,8 +1,10 @@
 name: trivia-shorts
 
+# 方針が決まるまで自動実行は止めています（Actions → trivia-shorts → Run workflow で手動実行のみ）。
+# 毎日自動で作るときは、下の schedule の2行のコメントを外してください。
 on:
-  schedule:
-    - cron: "43 9 * * *"    # 毎日 18:43 JST（UTC 09:43）
+  # schedule:
+  #   - cron: "43 9 * * *"    # 毎日 18:43 JST（UTC 09:43）
   workflow_dispatch:
     inputs:
       count:

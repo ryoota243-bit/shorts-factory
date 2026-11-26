@@ -26,7 +26,9 @@ def _add(buf, start, sig):
     buf[s:e] += sig[: e - s]
 
 
-def synthesize(duration, seed=None):
+def synthesize(duration, seed=None, style="standard"):
+    if style == "bouncy":
+        return synthesize_bouncy(duration, seed)
     rng = random.Random(seed)
     bpm = rng.choice([92, 96, 100, 104, 110])
     key = rng.choice([0, 2, 3, 5, 7, -2])
@@ -73,16 +75,57 @@ def synthesize(duration, seed=None):
     return out / (np.abs(out).max() + 1e-9) * 0.8
 
 
+def synthesize_bouncy(duration, seed=None):
+    """Trivia channel: faster, playful marimba-like loop with off-beat bass and claps."""
+    rng = random.Random(seed)
+    bpm = rng.choice([122, 126, 130])
+    key = rng.choice([0, 2, 5, 7])
+    prog = rng.choice(PROGRESSIONS)
+    beat = 60 / bpm
+    bar = beat * 4
+    n = int((duration + 1) * SR)
+    out = np.zeros(n, np.float32)
+    nrng = np.random.default_rng(rng.randrange(1 << 30))
+    t16 = np.arange(int(beat / 4 * SR * 2)) / SR
+    tc = np.arange(int(0.12 * SR)) / SR
+    clap = (np.diff(nrng.standard_normal(len(tc) + 1)) * np.exp(-tc * 38)).astype(np.float32)
+    tk = np.arange(int(0.25 * SR)) / SR
+    kick = np.sin(2 * np.pi * np.cumsum(50 + 110 * np.exp(-tk * 40)) / SR) * np.exp(-tk * 14)
+    pattern = rng.choice([[0, 2, 3, 5, 6], [0, 3, 4, 6, 7], [0, 1, 3, 4, 6]])  # 8th-note slots per bar
+    t, i = 0.0, 0
+    while t < duration + 1:
+        chord = [c + key + 72 for c in prog[i % 4]]
+        for b in range(4):
+            bt = t + b * beat
+            _add(out, bt, 0.2 * kick)
+            if b in (1, 3):
+                _add(out, bt, 0.06 * clap)
+            tb = np.arange(int(beat / 2 * SR)) / SR  # off-beat bass
+            _add(out, bt + beat / 2, 0.11 * np.sin(2 * np.pi * _hz(chord[0] - 36) * tb) * np.exp(-tb * 10))
+        for k, slot in enumerate(pattern):
+            m = chord[(k + i) % 3] + (12 if k == len(pattern) - 1 else 0)
+            f = _hz(m)
+            sig = (np.sin(2 * np.pi * f * t16) + 0.35 * np.sin(2 * np.pi * f * 4.0 * t16) * np.exp(-t16 * 30)) \
+                * np.exp(-t16 * 16)
+            _add(out, t + slot * beat / 2, 0.05 * sig)
+        t += bar
+        i += 1
+    out = out[: int(duration * SR)]
+    fade = int(1.2 * SR)
+    out[-fade:] *= np.linspace(1, 0, fade)
+    return out / (np.abs(out).max() + 1e-9) * 0.8
+
+
 def _decode(path):
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-f", "f32le", "-ac", "1",
                           "-ar", str(SR), "-"], capture_output=True, check=True).stdout
     return np.frombuffer(raw, np.float32).copy()
 
 
-def get(duration, bgm_dir, seed=None):
+def get(duration, bgm_dir, seed=None, style="standard"):
     files = [p for p in Path(bgm_dir).glob("*") if p.suffix.lower() in (".mp3", ".wav", ".m4a", ".ogg")]
     if not files:
-        return synthesize(duration, seed), "generated"
+        return synthesize(duration, seed, style), f"generated ({style})"
     path = random.Random(seed).choice(files)
     x = _decode(path)
     reps = int(np.ceil(duration * SR / len(x)))
@@ -96,6 +139,18 @@ def pop(sr=SR):
     t = np.arange(int(0.12 * sr)) / sr
     f = 300 + 900 * np.exp(-t * 40)
     return (np.sin(2 * np.pi * np.cumsum(f) / sr) * np.exp(-t * 35)).astype(np.float32)
+
+
+def swipe(sr=SR, seed=3):
+    """Card swipe: short filtered-noise whoosh."""
+    rng = np.random.default_rng(seed)
+    t = np.arange(int(0.22 * sr)) / sr
+    noise = rng.standard_normal(len(t)).astype(np.float32)
+    k = 60
+    smooth = np.convolve(noise, np.ones(k) / k, mode="same")  # darker noise
+    env = np.sin(np.pi * np.clip(t / 0.22, 0, 1)) ** 2
+    x = (noise - smooth) * 0.35 + smooth * 3.0
+    return (x * env / (np.abs(x * env).max() + 1e-9)).astype(np.float32)
 
 
 def impact(sr=SR, seed=1):

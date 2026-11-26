@@ -226,7 +226,8 @@ def render(script_path, cfg, root, out_dir):
     voice = voice / (np.abs(voice).max() + 1e-9) * 0.9
 
     # ---- 2. mix BGM + sfx with ducking ----
-    music, bgm_name = bgm.get(total, root / cfg["bgm"]["dir"], seed)
+    STYLE = cfg["video"].get("style", "standard")  # "card": trivia channel look (factory/cardstyle.py)
+    music, bgm_name = bgm.get(total, root / cfg["bgm"]["dir"], seed, cfg["bgm"].get("style", "standard"))
     n = len(voice)
     music = np.pad(music, (0, max(0, n - len(music))))[:n]
     env = np.convolve(np.abs(voice), np.ones(4800) / 4800, mode="same")
@@ -251,7 +252,7 @@ def render(script_path, cfg, root, out_dir):
     if HOOK_ON:
         hit = bgm.impact() * 0.55  # opening impact
         mix[: len(hit)] += hit[: len(mix)]
-    pop = bgm.pop() * 0.25
+    pop = bgm.swipe() * 0.3 if STYLE == "card" else bgm.pop() * 0.25
     for st, _ in scenes_t[1:]:
         s = int(st * SR); mix[s:s + len(pop)] += pop[: max(0, min(len(pop), n - s))]
     mix = np.tanh(mix * 1.1) / np.tanh(1.1)
@@ -309,12 +310,18 @@ def render(script_path, cfg, root, out_dir):
     if HOOK_ON and isinstance(layers[0], V.PhotoLayer):
         layers[0].punch = True
     thumb_img = None
-    try:
-        thumb_img, tcredit = thumbnail.build(script, theme, cfg, root, layers, out_dir / f"{name}.thumb.png")
-        if tcredit:
-            credits.append(tcredit)
-    except Exception as e:
-        print(f"  [thumb] skipped: {e}")
+    card = None
+    if STYLE == "card":
+        from .cardstyle import CardStyle
+        card = CardStyle(script, layers, cfg)
+        thumb_img = card.thumbnail(out_dir / f"{name}.thumb.png")
+    else:
+        try:
+            thumb_img, tcredit = thumbnail.build(script, theme, cfg, root, layers, out_dir / f"{name}.thumb.png")
+            if tcredit:
+                credits.append(tcredit)
+        except Exception as e:
+            print(f"  [thumb] skipped: {e}")
     sub_cache = {}
 
     # rapid format: "雑学 1/5" badge under the title band, popping in with each fact
@@ -374,6 +381,14 @@ def render(script_path, cfg, root, out_dir):
         while si < len(scenes_t) - 1 and tt >= scenes_t[si][1]:
             si += 1
         s0, s1 = scenes_t[si]
+        if card is not None:  # card style draws the whole screen itself (no title band / subtitles)
+            img = card.frame(si, tt - s0, s1 - s0)
+            if si > 0 and tt - s0 < card.SWIPE and prev_last is not None:
+                img = card.swipe(prev_last, img, (tt - s0) / card.SWIPE)
+            if si < len(scenes_t) - 1 and s1 - tt <= 1.5 / fps:
+                prev_last = img.copy()
+            proc.stdin.write(img.tobytes())
+            continue
         img = layers[si].frame(tt - s0, s1 - s0)
         z = 1.0  # the screen itself no longer moves (no push-in, punch-in or camera cuts)
         n_cut = sum(1 for a in cuts[si] if a <= tt)

@@ -21,5 +21,38 @@
       "client_secret": "TRIVIA_YOUTUBE_CLIENT_SECRET",
       "refresh_token": "TRIVIA_YOUTUBE_REFRESH_TOKEN"
     }
+  },
+  "video": {
+    "style": "card"
+  },
+  "rapid": {
+    "intro": true
+  },
+  "bgm": {
+    "style": "bouncy",
+    "dir": "channels/trivia/bgm"
+  },
+  "tts": {
+    "voicevox": {
+      "speaker": 8,
+      "speed": 1.22,
+      "credit": "VOICEVOX:春日部つむぎ"
+    }
+  },
+  "card": {
+    "ranks": [
+      [
+        "👑",
+        "トリビア王"
+      ],
+      [
+        "🎓",
+        "物知り"
+      ],
+      [
+        "🌱",
+        "伸びしろ大"
+      ]
+    ]
   }
 }
