@@ -1,0 +1,166 @@
+{
+  "topic": "役不足の誤解",
+  "category": "言葉・語源",
+  "writer": "gemini+claude",
+  "title": "[役不足]のヤバい誤解",
+  "youtube_title": "「役不足」を謙遜で使うのはNG？本来の意味は真逆 #雑学 #shorts",
+  "description": "「私には役不足ですが…」と謙遜していませんか？\n実はそれ、本来とは真逆の意味で、失礼に聞こえかねない言葉なんです。\n文化庁の調査結果と言葉の由来を知って、誤解を防ぎましょう！\n\n#雑学 #言葉 #ビジネスマナー #日本語 #shorts",
+  "tags": [
+    "雑学",
+    "言葉",
+    "ビジネスマナー",
+    "日本語",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#1e1b4b",
+      "#0f172a"
+    ],
+    "accent": "#f59e0b"
+  },
+  "pronunciations": {
+    "芝居": "しばい"
+  },
+  "scenes": [
+    {
+      "narration": "役不足は、[謙遜]じゃない。本来は、真逆の意味の言葉です。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A young Japanese businessman in a modern office looking shocked and sweating while realizing a big mistake in front of his boss, dramatic lighting, cinematic style, realistic photography, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "😱",
+          "text": "役不足の誤解"
+        }
+      }
+    },
+    {
+      "narration": "[力不足]と混同され、能力が足りない意味と誤解されがちです。",
+      "visual": {
+        "type": "compare",
+        "relation": "not_equal",
+        "items": [
+          {
+            "label": "力不足",
+            "value": "力量が不足",
+            "color": "#3b82f6",
+            "note": "謙遜に使える",
+            "emoji": "🙇"
+          },
+          {
+            "label": "役不足",
+            "value": "役目が軽い",
+            "color": "#ef4444",
+            "note": "謙遜には不向き",
+            "emoji": "😤"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "文化庁の2024年度調査では、約半数が[荷が重い]意味だと回答しています。",
+      "visual": {
+        "type": "number",
+        "value": 48.9,
+        "unit": "%",
+        "label": "「役目が重すぎる」と回答"
+      }
+    },
+    {
+      "narration": "もとは芝居の言葉で、役者が[軽い役]に不満を抱くことでした。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A traditional Japanese stage actor in dramatic makeup and elegant costume, looking dissatisfied and brooding backstage, realistic historical cinematic photography, high detail, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🎭",
+          "text": "役者の不満"
+        }
+      }
+    },
+    {
+      "narration": "「私には役不足」は、[この役は軽すぎる]という傲慢な意味になります。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "💥",
+        "text": "謙遜のつもりが上から目線"
+      }
+    },
+    {
+      "narration": "誤解を避けるため、役不足を[謙遜]に使うのはやめましょう。",
+      "visual": {
+        "type": "photo",
+        "query": "businessman bowing office",
+        "ai_prompt": "A Japanese businessman in a suit bowing politely in a conference room, professional and humble posture, realistic photography, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🙇‍♂️",
+          "text": "謙遜なら力不足"
+        }
+      }
+    },
+    {
+      "narration": "知ってた？コメントで教えて！",
+      "visual": {
+        "type": "text",
+        "emoji": "💬",
+        "text": "知ってた？コメントで教えて！",
+        "size": 96,
+        "sub": "▶ フォローで毎日雑学"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0,
+      "no_subtitle": true
+    }
+  ],
+  "comment_prompt": "知ってた？コメントで教えて！",
+  "sources": [
+    "https://www.bunka.go.jp/koho_hodo_oshirase/hodohappyo/pdf/94274201_02.pdf",
+    "https://www.bunka.go.jp/tokei_hakusho_shuppan/tokeichosa/kokugo_yoronchosa/pdf/h24_chosa_kekka.pdf",
+    "https://www.bunka.go.jp/seisaku/kokugo_nihongo/kokugo_shisaku/kotoba_shokudo/pdf/kotoba_1.pdf",
+    "https://fujinkoron.jp/articles/-/22014"
+  ],
+  "thumb_text": "役不足は[謙遜]じゃない",
+  "thumb_prompt": "A close-up of a nervous Japanese businessman in a modern office sweating profusely, dramatic side lighting, high contrast, cinematic realism, no text",
+  "format": "myth",
+  "gen_cost": {
+    "usd": 0.4114,
+    "jpy": 64,
+    "by_task": {
+      "factcheck": 0.3531,
+      "convert": 0.0583
+    },
+    "tokens": {
+      "factcheck": {
+        "model": "claude-opus-5-5",
+        "in": 25684,
+        "out": 9288,
+        "searches": 5
+      },
+      "convert": {
+        "model": "claude-opus-5-5",
+        "in": 6543,
+        "out": 1607,
+        "searches": 0
+      }
+    }
+  },
+  "factcheck": [
+    "シーン3：48.9%は令和6年度（2024年度）の調査の数字だと確認できたので、ナレーションに「2024年度」を足し、ラベルを「『役目が重すぎる』と回答」に変えた",
+    "シーン4：「語源は歌舞伎」「名優に端役」は根拠が見つからないため、「芝居の言葉で、役者が軽い役に不満を抱くこと」に直した",
+    "シーン4：画面の文字を「歌舞伎の端役」から「役者の不満」に変え、AI画像の指定から Kabuki を外した",
+    "シーン2：混同が理由というのは推測なので「誤解されました」を「誤解されがちです」にした",
+    "シーン2：compare の value と note の重複をなくした（value は意味、note は謙遜に使えるか）",
+    "シーン5：「見下す」を「傲慢な意味」に直し、「意味に！」で途切れていた文を言い切る形にした",
+    "シーン5：画面の文字をナレーションの言い換えにならない内容に変えた",
+    "シーン1：「とんでもない言葉」を「真逆の意味の言葉」に弱めた",
+    "シーン6：「大恥」の言い過ぎをやめ、写真の検索語を apology（謝罪）からお辞儀の場面に変え、画面の文字を「謙遜なら力不足」にした",
+    "概要欄の「激怒させかねない」とYouTubeタイトルの「危険？」「ヤバすぎる」を弱めた",
+    "読み方の指定をナレーションに合わせて「芝居」に差し替えた",
+    "出典を、確認に使った文化庁の令和6年度・平成24年度の調査PDF、文化庁「ことば食堂」の台本PDF、婦人公論.jp（広辞苑の語義を引用）に差し替えた",
+    "AI画像の指定に「no text」を足し、画像に文字が入らないようにした"
+  ]
+}
