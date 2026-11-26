@@ -117,14 +117,3 @@ def tick(sr=SR):
     t = np.arange(int(0.09 * sr)) / sr
     x = np.sin(2 * np.pi * 1320 * t) * 0.6 + np.sin(2 * np.pi * 1980 * t) * 0.3
     return (x * np.exp(-t * 45)).astype(np.float32)
-
-
-def swish(sr=SR, seed=3):
-    """Paper being pulled: filtered noise with a quick rise and fall."""
-    rng = np.random.default_rng(seed)
-    t = np.arange(int(0.42 * sr)) / sr
-    x = rng.standard_normal(len(t)).astype(np.float32)
-    x = np.convolve(x, np.ones(6) / 6, mode="same")            # soften
-    x = x - np.convolve(x, np.ones(60) / 60, mode="same")       # remove rumble
-    env = np.sin(np.pi * np.clip(t / 0.42, 0, 1)) ** 2
-    return (x * env / (np.abs(x).max() + 1e-9)).astype(np.float32)

@@ -36,11 +36,6 @@ def ease_out(x):
     return 1 - (1 - x) ** 3
 
 
-def ease_in_out(x):
-    x = clamp(x)
-    return x * x * (3 - 2 * x)
-
-
 def ease_back(x):
     x = clamp(x)
     c = 1.70158
@@ -754,61 +749,6 @@ class PhotoLayer(Layer):
             paste_center(im, scaled(self.card, max(0.01, kk)), W / 2, CONTENT_CY - 30)
         else:
             place(im, self.card, W / 2, CONTENT_CY - 30, kk)
-        return im
-
-
-KAMI_STYLE = ("hand-drawn picture-book illustration, soft watercolor with colored pencil lines, warm paper texture, "
-              "gentle muted colors, simple friendly shapes, storybook style, no photorealism")
-CARD_W, CARD_H, CARD_CY = 920, 900, 755   # picture card between the title band and the subtitles
-
-
-@functools.lru_cache(4)
-def kraft_bg(seed=0):
-    """Warm kraft-paper backdrop with fibre noise and a soft vignette."""
-    rng = np.random.default_rng(seed)
-    base = np.array([214, 196, 164], np.float32)
-    n = rng.normal(0, 7, (H // 2, W // 2, 1)).astype(np.float32)
-    img = np.clip(base + n, 0, 255).astype(np.uint8)
-    im = Image.fromarray(np.repeat(img, 3, axis=2) if img.shape[2] == 1 else img).resize((W, H), Image.BICUBIC)
-    im = Image.blend(im, Image.new("RGB", (W, H), tuple(int(c) for c in base)), 0.35)
-    yy, xx = np.mgrid[0:H, 0:W]
-    v = np.clip(((xx - W / 2) / W) ** 2 + ((yy - H / 2) / H) ** 2, 0, 1) * 1.6
-    shade = Image.fromarray((np.clip(v, 0, 1) * 110).astype(np.uint8), "L")
-    dark = Image.new("RGB", (W, H), (90, 70, 45))
-    return Image.composite(dark, im, shade)
-
-
-class KamishibaiLayer(Layer):
-    """A hand-drawn picture card on kraft paper; the picture drifts slowly inside the card."""
-
-    def __init__(self, spec, theme, seed=0, path=None):
-        super().__init__(spec, theme, seed)
-        img = Image.open(path).convert("RGB")
-        self.pic = cover(img, int(CARD_W * 1.08), int(CARD_H * 1.08))
-        self.tilt = (-1.4, 1.1, -0.8, 1.5, -1.1)[seed % 5]
-        self.dir = (1, -1)[seed % 2]
-        self.bg = kraft_bg()
-        sh = Image.new("RGBA", (CARD_W + 120, CARD_H + 120), (0, 0, 0, 0))
-        ImageDraw.Draw(sh).rounded_rectangle((60, 70, CARD_W + 60, CARD_H + 70), 18, fill=(40, 25, 10, 120))
-        self.shadow = sh.filter(ImageFilter.GaussianBlur(18))
-        self.mask = rounded((CARD_W, CARD_H), 14, (255, 255, 255, 255)).getchannel("A")
-
-    def card(self, t, dur):
-        p = min(1.0, t / max(dur, 0.1))
-        z = 1.0 + 0.06 * p
-        cw, ch = self.pic.width / 1.08 / z, self.pic.height / 1.08 / z
-        x = (self.pic.width - cw) / 2 + self.dir * (self.pic.width - cw) / 2 * (p - 0.5)
-        y = (self.pic.height - ch) / 2
-        inner = self.pic.resize((CARD_W - 36, CARD_H - 36), Image.BILINEAR, box=(x, y, x + cw, y + ch))
-        card = Image.new("RGBA", (CARD_W, CARD_H), (250, 246, 236, 255))
-        card.paste(inner, (18, 18))
-        card.putalpha(self.mask)
-        return card
-
-    def frame(self, t, dur):
-        im = self.bg.copy()
-        place(im, self.shadow, W / 2, CARD_CY + 10, 1.0, self.tilt)
-        place(im, self.card(t, dur), W / 2, CARD_CY, 1.0, self.tilt)
         return im
 
 
