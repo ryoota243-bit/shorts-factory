@@ -368,7 +368,9 @@ class IllustrationLayer(Layer):
     def __init__(self, spec, theme, seed=0):
         super().__init__(spec, theme, seed)
         self.emo = emoji(spec.get("emoji", "❓"), spec.get("size", 480))
-        self.cap = rich_text(spec["text"], 84, 900, hi=self.accent, stroke=8) if spec.get("text") else None
+        # one line at most, so a camera move can never push it into the subtitles
+        self.cap = (fit_text(spec["text"].replace("\n", ""), 84, 960, 110, min_size=56, hi=self.accent, stroke=8)
+                    if spec.get("text") else None)
         self.glow = Image.new("RGBA", (760, 760), (0, 0, 0, 0))
         ImageDraw.Draw(self.glow).ellipse((80, 80, 680, 680), fill=(255, 255, 255, 60))
         self.glow = self.glow.filter(ImageFilter.GaussianBlur(40))
@@ -382,7 +384,7 @@ class IllustrationLayer(Layer):
         rot = math.sin(t * 2.2) * 4 * settle
         place(im, self.emo, W / 2, cy + math.sin(t * 2.5) * 14 * settle, max(0.01, k), rot)
         if self.cap:
-            paste_center(im, self.cap, W / 2, CONTENT_Y[1] - 50, alpha=ease_out((t - 0.3) / 0.3))
+            paste_center(im, self.cap, W / 2, CONTENT_Y[1] - 60, alpha=ease_out((t - 0.3) / 0.3))
         return im
 
 
