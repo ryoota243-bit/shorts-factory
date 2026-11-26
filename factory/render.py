@@ -317,11 +317,15 @@ def render(script_path, cfg, root, out_dir):
         print(f"  [thumb] skipped: {e}")
     sub_cache = {}
 
+    mcol = V.hex2rgb(theme["marker"]) if theme.get("marker") else V.marker_color(V.hex2rgb(theme["accent"]),
+                                                                                 script.get("mood", ""))
+    print(f"  [marker] mood={script.get('mood', '-')} colour=#{bytes(mcol).hex()}")
+
     def sub_img(s, m=None):
         key = (s, None if m is None else round(m * 12))
         if key not in sub_cache:
             sub_cache[key] = V.rich_text(s, 74, 960, hi=V.hex2rgb(theme["accent"]), stroke=11,
-                                         marker=None if m is None else key[1] / 12)
+                                         marker=None if m is None else key[1] / 12, marker_color=mcol)
         return sub_cache[key]
 
     SUB_TOP = 1240  # top of a 3-line subtitle (centred at y=1330)

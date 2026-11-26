@@ -199,18 +199,48 @@ def _wrap_with(chars, fnt, max_w, pts):
     return _wrap_target(chars, fnt, max_w, None)
 
 
+MOOD_COLORS = {  # underline colour by the video's mood
+    "danger": ["#ef4444", "#facc15"],   # red / yellow: dangerous, warning
+    "nature": ["#22c55e", "#84cc16"],   # greens: animals, plants
+    "water_space": ["#38bdf8", "#818cf8"],  # sky / ocean / space
+    "food": ["#fb923c", "#f43f5e"],     # appetising orange / red
+    "history": ["#f59e0b", "#d4a373"],  # gold / old paper
+    "science": ["#22d3ee", "#a78bfa"],  # cyan / violet
+    "fun": ["#f472b6", "#facc15"],      # pink / yellow
+}
+
+
+def _hue(rgb):
+    import colorsys
+    return colorsys.rgb_to_hsv(*[c / 255 for c in rgb])[0] * 360
+
+
+def marker_color(accent, mood=""):
+    """A colour for the underline that fits the mood and is clearly different from the text colour."""
+    a = _hue(accent)
+    cands = [hex2rgb(c) for c in MOOD_COLORS.get(mood, [])] + [hex2rgb(c) for v in MOOD_COLORS.values() for c in v]
+    for c in cands:
+        d = abs(_hue(c) - a) % 360
+        if min(d, 360 - d) >= 40:
+            return c
+    return (255, 255, 255)
+
+
 def rich_text(text, size, max_w=980, fill=(255, 255, 255), hi=(255, 214, 0), stroke=0,
-              stroke_fill=(0, 0, 0), weight="Black", spacing=1.25, shadow=False, marker=None):
+              stroke_fill=(0, 0, 0), weight="Black", spacing=1.25, shadow=False, marker=None,
+              marker_color=None):
     """Render text ("[...]" = highlight) to a tight RGBA image, centered lines."""
     f = font(size, weight)
     text = text.replace("\ufe0f", "").replace("\u200d", "")
     chars = parse_marked(text, tuple(fill), tuple(hi))
     lines = wrap(chars, f, max_w, hi=tuple(hi) if tuple(hi) != tuple(fill) else None)
-    lh = int(size * spacing)
+    ul_gap, ul_th = (stroke + 4, max(8, int(size * 0.17))) if marker is not None else (0, 0)
+    lh = int(size * spacing) + (ul_gap + ul_th if marker is not None else 0)
     widths = [sum(glen(f, c) for c, _ in l) for l in lines]
     pad = stroke + 8 + (8 if shadow else 0)
     img_w = int(max(widths) + pad * 2)
-    img_h = int(lh * (len(lines) - 1) + size * 1.2 + pad * 2)
+    img_h = int(lh * (len(lines) - 1) + size * 1.2 + pad * 2 + ul_gap + ul_th)
+    ink_bottom = f.getbbox("血")[3]  # lowest ink of a full-height glyph, from the text origin
     img = Image.new("RGBA", (img_w, img_h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     if marker is not None and marker > 0:  # highlighter pen behind the [highlighted] words, drawn left to right
@@ -235,8 +265,9 @@ def rich_text(text, size, max_w=980, fill=(255, 255, 255), hi=(255, 214, 0), str
                 break
             seg = min(b - a, left)
             left -= seg
-            md.rounded_rectangle((a - 6, y + size * 1.02, a + seg + 6, y + size * 1.2), int(size * 0.1),
-                                 fill=tuple(hi) + (235,))
+            top = y + ink_bottom + ul_gap  # fully below the letters and their outline
+            md.rounded_rectangle((a - 2, top, a + seg + 2, top + ul_th), ul_th // 2,
+                                 fill=tuple(marker_color or hi) + (255,), outline=(0, 0, 0, 255), width=2)
     else:
         mk = None
     passes = []
@@ -246,7 +277,7 @@ def rich_text(text, size, max_w=980, fill=(255, 255, 255), hi=(255, 214, 0), str
         passes.append(("stroke", 0))
     passes.append(("fill", 0))
     for kind, off in passes:
-        if kind == "fill" and mk is not None:  # marker sits over the outline, under the letters
+        if kind == "fill" and mk is not None:  # underline sits below the letters
             img.alpha_composite(mk)
         for li, line in enumerate(lines):
             x = (img_w - widths[li]) / 2

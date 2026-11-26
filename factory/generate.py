@@ -65,6 +65,7 @@ class Script(BaseModel):
     tags: List[str]
     bg_colors: List[str]
     accent: str
+    mood: Literal["danger", "nature", "water_space", "food", "history", "science", "fun"]
     pronunciations: List[Pron]
     scenes: List[Scene]
     sources: List[str]
@@ -178,6 +179,8 @@ FORMAT_PROMPT = """次の台本案を、指定のJSONスキーマに変換して
   quiz / quiz_answer: text（問題文）, items（選択肢3つ。text のみ）, number（正解の番号 1〜3）
 - comment_prompt は最後に読み上げる問いかけ。
 - color は #RRGGBB。bg_colors は背景グラデーション用の暗めの2色。accent は明るい強調色。
+- mood は動画の雰囲気: danger（危険・注意・毒など）/ nature（動物・植物）/ water_space（海・空・宇宙）/
+  food（食べ物）/ history（歴史・文化）/ science（科学・人体・技術）/ fun（その他の楽しい話）。
 - sources は出典URLの配列。topic はテーマを短く。thumb_text / thumb_prompt はサムネイル用。
 
 # 台本案
@@ -296,6 +299,7 @@ def assemble(s: Script, category, outro, writer):
         "description": s.description,
         "tags": s.tags,
         "theme": {"bg": (s.bg_colors + ["#1e3c72", "#6a1b9a"])[:2], "accent": s.accent or "#ffd600"},
+        "mood": s.mood,
         "pronunciations": {p.word: p.reading for p in s.pronunciations},
         "scenes": [x for x in (_scene(sc, s.comment_prompt) for sc in s.scenes) if x["narration"]]
                   + [outro_scene(outro, s.comment_prompt)],
