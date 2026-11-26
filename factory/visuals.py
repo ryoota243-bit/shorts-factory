@@ -131,6 +131,7 @@ def break_points(plain):
             attach = (f["pos"] in ("助詞", "助動詞", "記号") or f.get("pos_group1") in ("接尾", "非自立")
                       or prev == "接頭詞" or prev_num or (prev_g1 == "サ変接続" and f["pos"] == "動詞")
                       or (prev_str == "と" and f["string"][:1] in ("し", "い", "言"))
+                      or (prev_str in ("の", "が") and f["pos"] == "形容詞")  # 角の|ない -> keep 角のない
                       or (prev in ("形容詞", "連体詞") and f["pos"] == "名詞")
                       or (prev == "名詞" and f["pos"] == "名詞" and noun_run < 7
                           and f.get("pos_group1") not in ("代名詞",) and prev_g1 not in ("代名詞",)))
