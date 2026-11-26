@@ -1,0 +1,183 @@
+{
+  "topic": "カタツムリの歯",
+  "category": "動物",
+  "writer": "gemini+claude",
+  "title": "カタツムリの [歯の秘密]",
+  "youtube_title": "カタツムリの歯は何本？実は1万本以上！ #雑学 #shorts",
+  "description": "カタツムリの口の中に隠された驚きの秘密！\n実は小さな歯が1万本以上も並んでいるんです。\n#雑学 #ショート #カタツムリ #生き物 #クイズ",
+  "tags": [
+    "雑学",
+    "ショート",
+    "カタツムリ",
+    "生き物",
+    "クイズ"
+  ],
+  "theme": {
+    "bg": [
+      "#13241b",
+      "#09120e"
+    ],
+    "accent": "#4ade80"
+  },
+  "pronunciations": {},
+  "scenes": [
+    {
+      "narration": "歯の数がケタ違いの生き物。カタツムリの歯は [何本] あるでしょうか？",
+      "visual": {
+        "type": "photo",
+        "query": "snail close up",
+        "ai_prompt": "A close-up shot of a snail crawling on a wet green leaf, soft natural lighting, macro photography, high detail",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🐌",
+          "text": "カタツムリの歯"
+        }
+      }
+    },
+    {
+      "narration": "問題。1番0本、2番約100本、3番 [1万本以上]？",
+      "visual": {
+        "type": "quiz",
+        "question": "カタツムリの歯の数は？",
+        "choices": [
+          "0本",
+          "約100本",
+          "1万本以上"
+        ],
+        "answer": 3,
+        "reveal": false,
+        "countdown": true
+      },
+      "hold": 3.3
+    },
+    {
+      "narration": "正解は、3番の [1万本以上]！",
+      "visual": {
+        "type": "quiz",
+        "question": "カタツムリの歯の数は？",
+        "choices": [
+          "0本",
+          "約100本",
+          "1万本以上"
+        ],
+        "answer": 3,
+        "reveal": true,
+        "countdown": false
+      }
+    },
+    {
+      "narration": "種類によっては、なんと [約2万本] にもなるといわれます。",
+      "visual": {
+        "type": "number",
+        "value": 20000,
+        "unit": "本ほど",
+        "label": "多い種類では"
+      }
+    },
+    {
+      "narration": "人間の大人は最大32本なので、[比べものになりません]。",
+      "visual": {
+        "type": "compare",
+        "relation": "vs",
+        "items": [
+          {
+            "label": "人間の大人",
+            "value": "32本",
+            "color": "#94a3b8",
+            "note": "親知らず含む",
+            "emoji": "👤"
+          },
+          {
+            "label": "カタツムリ",
+            "value": "1万本以上",
+            "color": "#4ade80",
+            "note": "種類で数が違う",
+            "emoji": "🐌"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "舌の上におろし金のような歯が並び、[葉を削って] 食べています。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Scientific microscopic close-up illustration of a snail's radula, showing rows of tiny chitinous teeth arranged like a fine grater, realistic biological detail",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🔬",
+          "text": "歯舌（しぜつ）"
+        }
+      }
+    },
+    {
+      "narration": "のんびり屋のカタツムリは、実は [歯の数がケタ違い] の生き物です。",
+      "visual": {
+        "type": "photo",
+        "query": "garden snail leaf",
+        "ai_prompt": "Macro photo of a small garden snail resting gracefully on a dew-covered green plant stem, blurred background",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🐌",
+          "text": "小さな口に歯がびっしり"
+        }
+      }
+    },
+    {
+      "narration": "知ってた？コメントで教えて！",
+      "visual": {
+        "type": "text",
+        "emoji": "💬",
+        "text": "知ってた？コメントで教えて！",
+        "size": 96,
+        "sub": "▶ フォローで毎日雑学"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0,
+      "no_subtitle": true
+    }
+  ],
+  "comment_prompt": "知ってた？コメントで教えて！",
+  "sources": [
+    "https://kids.gakken.co.jp/box/nazenani/pdf/01_doubutu/X1020203.pdf",
+    "https://nhm.org/stories/microscopic-look-snail-jaws",
+    "https://www.howitworksdaily.com/how-many-teeth-does-a-snail-have/",
+    "https://www.sciencing.com/2263325/california-strangest-animal-banana-slug-27000-teeth-numbing-slime/",
+    "https://www.sakai-dent.com/number-of-teeth/"
+  ],
+  "thumb_text": "歯が [1万本以上] の生物",
+  "thumb_prompt": "Cinematic macro close-up of a garden snail on a vibrant green leaf with glistening water droplets, moody dark background, dramatic lighting, sharp focus, 8k resolution, photorealistic",
+  "format": "quiz",
+  "gen_cost": {
+    "usd": 1.0137,
+    "jpy": 157,
+    "by_task": {
+      "factcheck": 0.9836,
+      "convert": 0.0301
+    },
+    "tokens": {
+      "factcheck": {
+        "model": "claude-opus-5-5",
+        "in": 168484,
+        "out": 11482,
+        "searches": 8
+      },
+      "convert": {
+        "model": "claude-sonnet-5-5",
+        "in": 6253,
+        "out": 1757,
+        "searches": 0
+      }
+    }
+  },
+  "factcheck": [
+    "シーン1：「歯が一番多い生き物」を「歯の数がケタ違いの生き物」に変更（ナメクジで最大27,000本の例があり、一番とは言えないため）。",
+    "シーン4：正解発表と同じ「1万本以上」の繰り返しをやめ、「種類によっては約2万本」に変更（number は20000、単位は本ほど）。",
+    "シーン5：ナレーションを「人間の大人は最大32本なので、比べものになりません。」に変更（「ケタ違い」が3回重なるのを避けるため）。",
+    "シーン5の compare：カタツムリの note「世界最多レベル」を「種類で数が違う」に変更。",
+    "シーン7：ナレーションの「歯が一番多い」を「歯の数がケタ違い」に変え、シーン1とのループを保持。",
+    "シーン7：画面の文字「世界最多の歯」を「小さな口に歯がびっしり」に変更。",
+    "youtube_title の「世界最多レベル？」を「1万本以上！」に、description の「世界で最も歯が多い生き物のひとつ」を「小さな歯が1万本以上」に変更。",
+    "sources：ドメインだけだった出典を、確認に使った学研・ロサンゼルス自然史博物館・How It Works・Sciencing・歯科医院の具体的なURLに差し替え。"
+  ]
+}

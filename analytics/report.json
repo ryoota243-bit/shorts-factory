@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-25T21:05",
+  "generated": "2026-11-26T15:59",
   "videos": [
     {
       "name": "2026-11-24_08",
@@ -66,6 +66,21 @@
       "video_id": "2nq6f0tEj6k",
       "topic": "大人の骨の数が減る理由",
       "category": "人体",
+      "format": "standard",
+      "writer": "gemini+claude",
+      "views": null,
+      "averageViewPercentage": null,
+      "averageViewDuration": null,
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "subscribersGained": null
+    },
+    {
+      "name": "2026-11-26_02",
+      "video_id": "1nOqGkcsnS0",
+      "topic": "蚊が雨でも飛べる理由",
+      "category": "昆虫",
       "format": "standard",
       "writer": "gemini+claude",
       "views": null,

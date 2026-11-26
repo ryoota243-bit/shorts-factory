@@ -22,5 +22,9 @@
   "ISO11540": {
     "reading": "アイエスオーイチイチゴーヨンゼロ",
     "accent_type": 15
+  },
+  "舌": {
+    "reading": "シタ",
+    "accent_type": 2
   }
 }
