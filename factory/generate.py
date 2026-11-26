@@ -91,8 +91,8 @@ FORMATS = {
 FORMAT_WEIGHTS = {"standard": 5, "quiz": 3, "myth": 2}
 
 
-RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャンネルの構成作家です。
-{theme_line}
+RESEARCH_PROMPT = """あなたは日本語YouTubeショートの{channel_kind}の構成作家です。
+{theme_line}{genre_guide}
 
 # 今回の形式：{format_name}
 {format_guide}
@@ -285,8 +285,8 @@ def _scene(sc, comment_prompt=""):
 def outro_scene(outro, comment_prompt):
     """Last scene: the spoken comment prompt is also what the screen shows; follow line underneath."""
     cp = (comment_prompt or outro.get("narration", "")).strip()
-    vis = {"type": "text", "emoji": "💬", "text": cp, "size": 96, "sub": "▶ フォローで毎日雑学"}
-    return dict(outro, narration=cp, visual=vis, no_subtitle=True)
+    vis = {"type": "text", "emoji": "💬", "text": cp, "size": 96, "sub": outro.get("sub", "▶ フォローで毎日雑学")}
+    return dict({k: v for k, v in outro.items() if k != "sub"}, narration=cp, visual=vis, no_subtitle=True)
 
 
 def assemble(s: Script, category, outro, writer):
@@ -310,25 +310,48 @@ def assemble(s: Script, category, outro, writer):
     }
 
 
-def pick_category(seed=None, recent_categories=(), weights=None):
+def categories(genre=None):
+    return list((genre or {}).get("categories") or CATEGORIES)
+
+
+def genre_guide(genre=None):
+    """Extra rules for a genre profile (e.g. adult trivia): tone, taboos, image rules."""
+    g = genre or {}
+    parts = []
+    if g.get("guide"):
+        parts.append("# このチャンネルのジャンル\n" + g["guide"].strip())
+    if g.get("image_rules"):
+        parts.append("# 写真・AI画像・サムネイルの決まり（必ず守る）\n" + g["image_rules"].strip())
+    return ("\n\n" + "\n\n".join(parts)) if parts else ""
+
+
+def pick_category(seed=None, recent_categories=(), weights=None, genre=None):
     rng = random.Random(seed or dt.date.today().toordinal())
-    pool = [c for c in CATEGORIES if c not in set(recent_categories)] or CATEGORIES
+    cats = categories(genre)
+    pool = [c for c in cats if c not in set(recent_categories)] or cats
     w = [(weights or {}).get(c, 1.0) for c in pool]
     return rng.choices(pool, weights=w)[0]
 
 
 def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None,
-             fmt=None, format_weights=None, category_weights=None):
-    """Write a script. With topic set, write about that topic instead of choosing one."""
+             fmt=None, format_weights=None, category_weights=None, genre=None):
+    """Write a script. With topic set, write about that topic instead of choosing one.
+    genre (profile config "genre") swaps the category list and adds tone/safety rules."""
     llm.reset()
-    category = category or pick_category(seed, recent_categories, category_weights)
+    genre = genre or {}
+    category = category or pick_category(seed, recent_categories, category_weights, genre)
     print(f"[generate:{writer}] category: {category}" + (f" / topic: {topic}" if topic else ""))
     rng = random.Random((seed or dt.date.today().toordinal()) * 7 + 3)
     fw = format_weights or FORMAT_WEIGHTS
     fmt = fmt if fmt in FORMATS else rng.choices(list(fw), weights=list(fw.values()))[0]
     print(f"[generate] format: {fmt}")
     prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic),
+                                    channel_kind=genre.get("channel_kind", "雑学チャンネル"),
+                                    genre_guide=genre_guide(genre),
                                     format_name=FORMATS[fmt][0], format_guide=FORMATS[fmt][1])
+    hashtag = genre.get("hashtag")
+    if hashtag:  # e.g. "#大人の雑学" instead of "#雑学"
+        prompt = prompt.replace("末尾に #雑学 #shorts", f"末尾に {hashtag} #shorts")
     notes = None
     if writer in ("gemini", "gemini+claude"):
         from . import gemini
@@ -336,7 +359,7 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
         if writer == "gemini+claude":
             from .factcheck import check
             print("[generate] Claude fact-check...")
-            s, notes = check(s)
+            s, notes = check(s, extra=genre_guide(genre))
             for n in notes:
                 print(f"  [factcheck] {n}")
     else:

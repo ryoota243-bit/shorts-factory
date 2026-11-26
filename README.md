@@ -23,6 +23,25 @@
 - **自分で書いた台本を優先する**：`scripts/queue/` に JSON を置くと、次の回で使われます
 - **使い終わった台本**：`scripts/archive/` に、作成済みテーマは `history.json` に残ります
 
+## ジャンル別チャンネル（エロ雑学）
+
+`profiles/ero/` に「ちょっとHな大人の雑学（エロ雑学）」用の設定があり、通常の雑学と同じ仕組みで自動生成します。
+
+- **自動実行**：毎日 21:43（日本時間）に `daily-shorts` が ero プロファイルで動きます（通常の雑学は 5:17 のまま）
+- **今すぐ作る**：Actions → `daily-shorts` → `Run workflow` で「ジャンル」に `ero` を選ぶ
+- **手元で**：`python daily.py --profile ero`
+- **台本・履歴は別管理**：`profiles/ero/scripts/queue`（手書き台本）・`profiles/ero/scripts/archive`・`profiles/ero/history.json`。
+  動画名は `ero_2026-11-27_01` のように `ero_` 付き、Releases のタグは `ero-v…`
+- **設定**：`profiles/ero/config.json` は `config.json` への上書きです。チャンネル名・概要欄の定型文・最後の呼びかけ、
+  `genre.categories`（カテゴリ一覧）、`genre.guide`（台本の作風と禁止事項）、`genre.image_rules` / `ai_suffix` / `verify_rules`（画像の決まり）を変えられます
+- **YouTube のガイドライン対策**：露骨な表現・未成年・性暴力などは台本の段階で禁止し、Claude の校閲でも同じ決まりを確認します。
+  写真・AI画像は「服を着た大人だけ・象徴的なイメージ」に限定し、Claude の画像チェックで扇情的な画像を弾きます
+  （ANTHROPIC_API_KEY が無く画像チェックできないときは写真を使わず図解にします）。Pixabay はセーフサーチ有効
+- **アップロード先は別チャンネル**：Secret `YOUTUBE_REFRESH_TOKEN_ERO`（エロ雑学チャンネルで取得したトークン）を登録してください。
+  未登録ならアップロードはせず Releases に置くだけです（通常チャンネルに上がることはありません）。
+  OAuth クライアントを分けたい場合は `YOUTUBE_CLIENT_ID_ERO` / `YOUTUBE_CLIENT_SECRET_ERO` も登録できます（無ければ共通のものを使用）
+- 年齢制限は API では設定できないため、必要なら YouTube Studio で手動設定してください
+
 ## 初期設定：APIキー（Settings → Secrets and variables → Actions → New repository secret）
 
 | Secret 名 | 用途 | 取得先 | 必須 |

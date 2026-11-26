@@ -53,15 +53,16 @@ web検索で信頼できる情報源（公的機関・大学・百科事典・�
    1シーンのナレーション45文字）を守る。出典URLは確認に使ったものに更新する。
 3. 最後に「## 校閲メモ」という見出しを付け、直した点を1行ずつ箇条書き（直す点がなければ「- 修正なし」）。
 
-# 台本
+{extra}# 台本
 {script}"""
 
 
-def check(script_model):
-    """Return (fixed Script, list of review notes)."""
+def check(script_model, extra=""):
+    """Return (fixed Script, list of review notes). extra: genre rules the script must also follow."""
     client = anthropic.Anthropic()
     payload = json.dumps(script_model.model_dump(), ensure_ascii=False, indent=1)
-    report = research(client, CHECK_PROMPT.format(script=payload), max_uses=10, task="factcheck")
+    report = research(client, CHECK_PROMPT.format(script=payload, extra=(
+        "# ジャンルの決まり（違反があれば必ず直す。直せない場面は差し替える）" + extra + "\n\n") if extra else ""), max_uses=10, task="factcheck")
     notes = []
     m = re.search(r"##\s*校閲メモ\s*\n(.*)", report, re.S)
     if m:

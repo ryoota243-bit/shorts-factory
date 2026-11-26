@@ -56,7 +56,8 @@ def build(script, theme, cfg, root, layers, out_png):
     copy = copy.rotate(-3, resample=Image.BICUBIC, expand=True)
     V.paste_center(img, copy, V.W / 2, V.H * 0.47)
 
-    tag = V.rich_text("思わず話したくなる雑学", 54, 900, fill=(20, 20, 20))
+    tag = V.rich_text(cfg.get("channel", {}).get("thumb_tag") or cfg.get("channel", {}).get("name")
+                      or "思わず話したくなる雑学", 54, 900, fill=(20, 20, 20))
     pill = V.rounded((tag.width + 60, tag.height + 24), 40, accent + (255,))
     pill.paste(tag, (30, 12), tag)
     V.paste_center(img, pill, V.W / 2, V.H * 0.47 - copy.height / 2 - 90)

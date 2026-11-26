@@ -2,9 +2,15 @@ name: daily-shorts
 
 on:
   schedule:
-    - cron: "17 20 * * *"   # 毎日 05:17 JST（UTC 20:17）
+    - cron: "17 20 * * *"   # 毎日 05:17 JST（UTC 20:17）: 通常の雑学
+    - cron: "43 12 * * *"   # 毎日 21:43 JST（UTC 12:43）: エロ雑学（profiles/ero）
   workflow_dispatch:
     inputs:
+      profile:
+        description: "ジャンル（default=通常の雑学 / ero=エロ雑学）"
+        type: choice
+        options: [default, ero]
+        default: default
       count:
         description: "作るお題の数"
         default: "1"
@@ -33,11 +39,13 @@ on:
 permissions:
   contents: write
 
-concurrency: daily-shorts
+concurrency: daily-shorts-${{ github.event.schedule == '43 12 * * *' && 'ero' || github.event.inputs.profile || 'default' }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SHORTS_PROFILE: ${{ github.event.schedule == '43 12 * * *' && 'ero' || github.event.inputs.profile || 'default' }}
     timeout-minutes: 60
     services:
       voicevox:
@@ -95,9 +103,11 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          # ero は別チャンネル用のトークン（YOUTUBE_REFRESH_TOKEN_ERO）。未設定ならアップロードしない
+          # （通常チャンネルのトークンに切り替わることはない）
+          YOUTUBE_CLIENT_ID: ${{ env.SHORTS_PROFILE == 'ero' && secrets.YOUTUBE_CLIENT_ID_ERO || secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ env.SHORTS_PROFILE == 'ero' && secrets.YOUTUBE_CLIENT_SECRET_ERO || secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ env.SHORTS_PROFILE == 'ero' && secrets.YOUTUBE_REFRESH_TOKEN_ERO || env.SHORTS_PROFILE != 'ero' && secrets.YOUTUBE_REFRESH_TOKEN || '' }}
         run: |
           args="--count ${{ github.event.inputs.count || 1 }}"
           [ "${{ github.event.inputs.compare }}" = "true" ] && args="$args --compare"
@@ -108,13 +118,13 @@ jobs:
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.upload }}" = "true" ]; then
             args="$args --upload"
           fi
-          python daily.py $args
+          python daily.py --profile "$SHORTS_PROFILE" $args
 
       - name: Save scripts and history
         run: |
           git config user.name "shorts-bot"
           git config user.email "shorts-bot@users.noreply.github.com"
-          git add scripts history.json
+          git add scripts history.json profiles
           [ -d analytics ] && git add analytics
           [ -f dictionary.json ] && git add dictionary.json
           git diff --cached --quiet && exit 0
@@ -135,7 +145,8 @@ jobs:
           files=(output/*.mp4)
           [ ${#files[@]} -eq 0 ] && { echo "no videos"; exit 0; }
           [ -f output/UPLOAD_ONLY ] && { echo "upload-only run: no new release"; exit 0; }
-          tag="v$(TZ=Asia/Tokyo date +%Y%m%d-%H%M)"
+          if [ "$SHORTS_PROFILE" = "default" ]; then pre=""; label=""; else pre="$SHORTS_PROFILE-"; label="（$SHORTS_PROFILE）"; fi
+          tag="${pre}v$(TZ=Asia/Tokyo date +%Y%m%d-%H%M)"
           gh release create "$tag" output/*.mp4 output/*.json output/*.thumb.png \
-            --title "$(TZ=Asia/Tokyo date +%Y-%m-%d) のショート" \
+            --title "$(TZ=Asia/Tokyo date +%Y-%m-%d) のショート$label" \
             --notes-file output/RELEASE_NOTES.md

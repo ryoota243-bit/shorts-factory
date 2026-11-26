@@ -53,13 +53,13 @@ def _pixabay(v, want_video, cache, n=3):
         return
     q = urllib.parse.quote(v["query"])
     if want_video:
-        res = _get_json(f"https://pixabay.com/api/videos/?key={key}&q={q}&per_page=5")
+        res = _get_json(f"https://pixabay.com/api/videos/?key={key}&q={q}&per_page=5&safesearch=true")
         for hit in res.get("hits", []):
             f = hit["videos"].get("large") or hit["videos"].get("medium")
             if f and f.get("url"):
                 yield {"kind": "video", "path": _download(f["url"], cache, ".mp4"),
                        "credit": f"Pixabay: {hit['user']} {hit['pageURL']}"}
-    res = _get_json(f"https://pixabay.com/api/?key={key}&q={q}&image_type=photo&per_page=5")
+    res = _get_json(f"https://pixabay.com/api/?key={key}&q={q}&image_type=photo&per_page=5&safesearch=true")
     for hit in res.get("hits", [])[:n]:
         yield {"kind": "image", "path": _download(hit["largeImageURL"], cache, ".jpg"),
                "credit": f"Pixabay: {hit['user']} {hit['pageURL']}"}
@@ -76,7 +76,8 @@ def _ai(v, cfg, cache, avoid=""):
         from . import gemini
         full = (prompt + ". Vertical 9:16 composition. No text, letters, logos, emblems, patches, flags-as-logos"
                 " or watermarks in the image."
-                " Do not depict the face of any real, identifiable person.")
+                " Do not depict the face of any real, identifiable person."
+                + (" " + cfg.get("genre", {}).get("ai_suffix", "") if cfg.get("genre", {}).get("ai_suffix") else ""))
         path.write_bytes(gemini.generate_image(full))
     return {"kind": "image", "path": path, "credit": "AI生成画像 (Gemini)"}
 
@@ -109,19 +110,20 @@ def resolve(v, cfg, cache, root, narration="", topic=""):
     order = v.get("sources") or (["local", "ai", "pexels", "pixabay"] if v["type"] == "ai"
                                  else cfg["assets"]["order"])
     want = v.get("ai_prompt") or v.get("query") or ""
+    rules = cfg.get("genre", {}).get("verify_rules", "")
     for src in order:
         try:
             for cand in _candidates(src, v, cfg, cache, root, want_video):
                 if cand.get("trusted"):
                     return cand
-                ok, why = check(cand["path"], narration, want, topic)
+                ok, why = check(cand["path"], narration, want, topic, rules)
                 if ok:
                     return cand
                 print(f"  [assets] rejected {src} image: {why}")
                 if src == "ai":
                     retry = _ai(v, cfg, cache, avoid=f"The previous image was wrong: {why}. "
                                                     "Depict the subject accurately and generically.")
-                    if retry and check(retry["path"], narration, want, topic)[0]:
+                    if retry and check(retry["path"], narration, want, topic, rules)[0]:
                         return retry
                     print("  [assets] AI retry also rejected")
         except Exception as e:  # network/API errors -> try next source
