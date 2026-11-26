@@ -113,9 +113,17 @@ jobs:
           git add scripts history.json
           [ -d analytics ] && git add analytics
           [ -f dictionary.json ] && git add dictionary.json
-          git diff --cached --quiet || (git commit -m "daily: $(date -u +%F) scripts" && git push)
+          git diff --cached --quiet && exit 0
+          git commit -m "daily: $(date -u +%F) scripts"
+          # main may have moved while the video was rendering: rebase and retry
+          for i in 1 2 3 4 5; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep $((i * 5))
+          done
+          echo "::warning::could not push scripts/history"
 
       - name: Publish release
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
