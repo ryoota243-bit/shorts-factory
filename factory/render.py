@@ -317,10 +317,12 @@ def render(script_path, cfg, root, out_dir):
         print(f"  [thumb] skipped: {e}")
     sub_cache = {}
 
-    def sub_img(s):
-        if s not in sub_cache:
-            sub_cache[s] = V.rich_text(s, 74, 960, hi=V.hex2rgb(theme["accent"]), stroke=11)
-        return sub_cache[s]
+    def sub_img(s, m=None):
+        key = (s, None if m is None else round(m * 12))
+        if key not in sub_cache:
+            sub_cache[key] = V.rich_text(s, 74, 960, hi=V.hex2rgb(theme["accent"]), stroke=11,
+                                         marker=None if m is None else key[1] / 12)
+        return sub_cache[key]
 
     SUB_TOP = 1240  # top of a 3-line subtitle (centred at y=1330)
     # camera cuts: long scenes change framing at sentence boundaries so the screen keeps developing
@@ -336,7 +338,8 @@ def render(script_path, cfg, root, out_dir):
                     c.append(a)
                     last = a
         cuts.append(c)
-    print(f"  [cuts] {sum(len(c) for c in cuts)} framing changes")
+    if not cfg["video"].get("camera_cuts", False):
+        cuts = [[] for _ in scenes_t]
 
     # ---- 4. render frames -> ffmpeg ----
     mp4 = out_dir / f"{name}.mp4"
@@ -358,12 +361,7 @@ def render(script_path, cfg, root, out_dir):
             si += 1
         s0, s1 = scenes_t[si]
         img = layers[si].frame(tt - s0, s1 - s0)
-        z = 1.0
-        if not isinstance(layers[si], (V.PhotoLayer, V.VideoLayer)):  # slow push-in keeps diagrams alive
-            z = 1 + 0.04 * max(0.0, tt - s0) / max(s1 - s0, 0.1)
-        bt = next((tt - a for a in beats if 0 <= tt - a < 0.45), None)
-        if bt is not None:  # "beat": quick 3 % punch-in when an emphasised word appears
-            z *= 1 + 0.03 * math.sin(math.pi * bt / 0.45)
+        z = 1.0  # the screen itself no longer moves (no push-in, punch-in or camera cuts)
         n_cut = sum(1 for a in cuts[si] if a <= tt)
         fz, fx, fy = FRAMINGS[n_cut % len(FRAMINGS)] if n_cut else FRAMINGS[0]
         if n_cut:  # ease from the previous framing over 0.22 s
@@ -414,14 +412,12 @@ def render(script_path, cfg, root, out_dir):
         show_subs = not script["scenes"][si].get("no_subtitle")
         for a, b, s in (subs if show_subs else ()):
             if a - 0.05 <= tt < b:
-                si_img = sub_img(s)
+                mk = V.ease_out((tt - a - 0.12) / 0.4) if "[" in s else None  # highlighter sweep
+                si_img = sub_img(s, mk)
                 if isinstance(layers[si], (V.PhotoLayer, V.VideoLayer)):  # dark backing on busy photos
                     box = V.rounded((min(V.W - 20, si_img.width + 40), si_img.height + 10), 28, (0, 0, 0, 110))
                     img.paste(box, ((V.W - box.width) // 2, int(1330 - box.height / 2)), box)
-                if "[" in s and a in beats:  # emphasised line lands a little bigger, then settles
-                    k = 1.0 + 0.2 * (1 - V.ease_out((tt - a + 0.05) / 0.25))
-                else:
-                    k = 0.88 + 0.12 * V.ease_back((tt - a + 0.05) / 0.15)
+                k = 0.88 + 0.12 * V.ease_back((tt - a + 0.05) / 0.15)
                 if abs(k - 1) > 0.002:
                     V.place(img, si_img, V.W / 2, 1330, k)
                 else:

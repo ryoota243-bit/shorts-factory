@@ -33,7 +33,8 @@
     "fps": 30,
     "crf": 20,
     "thumb_seconds": 0.25,
-    "hook": false
+    "hook": false,
+    "camera_cuts": false
   },
   "daily": {
     "count": 1

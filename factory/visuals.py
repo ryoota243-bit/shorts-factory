@@ -200,7 +200,7 @@ def _wrap_with(chars, fnt, max_w, pts):
 
 
 def rich_text(text, size, max_w=980, fill=(255, 255, 255), hi=(255, 214, 0), stroke=0,
-              stroke_fill=(0, 0, 0), weight="Black", spacing=1.25, shadow=False):
+              stroke_fill=(0, 0, 0), weight="Black", spacing=1.25, shadow=False, marker=None):
     """Render text ("[...]" = highlight) to a tight RGBA image, centered lines."""
     f = font(size, weight)
     text = text.replace("\ufe0f", "").replace("\u200d", "")
@@ -213,6 +213,32 @@ def rich_text(text, size, max_w=980, fill=(255, 255, 255), hi=(255, 214, 0), str
     img_h = int(lh * (len(lines) - 1) + size * 1.2 + pad * 2)
     img = Image.new("RGBA", (img_w, img_h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
+    if marker is not None and marker > 0:  # highlighter pen behind the [highlighted] words, drawn left to right
+        runs = []  # (x0, x1, y) per highlighted run, in reading order
+        for li, line in enumerate(lines):
+            x = (img_w - widths[li]) / 2
+            y = pad + li * lh - size * 0.08
+            start = None
+            for ch, col in line + [("", None)]:
+                w = glen(f, ch) if ch else 0
+                if col == tuple(hi) and start is None:
+                    start = x
+                if col != tuple(hi) and start is not None:
+                    runs.append((start, x, y)); start = None
+                x += w
+        total = sum(b - a for a, b, _ in runs) or 1
+        left = marker * total
+        mk = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        md = ImageDraw.Draw(mk)
+        for a, b, y in runs:
+            if left <= 0:
+                break
+            seg = min(b - a, left)
+            left -= seg
+            md.rounded_rectangle((a - 6, y + size * 1.02, a + seg + 6, y + size * 1.2), int(size * 0.1),
+                                 fill=tuple(hi) + (235,))
+    else:
+        mk = None
     passes = []
     if shadow:
         passes.append(("shadow", 8))
@@ -220,6 +246,8 @@ def rich_text(text, size, max_w=980, fill=(255, 255, 255), hi=(255, 214, 0), str
         passes.append(("stroke", 0))
     passes.append(("fill", 0))
     for kind, off in passes:
+        if kind == "fill" and mk is not None:  # marker sits over the outline, under the letters
+            img.alpha_composite(mk)
         for li, line in enumerate(lines):
             x = (img_w - widths[li]) / 2
             y = pad + li * lh - size * 0.08
