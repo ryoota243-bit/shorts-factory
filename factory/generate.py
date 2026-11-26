@@ -84,6 +84,18 @@ FORMATS = {
   誤解と真実の対比には compare を使ってよい（label に「誤解」「真実」）。誤解が実際に広く信じられていることは
   出典で確認できるものに限る。"""),
 }
+STYLES = {
+    "kamishibai": """# 映像スタイル：紙芝居・手描き風
+- すべてのシーンの visual.type は ai にする（photo・図解・illustration・text・quiz は使わない）。
+- ai_prompt には、そのシーンの情景を具体的に英語で書く（誰が・何が・どこで・どんな構図か）。
+  絵本の1ページのように、一目で場面が分かる絵にする。画風（手描き・水彩など）は自動で統一されるので書かない。
+- 数字はナレーションで伝え、画面の数字図解は使わない。登場する生き物や物は、全シーンで同じ見た目に
+  なるよう ai_prompt で毎回同じ言葉（例: "a small brown octopus with big round eyes"）で描写する。
+- 物語のように「はじまり→なぜ？→ひみつ→おち」の流れで語る。形式はクイズにしない。
+""",
+}
+
+
 FORMAT_WEIGHTS = {"standard": 5, "quiz": 3, "myth": 2}
 
 
@@ -92,6 +104,7 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャン�
 
 # 今回の形式：{format_name}
 {format_guide}
+{style_guide}
 
 # 手順
 1. web検索で、ネタの事実を信頼できる情報源（公的機関・大学・百科事典・専門メディア）で確認する。
@@ -306,16 +319,19 @@ def pick_category(seed=None, recent_categories=(), weights=None):
 
 
 def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None,
-             fmt=None, format_weights=None, category_weights=None):
+             fmt=None, format_weights=None, category_weights=None, style=""):
     """Write a script. With topic set, write about that topic instead of choosing one."""
     category = category or pick_category(seed, recent_categories, category_weights)
     print(f"[generate:{writer}] category: {category}" + (f" / topic: {topic}" if topic else ""))
     rng = random.Random((seed or dt.date.today().toordinal()) * 7 + 3)
     fw = format_weights or FORMAT_WEIGHTS
     fmt = fmt if fmt in FORMATS else rng.choices(list(fw), weights=list(fw.values()))[0]
+    if style == "kamishibai" and fmt == "quiz":
+        fmt = "standard"
     print(f"[generate] format: {fmt}")
     prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic),
-                                    format_name=FORMATS[fmt][0], format_guide=FORMATS[fmt][1])
+                                    format_name=FORMATS[fmt][0], format_guide=FORMATS[fmt][1],
+                                    style_guide=STYLES.get(style, ""))
     notes = None
     if writer in ("gemini", "gemini+claude"):
         from . import gemini
@@ -331,6 +347,8 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
         s = to_script(client, research(client, prompt))
     out = assemble(s, category, outro, writer)
     out["format"] = fmt
+    if style:
+        out["style"] = style
     if notes is not None:
         out["factcheck"] = notes
     return out

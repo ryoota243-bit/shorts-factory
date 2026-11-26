@@ -117,15 +117,18 @@ def subtitle_text(chunk):
     return chunk.rstrip("。")
 
 
-def make_layer(scene, theme, seed, cfg, root, credits, fps, topic=""):
+def make_layer(scene, theme, seed, cfg, root, credits, fps, topic="", style=""):
     v = dict(scene.get("visual") or {"type": "text", "text": scene.get("caption", "")})
+    if style == "kamishibai" and v.get("type") in ("ai", "photo"):
+        v.update(type="ai", style_suffix=V.KAMI_STYLE, sources=["local", "ai"])
     found = assets.resolve(v, cfg, root / "cache", root,
                            narration=re.sub(r"[\[\]]", "", scene.get("narration", "")), topic=topic)
     if found:
         credits.append(found["credit"])
         if found["kind"] == "video":
             return V.VideoLayer(v, theme, seed, found["path"], fps)
-        layer = V.PhotoLayer(v, theme, seed, found["path"])
+        layer = (V.KamishibaiLayer(v, theme, seed, found["path"]) if style == "kamishibai"
+                 else V.PhotoLayer(v, theme, seed, found["path"]))
         layer.src_path = found["path"]
         return layer
     if v.get("type") in ("photo", "video", "ai"):
@@ -238,7 +241,7 @@ def render(script_path, cfg, root, out_dir):
     if HOOK_ON:
         hit = bgm.impact() * 0.55  # opening impact
         mix[: len(hit)] += hit[: len(mix)]
-    pop = bgm.pop() * 0.25
+    pop = bgm.swish() * 0.35 if script.get("style") == "kamishibai" else bgm.pop() * 0.25
     for st, _ in scenes_t[1:]:
         s = int(st * SR); mix[s:s + len(pop)] += pop[: max(0, min(len(pop), n - s))]
     mix = np.tanh(mix * 1.1) / np.tanh(1.1)
@@ -251,7 +254,9 @@ def render(script_path, cfg, root, out_dir):
     # ---- 3. layers / overlays ----
     credits = []
     topic = re.sub(r"[\[\]]", "", f"{script.get('title', '')} / {script.get('topic', '')}")
-    layers = [make_layer(sc, theme, seed + i, cfg, root, credits, fps, topic) for i, sc in enumerate(script["scenes"])]
+    style = script.get("style", "")
+    layers = [make_layer(sc, theme, seed + i, cfg, root, credits, fps, topic, style)
+              for i, sc in enumerate(script["scenes"])]
     for i, layer in enumerate(layers):  # quiz: show each choice when the narration reads it
         if isinstance(layer, V.QuizLayer) and not layer.reveal:
             s0, s1 = scenes_t[i]
@@ -316,7 +321,7 @@ def render(script_path, cfg, root, out_dir):
     cuts = []
     for i, (st, en) in enumerate(scenes_t):
         c = []
-        if en - st >= CUT_MIN_SCENE and not script["scenes"][i].get("no_subtitle"):
+        if en - st >= CUT_MIN_SCENE and not script["scenes"][i].get("no_subtitle") and style != "kamishibai":
             last = st
             for a, b, txt in subs:
                 if st + 0.8 < a < en - 0.8 and a - last >= CUT_GAP and not (i == 0 and a < HOOK):
@@ -346,7 +351,7 @@ def render(script_path, cfg, root, out_dir):
         s0, s1 = scenes_t[si]
         img = layers[si].frame(tt - s0, s1 - s0)
         z = 1.0
-        if not isinstance(layers[si], (V.PhotoLayer, V.VideoLayer)):  # slow push-in keeps diagrams alive
+        if not isinstance(layers[si], (V.PhotoLayer, V.VideoLayer, V.KamishibaiLayer)):  # slow push-in
             z = 1 + 0.04 * max(0.0, tt - s0) / max(s1 - s0, 0.1)
         bt = next((tt - a for a in beats if 0 <= tt - a < 0.45), None)
         if bt is not None:  # "beat": quick 3 % punch-in when an emphasised word appears
@@ -379,7 +384,17 @@ def render(script_path, cfg, root, out_dir):
             x0 = min(max(V.W / 2 - (V.W / 2) / z + fx, 0.0), V.W - cw)
             y0 = min(max(y0, 0.0), V.H - ch)
             img = V.view(img, x0, y0, cw, ch)  # sub-pixel: no jitter
-        if si > 0 and tt - s0 < XFADE and prev_last is not None:
+        KT = 0.45
+        if (style == "kamishibai" and si > 0 and tt - s0 < KT and prev_last is not None
+                and isinstance(layers[si - 1], V.KamishibaiLayer)):
+            p_ = V.ease_in_out((tt - s0) / KT)
+            pl = layers[si - 1]
+            ps0, ps1 = scenes_t[si - 1]
+            img = img.copy()
+            dx = -p_ * (V.W + 120)  # the previous card is pulled out to the left, revealing the next one
+            V.place(img, pl.shadow, V.W / 2 + dx, V.CARD_CY + 10, 1.0, pl.tilt - 6 * p_)
+            V.place(img, pl.card(ps1 - ps0, ps1 - ps0), V.W / 2 + dx, V.CARD_CY, 1.0, pl.tilt - 6 * p_)
+        elif si > 0 and tt - s0 < XFADE and prev_last is not None:
             img = Image.blend(prev_last, img, (tt - s0) / XFADE)
         if si < len(scenes_t) - 1 and s1 - tt <= 1.5 / fps:
             prev_last = img.copy()

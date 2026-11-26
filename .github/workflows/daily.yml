@@ -12,6 +12,9 @@ on:
         description: "YouTube の分析レポートだけ更新する（動画は作らない）"
         type: boolean
         default: false
+      style:
+        description: "映像スタイル（空欄=通常 / kamishibai=紙芝居・手描き風）"
+        default: ""
       format:
         description: "台本の形式（空欄=日替わり / standard / quiz / myth）"
         default: ""
@@ -94,6 +97,7 @@ jobs:
           args="--count ${{ github.event.inputs.count || 1 }}"
           [ "${{ github.event.inputs.compare }}" = "true" ] && args="$args --compare"
           [ -n "${{ github.event.inputs.format }}" ] && args="$args --format ${{ github.event.inputs.format }}"
+          [ -n "${{ github.event.inputs.style }}" ] && args="$args --style ${{ github.event.inputs.style }}"
           [ "${{ github.event.inputs.analytics_only }}" = "true" ] && args="$args --analytics-only"
           [ -n "${{ github.event.inputs.rerender }}" ] && args="$args --rerender ${{ github.event.inputs.rerender }}"
           [ -n "${{ github.event.inputs.upload_existing }}" ] && args="$args --upload-only ${{ github.event.inputs.upload_existing }}"

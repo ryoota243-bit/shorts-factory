@@ -71,10 +71,12 @@ def _ai(v, cfg, cache, avoid=""):
         return None
     if avoid:
         prompt += f". Important: {avoid}"
-    path = Path(cache) / ("ai_" + hashlib.sha1(prompt.encode()).hexdigest()[:16] + ".png")
+    key = prompt + v.get("style_suffix", "")
+    path = Path(cache) / ("ai_" + hashlib.sha1(key.encode()).hexdigest()[:16] + ".png")
     if not path.exists():
         from . import gemini
-        full = (prompt + ". Vertical 9:16 composition. No text, letters, logos, emblems, patches, flags-as-logos"
+        full = (prompt + (". " + v["style_suffix"] if v.get("style_suffix") else "") +
+                ". Vertical 9:16 composition. No text, letters, logos, emblems, patches, flags-as-logos"
                 " or watermarks in the image."
                 " Do not depict the face of any real, identifiable person.")
         path.write_bytes(gemini.generate_image(full))

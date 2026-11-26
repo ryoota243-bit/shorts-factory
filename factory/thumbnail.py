@@ -29,8 +29,12 @@ def build(script, theme, cfg, root, layers, out_png):
     bg, credit = None, None
     prompt = script.get("thumb_prompt")
     if prompt:
-        v = {"type": "ai", "ai_prompt": prompt + ". Dramatic, high contrast, bold close-up subject, "
-                                                 "uncluttered middle area, vertical poster composition"}
+        if script.get("style") == "kamishibai":
+            v = {"type": "ai", "style_suffix": V.KAMI_STYLE,
+                 "ai_prompt": prompt + ". Bold, simple composition with one clear subject, uncluttered middle area"}
+        else:
+            v = {"type": "ai", "ai_prompt": prompt + ". Dramatic, high contrast, bold close-up subject, "
+                                                     "uncluttered middle area, vertical poster composition"}
         try:
             found = assets.resolve(v, cfg, root / "cache", root, narration=f"サムネイル: {plain}",
                                    topic=re.sub(r"[\[\]]", "", f"{script.get('title', '')} / {script.get('topic', '')}"))
