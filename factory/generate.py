@@ -90,7 +90,7 @@ FORMATS = {
     "rapid": ("一言雑学の連発", """一言で伝わる雑学を5〜6個、テンポよく連続で紹介する形式（1シーン＝雑学1つ）。
   詳しい条件は「台本の条件」の先頭に従う。"""),
 }
-FORMAT_WEIGHTS = {"standard": 5, "quiz": 3, "myth": 2, "rapid": 3}
+FORMAT_WEIGHTS = {"standard": 5, "quiz": 3, "myth": 2}  # rapid is for the separate trivia channel
 
 # rapid: one-line facts, 5-6 per video, 30-40 s in total
 RAPID_ITEMS = (5, 6)
@@ -130,15 +130,15 @@ RAPID_RULES = """（一言雑学の連発形式。この形式では、以下が
 - 映像: 各雑学の中身が一目でわかる映像にする。photo か ai を中心に（全体の半分以上）、数字が主役のネタは number、
   2つの対比が主役のネタは compare を使ってよい。図解の同じ種類（number と number など）は2シーン続けない
   （photo / ai が続くのはよい）。list・pie は使わない。illustration / text の text は、その雑学の要点を8文字前後で。
-- title: 切り口と個数がわかる見出し（例「[動物]のへぇ雑学5連発」）。thumb_text: 個数と切り口が伝わる
+- title: 切り口と個数がわかる見出し（例「[動物]の{term}5連発」）。thumb_text: 個数と切り口が伝わる
   キャッチコピー（例「[5個]全部知ってる？」）。youtube_title: 切り口の言葉を前半に、個数を入れる
-  （例「思わず話したくなる動物の雑学5連発 #雑学 #shorts」）。
+  （例「思わず話したくなる動物の{term}5連発 #{term} #雑学 #shorts」）。末尾は #{term} #雑学 #shorts。
 - comment_prompt: 「いくつ知ってた？」のように、知っていた数を答えたくなる問いかけ。
 - topic: 切り口と、紹介した雑学の要点を「／」区切りで全部書く（例「動物の体: タコの心臓3つ／ラッコの手つなぎ／…」）。
   次回以降の重複チェックに使う。
 """
 
-RESEARCH_PROMPT = """あなたは日本語YouTubeショートの雑学チャンネルの構成作家です。
+RESEARCH_PROMPT = """あなたは日本語YouTubeショートの{term}チャンネルの構成作家です。
 {theme_line}
 
 # 今回の形式：{format_name}
@@ -295,7 +295,7 @@ def theme_line(category=None, history=(), topic=None, fmt="standard"):
             f"作ってください。\n\n# 重複禁止（過去に扱ったテーマ）\n{hist}")
 
 
-def finish_rapid(script):
+def finish_rapid(script, badge="雑学"):
     """rapid: keep 5-6 facts within the time budget and number them ("雑学 1/5" badge on screen)."""
     facts, outro = script["scenes"][:-1], script["scenes"][-1:]
     while len(facts) > RAPID_ITEMS[1] or (len(facts) > RAPID_ITEMS[0]
@@ -304,7 +304,7 @@ def finish_rapid(script):
         dropped = facts.pop(-2)  # keep the strong closer; drop the one before it
         print(f"  [rapid] over budget, dropped: {dropped['narration']}")
     for i, f in enumerate(facts, 1):
-        f["badge"] = f"雑学 {i}/{len(facts)}"
+        f["badge"] = f"{badge} {i}/{len(facts)}".strip()
     chars = sum(len(re.sub(r"[\[\]]", "", f["narration"])) for f in facts)
     print(f"  [rapid] {len(facts)} facts, {chars} chars of narration")
     script["scenes"] = facts + outro
@@ -338,8 +338,8 @@ def _scene(sc, comment_prompt=""):
 def outro_scene(outro, comment_prompt):
     """Last scene: the spoken comment prompt is also what the screen shows; follow line underneath."""
     cp = (comment_prompt or outro.get("narration", "")).strip()
-    vis = {"type": "text", "emoji": "💬", "text": cp, "size": 96, "sub": "▶ フォローで毎日雑学"}
-    return dict(outro, narration=cp, visual=vis, no_subtitle=True)
+    vis = {"type": "text", "emoji": "💬", "text": cp, "size": 96, "sub": outro.get("sub", "▶ フォローで毎日雑学")}
+    return dict({k: v for k, v in outro.items() if k != "sub"}, narration=cp, visual=vis, no_subtitle=True)
 
 
 def assemble(s: Script, category, outro, writer):
@@ -371,7 +371,7 @@ def pick_category(seed=None, recent_categories=(), weights=None):
 
 
 def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None,
-             fmt=None, format_weights=None, category_weights=None):
+             fmt=None, format_weights=None, category_weights=None, term="雑学"):
     """Write a script. With topic set, write about that topic instead of choosing one."""
     llm.reset()
     category = category or pick_category(seed, recent_categories, category_weights)
@@ -380,9 +380,9 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
     fw = format_weights or FORMAT_WEIGHTS
     fmt = fmt if fmt in FORMATS else rng.choices(list(fw), weights=list(fw.values()))[0]
     print(f"[generate] format: {fmt}")
-    prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic, fmt),
+    prompt = RESEARCH_PROMPT.format(term=term, theme_line=theme_line(category, history, topic, fmt),
                                     format_name=FORMATS[fmt][0], format_guide=FORMATS[fmt][1],
-                                    structure_rules=RAPID_RULES if fmt == "rapid" else STORY_RULES)
+                                    structure_rules=RAPID_RULES.format(term=term) if fmt == "rapid" else STORY_RULES)
     notes = None
     if writer in ("gemini", "gemini+claude"):
         from . import gemini
@@ -399,7 +399,7 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
     out = assemble(s, category, outro, writer)
     out["format"] = fmt
     if fmt == "rapid":
-        finish_rapid(out)
+        finish_rapid(out, badge=term)
     out["gen_cost"] = llm.cost_summary()
     if notes is not None:
         out["factcheck"] = notes

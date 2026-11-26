@@ -1,0 +1,133 @@
+name: trivia-shorts
+
+on:
+  schedule:
+    - cron: "43 9 * * *"    # 毎日 18:43 JST（UTC 09:43）
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "作るお題の数"
+        default: "1"
+      analytics_only:
+        description: "YouTube の分析レポートだけ更新する（動画は作らない）"
+        type: boolean
+        default: false
+      rerender:
+        description: "作り直す台本名（空白区切り、例: trivia_2026-11-27_01）。指定時は新規作成しない"
+        default: ""
+      upload_existing:
+        description: "完成済みの動画を作り直さずアップロード（空白区切りの名前、例: trivia_2026-11-27_01）"
+        default: ""
+      upload:
+        description: "YouTube にアップロードする（毎朝の自動実行では常にアップロード）"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency: trivia-shorts
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    services:
+      voicevox:
+        image: voicevox/voicevox_engine:cpu-latest
+        ports: ["50021:50021"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q ffmpeg fonts-noto-cjk fonts-noto-cjk-extra fonts-noto-color-emoji fonts-dejavu-core
+
+      - run: pip install -r requirements.txt
+
+      # AI images, downloaded stock photos and image-check verdicts are kept between runs
+      - name: Restore image cache
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: images-${{ github.run_id }}
+          restore-keys: images-
+
+      - name: Wait for VOICEVOX
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf http://127.0.0.1:50021/version && exit 0
+            sleep 3
+          done
+          echo "VOICEVOX did not start"; exit 1
+
+      - name: Fetch finished videos for upload-only
+        if: ${{ github.event.inputs.upload_existing != '' && github.event.inputs.upload_existing != null }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p output
+          for n in ${{ github.event.inputs.upload_existing }}; do
+            tag=$(gh api "repos/${{ github.repository }}/releases?per_page=100" \
+                  --jq "[.[] | select(any(.assets[]; .name == \"$n.mp4\"))][0].tag_name")
+            echo "$n <- $tag"
+            [ -n "$tag" ] && [ "$tag" != "null" ] && gh release download "$tag" -R "${{ github.repository }}" -p "$n.*" -D output
+          done
+          ls -la output
+
+      - name: Generate videos
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          # トリビアチャンネル用のトークン（メインの YOUTUBE_REFRESH_TOKEN は渡さない）
+          # OAuth クライアントはメインと共用でよい（TRIVIA_ 側が未登録ならメインの値を使う）
+          TRIVIA_YOUTUBE_CLIENT_ID: ${{ secrets.TRIVIA_YOUTUBE_CLIENT_ID || secrets.YOUTUBE_CLIENT_ID }}
+          TRIVIA_YOUTUBE_CLIENT_SECRET: ${{ secrets.TRIVIA_YOUTUBE_CLIENT_SECRET || secrets.YOUTUBE_CLIENT_SECRET }}
+          TRIVIA_YOUTUBE_REFRESH_TOKEN: ${{ secrets.TRIVIA_YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          args="--channel trivia --count ${{ github.event.inputs.count || 1 }}"
+          [ "${{ github.event.inputs.analytics_only }}" = "true" ] && args="$args --analytics-only"
+          [ -n "${{ github.event.inputs.rerender }}" ] && args="$args --rerender ${{ github.event.inputs.rerender }}"
+          [ -n "${{ github.event.inputs.upload_existing }}" ] && args="$args --upload-only ${{ github.event.inputs.upload_existing }}"
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.upload }}" = "true" ]; then
+            args="$args --upload"
+          fi
+          python daily.py $args
+
+      - name: Save scripts and history
+        run: |
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          git add channels/trivia
+          [ -f dictionary.json ] && git add dictionary.json
+          git diff --cached --quiet && exit 0
+          git commit -m "trivia: $(date -u +%F) scripts"
+          # main may have moved while the video was rendering: rebase and retry
+          for i in 1 2 3 4 5; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep $((i * 5))
+          done
+          echo "::warning::could not push scripts/history"
+
+      - name: Publish release
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          shopt -s nullglob
+          files=(output/*.mp4)
+          [ ${#files[@]} -eq 0 ] && { echo "no videos"; exit 0; }
+          [ -f output/UPLOAD_ONLY ] && { echo "upload-only run: no new release"; exit 0; }
+          tag="trivia-v$(TZ=Asia/Tokyo date +%Y%m%d-%H%M)"
+          gh release create "$tag" output/*.mp4 output/*.json output/*.thumb.png \
+            --title "$(TZ=Asia/Tokyo date +%Y-%m-%d) 一言トリビア" \
+            --notes-file output/RELEASE_NOTES.md

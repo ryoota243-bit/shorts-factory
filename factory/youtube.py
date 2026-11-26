@@ -1,6 +1,7 @@
 """Upload a finished video to YouTube (YouTube Data API v3, OAuth refresh token).
 
-Secrets (environment): YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN.
+Secrets (environment): YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN
+(another channel: the names in its config, youtube.secret_env).
 Until Google audits the API project, uploads are forced to "private" by YouTube itself.
 """
 import io
@@ -17,8 +18,28 @@ UPLOAD_URL = "https://www.googleapis.com/upload/youtube/v3/videos"
 THUMB_URL = "https://www.googleapis.com/upload/youtube/v3/thumbnails/set"
 
 
+# Environment variable names of the OAuth secrets. A second channel sets its own names in its config
+# (youtube.secret_env). The refresh token picks the channel, so it never falls back to the main one;
+# the OAuth client (id / secret) may be shared and falls back to the default names.
+ENV = {"client_id": "YOUTUBE_CLIENT_ID", "client_secret": "YOUTUBE_CLIENT_SECRET",
+       "refresh_token": "YOUTUBE_REFRESH_TOKEN"}
+DEFAULT_ENV = dict(ENV)
+
+
+def configure(cfg):
+    ENV.update(DEFAULT_ENV)
+    ENV.update((cfg.get("youtube") or {}).get("secret_env") or {})
+
+
+def _secret(key):
+    v = os.environ.get(ENV[key])
+    if not v and key != "refresh_token":
+        v = os.environ.get(DEFAULT_ENV[key])
+    return v
+
+
 def configured():
-    return all(os.environ.get(k) for k in ("YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN"))
+    return all(_secret(k) for k in ENV)
 
 
 def _open(req, timeout=600):
@@ -36,9 +57,9 @@ def _open(req, timeout=600):
 
 def access_token():
     data = urllib.parse.urlencode({
-        "client_id": os.environ["YOUTUBE_CLIENT_ID"],
-        "client_secret": os.environ["YOUTUBE_CLIENT_SECRET"],
-        "refresh_token": os.environ["YOUTUBE_REFRESH_TOKEN"],
+        "client_id": _secret("client_id"),
+        "client_secret": _secret("client_secret"),
+        "refresh_token": _secret("refresh_token"),
         "grant_type": "refresh_token",
     }).encode()
     res = json.loads(_open(urllib.request.Request(TOKEN_URL, data=data), 60).read())

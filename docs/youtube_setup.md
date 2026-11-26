@@ -97,3 +97,21 @@ Google の審査（YouTube API Services の監査）に通ると、非公開の�
 
 `config.json` の `youtube.enabled` を `false` にするか、GitHub の Secrets から `YOUTUBE_REFRESH_TOKEN` を削除します。
 アップロードを止めても、動画の生成と Releases への保存は続きます。
+
+---
+
+## 一言トリビアチャンネル（2つ目のチャンネル）を設定する
+
+手順1〜3（API・同意画面・クライアント ID）は雑学チャンネルのものをそのまま使えます。
+
+1. 手順4と同じように OAuth Playground でリフレッシュトークンを取得する。
+   - 手順4-5 のログイン画面で、**一言トリビアのチャンネル**（ブランドアカウントならそのチャンネル名）を選ぶ
+2. GitHub の Secrets に次の名前で登録する
+
+| Name | Secret |
+|---|---|
+| `TRIVIA_YOUTUBE_REFRESH_TOKEN` | 上で取得した、トリビアチャンネルのリフレッシュトークン |
+
+- 別の Google Cloud プロジェクトのクライアントを使う場合だけ、`TRIVIA_YOUTUBE_CLIENT_ID` / `TRIVIA_YOUTUBE_CLIENT_SECRET` も登録します
+  （未登録なら雑学チャンネルと同じクライアントを使います）。
+- `TRIVIA_YOUTUBE_REFRESH_TOKEN` が未登録の間、トリビア動画はアップロードされません（雑学チャンネルのトークンは使いません）。

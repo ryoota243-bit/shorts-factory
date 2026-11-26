@@ -13,7 +13,7 @@ on:
         type: boolean
         default: false
       format:
-        description: "台本の形式（空欄=日替わり / standard / quiz / myth / rapid=一言雑学の連発）"
+        description: "台本の形式（空欄=日替わり / standard / quiz / myth）"
         default: ""
       rerender:
         description: "作り直す台本名（空白区切り、例: 2026-11-24_12 2026-11-24_13）。指定時は新規作成しない"

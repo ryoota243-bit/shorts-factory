@@ -15,7 +15,6 @@
 ノートにあるタイトル・概要欄をコピーして、YouTube アプリから投稿してください。
 
 - **今すぐ作る**：Actions → `daily-shorts` → `Run workflow`（本数も指定できます）
-- **一言雑学の連発**：`Run workflow` の「台本の形式」に `rapid` と入れると、一言で伝わる雑学を5〜6個、30〜40秒でテンポよく紹介する動画を作ります（画面に「雑学 1/5」の番号が出ます）。毎朝の自動実行でも、通常・クイズ・誤解を正す形式と日替わりで選ばれます（重みは `factory/generate.py` の `FORMAT_WEIGHTS`）
 - **台本AIの比較**：`Run workflow` で「比較モード」にチェックすると、同じお題を Claude と Gemini の両方で台本化して2本ずつ作ります
 - **台本AIの切り替え**：`config.json` の `script_writer` を `gemini+claude`（標準：Gemini が執筆→Claude が校閲）/ `claude` / `gemini` に
 - **自動チェック**：毎回、Claude が完成動画のコマと台本を見て問題点を洗い出し、Releases のノートに載せます
@@ -23,6 +22,18 @@
 - **読み間違い対策**：VOICEVOX の実際の読みを Claude が確認し、誤読は `dictionary.json`（辞書）に登録します。手で追記もできます
 - **自分で書いた台本を優先する**：`scripts/queue/` に JSON を置くと、次の回で使われます
 - **使い終わった台本**：`scripts/archive/` に、作成済みテーマは `history.json` に残ります
+
+## 一言トリビアチャンネル（別チャンネル）
+
+雑学チャンネルとは別に、一言で伝わるトリビアを5〜6個、30〜40秒でテンポよく紹介する動画を
+**別の YouTube チャンネル**向けに毎日 18:43（日本時間）に作ります（Actions → `trivia-shorts`）。
+
+- 設定：`channels/trivia/config.json`（チャンネル名・概要欄の定型文・締めの文言など。書いた項目だけ `config.json` を上書き）
+- 台本・履歴・分析：`channels/trivia/` 以下に、雑学チャンネルとは別に保存（動画名は `trivia_日付_番号`）
+- リリース：タグ `trivia-v…` で、雑学チャンネルとは別に置かれます
+- YouTube：Secret `TRIVIA_YOUTUBE_REFRESH_TOKEN` にトリビアチャンネルのトークンを登録するとアップロードされます
+  （手順は `docs/youtube_setup.md` の最後）。未登録の間はアップロードせず、雑学チャンネルに誤って上がることもありません
+- 手元では `python daily.py --channel trivia`
 
 ## 初期設定：APIキー（Settings → Secrets and variables → Actions → New repository secret）
 

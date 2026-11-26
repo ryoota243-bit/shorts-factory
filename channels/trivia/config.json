@@ -1,0 +1,25 @@
+{
+  "_comment": "一言トリビアチャンネル用の設定。ここに書いた項目だけが config.json を上書きします（それ以外は共通）。",
+  "formats": {
+    "rapid": 1
+  },
+  "daily": {
+    "count": 1
+  },
+  "outro": {
+    "narration": "いくつ知ってた？",
+    "sub": "▶ フォローで毎日トリビア"
+  },
+  "channel": {
+    "name": "一言トリビア",
+    "term": "トリビア",
+    "footer": "――――――――――\n💡 一言トリビア\n一言でわかる「へぇ！」を、30秒で5連発。毎日投稿中。\n▶ チャンネル登録で、明日のトリビアもチェック！\n※台本と画像の制作にAIを活用しています。誤りに気づいたらコメントで教えてください。"
+  },
+  "youtube": {
+    "secret_env": {
+      "client_id": "TRIVIA_YOUTUBE_CLIENT_ID",
+      "client_secret": "TRIVIA_YOUTUBE_CLIENT_SECRET",
+      "refresh_token": "TRIVIA_YOUTUBE_REFRESH_TOKEN"
+    }
+  }
+}

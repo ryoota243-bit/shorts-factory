@@ -3,6 +3,7 @@
 
   python daily.py              # config.json の daily.count 本
   python daily.py --count 3
+  python daily.py --channel trivia   # 別チャンネル（channels/trivia/）用に作る
 """
 import argparse
 import datetime as dt
@@ -18,9 +19,31 @@ ROOT = Path(__file__).resolve().parent
 JST = dt.timezone(dt.timedelta(hours=9))
 
 
-def main():
+def deep_merge(base, over):
+    out = dict(base)
+    for k, v in over.items():
+        out[k] = deep_merge(out[k], v) if isinstance(v, dict) and isinstance(out.get(k), dict) else v
+    return out
+
+
+def load_config(channel=None):
+    """config.json, with channels/<name>/config.json laid over it for a separate channel.
+
+    Returns (cfg, data_dir, name_prefix). The main channel keeps its data at the repository root."""
     cfg = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+    if not channel:
+        return cfg, ROOT, ""
+    d = ROOT / "channels" / channel
+    over = json.loads((d / "config.json").read_text(encoding="utf-8"))
+    return deep_merge(cfg, over), d, f"{channel}_"
+
+
+def main():
+    pre = argparse.ArgumentParser(add_help=False)
+    pre.add_argument("--channel")
+    cfg, data, prefix = load_config(pre.parse_known_args()[0].channel)
     ap = argparse.ArgumentParser()
+    ap.add_argument("--channel", help="別チャンネルの名前（channels/<名前>/config.json）。省略時はメインの雑学チャンネル")
     ap.add_argument("--count", type=int, default=cfg.get("daily", {}).get("count", 1))
     ap.add_argument("--writer", choices=["claude", "gemini", "gemini+claude"], default=cfg.get("script_writer", "claude"))
     ap.add_argument("--compare", action="store_true",
@@ -35,10 +58,16 @@ def main():
                     help="output/ にある完成済みの動画（例: 2026-11-24_08_gemini）をアップロードだけする")
     a = ap.parse_args()
     gemini.configure(cfg)
+    from factory import youtube as _yt_cfg
+    _yt_cfg.configure(cfg)
+    fmt_weights = cfg.get("formats")  # e.g. {"rapid": 1} for the trivia channel
+    term = cfg.get("channel", {}).get("term", "雑学")
+    if fmt_weights and a.format is None and len(fmt_weights) == 1:
+        a.format = next(iter(fmt_weights))
 
-    hist_path = ROOT / "history.json"
+    hist_path = data / "history.json"
     history = json.loads(hist_path.read_text(encoding="utf-8")) if hist_path.exists() else []
-    queue_dir, archive = ROOT / "scripts/queue", ROOT / "scripts/archive"
+    queue_dir, archive = data / "scripts/queue", data / "scripts/archive"
     archive.mkdir(parents=True, exist_ok=True)
     out = ROOT / "output"
     today = dt.datetime.now(JST).strftime("%Y-%m-%d")
@@ -47,9 +76,9 @@ def main():
     used = {h["name"] for h in history} | {p.stem for p in archive.glob("*.json")}
     def next_name():
         n = 1
-        while f"{today}_{n:02d}" in used:
+        while f"{prefix}{today}_{n:02d}" in used:
             n += 1
-        return f"{today}_{n:02d}"
+        return f"{prefix}{today}_{n:02d}"
 
     def make(script, name):
         path = archive / f"{name}.json"
@@ -68,8 +97,8 @@ def main():
             try:
                 from factory import analytics
                 from factory.generate import FORMAT_WEIGHTS, CATEGORIES
-                rep = analytics.build(ROOT, history)
-                tuned = {"format_weights": analytics.tuned_weights(FORMAT_WEIGHTS, rep["by_format"]),
+                rep = analytics.build(data, history)
+                tuned = {"format_weights": analytics.tuned_weights(fmt_weights or FORMAT_WEIGHTS, rep["by_format"]),
                          "category_weights": analytics.tuned_weights({c: 1.0 for c in CATEGORIES},
                                                                      rep["by_category"])}
                 print(f"[analytics] measured {rep['measured']} videos; format weights {tuned['format_weights']}")
@@ -125,11 +154,12 @@ def main():
                 try:
                     if first is None:
                         s = generate(topics, cfg["outro"], seed=seed, recent_categories=recent, writer=w,
-                                     fmt=a.format, **tuned)
+                                     fmt=a.format, term=term,
+                                     **{"format_weights": fmt_weights, **tuned})
                         first = s
                     else:  # same topic & category as the first writer
                         s = generate(topics, cfg["outro"], writer=w, fmt=first.get("format"),
-                                     category=first["category"], topic=first["topic"])
+                                     category=first["category"], topic=first["topic"], term=term)
                     scripts.append((s, f"_{w}" if a.compare else ""))
                 except Exception as e:
                     print(f"[daily] {w} script failed: {e}")

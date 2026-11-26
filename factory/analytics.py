@@ -53,7 +53,9 @@ def _titles(ids):
 
 
 def build(root, history):
-    """Join analytics rows with our history/scripts and write analytics/report.{json,md}."""
+    """Join analytics rows with our history/scripts and write analytics/report.{json,md}.
+
+    root is the channel's data directory (the repository root for the main channel)."""
     rows = fetch()
     archive = Path(root) / "scripts/archive"
     videos = []
