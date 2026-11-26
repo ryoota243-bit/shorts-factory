@@ -88,7 +88,8 @@ FORMATS = {
   誤解と真実の対比には compare を使ってよい（label に「誤解」「真実」）。誤解が実際に広く信じられていることは
   出典で確認できるものに限る。"""),
 }
-FORMAT_WEIGHTS = {"standard": 5, "quiz": 3, "myth": 2}
+# 使う形式と出やすさ。"quiz" は定義だけ残して使わない（クイズ形式は廃止。過去の台本の作り直し用）
+FORMAT_WEIGHTS = {"standard": 5, "myth": 2}
 
 
 RESEARCH_PROMPT = """あなたは日本語YouTubeショートの{channel_kind}の構成作家です。
@@ -343,7 +344,8 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
     print(f"[generate:{writer}] category: {category}" + (f" / topic: {topic}" if topic else ""))
     rng = random.Random((seed or dt.date.today().toordinal()) * 7 + 3)
     fw = format_weights or FORMAT_WEIGHTS
-    fmt = fmt if fmt in FORMATS else rng.choices(list(fw), weights=list(fw.values()))[0]
+    fw = {k: w for k, w in fw.items() if k in FORMAT_WEIGHTS}  # drop retired formats (e.g. quiz)
+    fmt = fmt if fmt in FORMAT_WEIGHTS else rng.choices(list(fw), weights=list(fw.values()))[0]
     print(f"[generate] format: {fmt}")
     prompt = RESEARCH_PROMPT.format(theme_line=theme_line(category, history, topic),
                                     channel_kind=genre.get("channel_kind", "雑学チャンネル"),
