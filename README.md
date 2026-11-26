@@ -1,5 +1,7 @@
 # Shorts Factory — 雑学ショート自動生成
 
+※現在、自動実行は停止中です（`.github/workflows/daily.yml` の `schedule` を戻すと再開）。手動の `Run workflow` は使えます。
+
 毎朝 5:17（日本時間）に GitHub Actions が自動で動き、雑学ショート動画（縦型 1080×1920）を作ります。
 
 1. Gemini が Google 検索で調べて雑学の台本を書き、Claude が Web 検索で事実を校閲・修正する（過去のテーマとは重複しない）
@@ -27,7 +29,7 @@
 
 `profiles/ero/` に「ちょっとHな大人の雑学（エロ雑学）」用の設定があり、通常の雑学と同じ仕組みで自動生成します。
 
-- **自動実行**：毎日 21:43（日本時間）に `daily-shorts` が ero プロファイルで動きます（通常の雑学は 5:17 のまま）
+- **自動実行**（現在停止中）：毎日 21:43（日本時間）に `daily-shorts` が ero プロファイルで動きます（通常の雑学は 5:17 のまま）
 - **今すぐ作る**：Actions → `daily-shorts` → `Run workflow` で「ジャンル」に `ero` を選ぶ
 - **手元で**：`python daily.py --profile ero`
 - **台本・履歴は別管理**：`profiles/ero/scripts/queue`（手書き台本）・`profiles/ero/scripts/archive`・`profiles/ero/history.json`。

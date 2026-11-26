@@ -1,9 +1,10 @@
 name: daily-shorts
 
 on:
-  schedule:
-    - cron: "17 20 * * *"   # 毎日 05:17 JST（UTC 20:17）: 通常の雑学
-    - cron: "43 12 * * *"   # 毎日 21:43 JST（UTC 12:43）: エロ雑学（profiles/ero）
+  # 自動実行は停止中（方針が決まるまで）。再開するときは下の # を外す
+  # schedule:
+  #   - cron: "17 20 * * *"   # 毎日 05:17 JST（UTC 20:17）: 通常の雑学
+  #   - cron: "43 12 * * *"   # 毎日 21:43 JST（UTC 12:43）: エロ雑学（profiles/ero）
   workflow_dispatch:
     inputs:
       profile:
