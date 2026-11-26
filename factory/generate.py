@@ -193,10 +193,13 @@ def research(client, prompt, max_uses=8, task="factcheck"):
     for _ in range(5):
         msg = client.beta.messages.create(
             model=llm.model(task), max_tokens=16000, messages=messages, tools=tools,
-            output_config={"effort": "high"},
+            output_config={"effort": llm.effort(task)},
+            cache_control={"type": "ephemeral"},  # search results re-read on later turns bill at the cache rate
             betas=["server-side-fallback-2026-07-01"], fallbacks="default",
         )
         llm.record(task, msg)
+        print(f"  [{task}] turn: in={msg.usage.input_tokens} cache_read={msg.usage.cache_read_input_tokens or 0} "
+              f"out={msg.usage.output_tokens} stop={msg.stop_reason}")
         if msg.stop_reason == "refusal":
             raise RuntimeError(f"refused: {msg.stop_details}")
         if msg.stop_reason != "pause_turn":

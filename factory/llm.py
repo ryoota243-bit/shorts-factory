@@ -41,6 +41,10 @@ def model(task):
     return _config().get(task) or DEFAULTS[task]
 
 
+def effort(task):
+    return _config().get(f"{task}_effort") or "high"
+
+
 def record(task, msg):
     """Add a response's usage (works for create/parse responses)."""
     u = getattr(msg, "usage", None)
