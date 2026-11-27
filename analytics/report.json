@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26T21:03",
+  "generated": "2026-11-27T21:11",
   "videos": [
     {
       "name": "2026-11-24_08",
@@ -68,13 +68,13 @@
       "category": "身近なモノ",
       "format": "standard",
       "writer": "claude",
-      "views": null,
-      "averageViewPercentage": null,
-      "averageViewDuration": null,
-      "likes": null,
-      "comments": null,
-      "shares": null,
-      "subscribersGained": null
+      "views": 581,
+      "averageViewPercentage": 45.95,
+      "averageViewDuration": 18,
+      "likes": 3,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 0
     },
     {
       "name": "2026-11-25_01",
@@ -83,9 +83,9 @@
       "category": "歴史",
       "format": "standard",
       "writer": "gemini+claude",
-      "views": 2,
-      "averageViewPercentage": 100.85,
-      "averageViewDuration": 40,
+      "views": 3,
+      "averageViewPercentage": 94.83,
+      "averageViewDuration": 37,
       "likes": 0,
       "comments": 0,
       "shares": 0,
@@ -98,13 +98,13 @@
       "category": "人体",
       "format": "standard",
       "writer": "gemini+claude",
-      "views": null,
-      "averageViewPercentage": null,
-      "averageViewDuration": null,
-      "likes": null,
-      "comments": null,
-      "shares": null,
-      "subscribersGained": null
+      "views": 1,
+      "averageViewPercentage": 91.82,
+      "averageViewDuration": 35,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 0
     },
     {
       "name": "2026-11-26_02",
@@ -112,6 +112,21 @@
       "topic": "蚊が雨でも飛べる理由",
       "category": "昆虫",
       "format": "standard",
+      "writer": "gemini+claude",
+      "views": 0,
+      "averageViewPercentage": 0,
+      "averageViewDuration": 0,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 0
+    },
+    {
+      "name": "2026-11-27_03",
+      "video_id": "56FXWwvp3ac",
+      "topic": "バイキングの兜",
+      "category": "歴史",
+      "format": "myth",
       "writer": "gemini+claude",
       "views": null,
       "averageViewPercentage": null,
@@ -123,30 +138,45 @@
     },
     {
       "name": "",
+      "video_id": "SICoGggGPqw",
+      "topic": "フランスが最も長く国境を接する国はブラジル？",
+      "category": "",
+      "format": "手動投稿",
+      "writer": "",
+      "views": 1170,
+      "averageViewPercentage": 62.529999999999994,
+      "averageViewDuration": 23,
+      "likes": 7,
+      "comments": 0,
+      "shares": 1,
+      "subscribersGained": 1
+    },
+    {
+      "name": "",
       "video_id": "JmLBA11SXE8",
       "topic": "1日に約16回も朝が来るヤバい場所",
       "category": "",
       "format": "手動投稿",
       "writer": "",
-      "views": 1079,
-      "averageViewPercentage": 75.92,
+      "views": 1100,
+      "averageViewPercentage": 75.82,
       "averageViewDuration": 31,
-      "likes": 6,
+      "likes": 7,
       "comments": 0,
       "shares": 0,
       "subscribersGained": 1
     },
     {
       "name": "",
-      "video_id": "SICoGggGPqw",
-      "topic": "フランスが最も長く国境を接する国はブラジル？",
+      "video_id": "J1PYPL67n00",
+      "topic": "空に浮かぶ雲の水はゾウ100頭分？落ちてこない科学的な理由",
       "category": "",
       "format": "手動投稿",
       "writer": "",
-      "views": 1025,
-      "averageViewPercentage": 63.2,
-      "averageViewDuration": 23,
-      "likes": 8,
+      "views": 1073,
+      "averageViewPercentage": 101.05999999999999,
+      "averageViewDuration": 49,
+      "likes": 7,
       "comments": 0,
       "shares": 0,
       "subscribersGained": 1
@@ -154,31 +184,43 @@
   ],
   "by_format": {
     "standard": {
-      "videos": 1,
-      "views": 2,
-      "avg_views": 2.0,
-      "avg_view_percentage": 100.8
+      "videos": 3,
+      "views": 585,
+      "avg_views": 195.0,
+      "avg_view_percentage": 77.5
     },
     "手動投稿": {
-      "videos": 2,
-      "views": 2104,
-      "avg_views": 1052.0,
-      "avg_view_percentage": 69.6
+      "videos": 3,
+      "views": 3343,
+      "avg_views": 1114.3,
+      "avg_view_percentage": 79.8
     }
   },
   "by_category": {
+    "身近なモノ": {
+      "videos": 1,
+      "views": 581,
+      "avg_views": 581.0,
+      "avg_view_percentage": 46.0
+    },
     "歴史": {
       "videos": 1,
-      "views": 2,
-      "avg_views": 2.0,
-      "avg_view_percentage": 100.8
+      "views": 3,
+      "avg_views": 3.0,
+      "avg_view_percentage": 94.8
+    },
+    "人体": {
+      "videos": 1,
+      "views": 1,
+      "avg_views": 1.0,
+      "avg_view_percentage": 91.8
     },
     "-": {
-      "videos": 2,
-      "views": 2104,
-      "avg_views": 1052.0,
-      "avg_view_percentage": 69.6
+      "videos": 3,
+      "views": 3343,
+      "avg_views": 1114.3,
+      "avg_view_percentage": 79.8
     }
   },
-  "measured": 3
+  "measured": 6
 }
