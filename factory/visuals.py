@@ -459,7 +459,9 @@ class NumberLayer(Layer):
         self.count = spec.get("count", not (unit.startswith("年") and isinstance(self.value, (int, float))
                                             and self.value > 1000))
         self.unit = rich_text(spec.get("unit", ""), 130, stroke=10, fill=self.accent) if spec.get("unit") else None
-        self.label = rich_text(spec.get("label", ""), 66, 900, stroke=0, fill=(30, 30, 30), hi=(220, 30, 60))
+        # a heading, not the start of a sentence ("土星の体積は地球の約" -> "土星の体積は地球の")
+        label = re.sub(r"(約|およそ|は|が|を|の)+$", "", spec.get("label", "")).strip() or spec.get("label", "")
+        self.label = rich_text(label, 66, 900, stroke=0, fill=(30, 30, 30), hi=(220, 30, 60))
         self.pill = rounded((self.label.width + 70, self.label.height + 30), 50, (255, 255, 255, 240))
         self.cache = {}
         self.delay = 0.0  # set by the renderer: seconds until the narration mentions the number
