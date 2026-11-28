@@ -87,6 +87,8 @@ def main():
         try:
             render(path, cfg, ROOT, out)
             made.append(name)
+            # the script also goes into the release, so the video can be re-rendered even if saving it to git fails
+            (out / f"{name}.script.json").write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
         except Exception as e:  # keep going with the next video
             print(f"[daily] render failed for {name}: {e}")
 
