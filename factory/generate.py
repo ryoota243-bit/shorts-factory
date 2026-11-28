@@ -87,14 +87,14 @@ FORMATS = {
   （例:「ダチョウは砂に頭を埋めない。」）。どこから誤解が生まれたか→本当はどうか→なぜそうなのか、の順に説明する。
   誤解と真実の対比には compare を使ってよい（label に「誤解」「真実」）。誤解が実際に広く信じられていることは
   出典で確認できるものに限る。"""),
-    "rapid": ("一言雑学の連発", """一言で伝わる雑学を5〜6個、テンポよく連続で紹介する形式（1シーン＝雑学1つ）。
+    "rapid": ("一言雑学の連発", """一言で伝わる雑学を6個、テンポよく連続で紹介する形式（1シーン＝雑学1つ）。
   詳しい条件は「台本の条件」の先頭に従う。"""),
 }
 FORMAT_WEIGHTS = {"standard": 5, "quiz": 3, "myth": 2}  # rapid is for the separate trivia channel
 
 # rapid: one-line facts, 5-6 per video, 30-40 s in total
-RAPID_ITEMS = (5, 6)
-RAPID_MAX_CHARS = 185  # narration budget for the facts (the outro adds ~3 s on top)
+RAPID_ITEMS = (5, 6)  # ask for 6; the length guard may drop one
+RAPID_MAX_CHARS = 210  # narration budget for the facts (title call + outro add ~6 s on top)
 
 
 STORY_RULES = """- 構成: 冒頭はタイトル（thumb_text）の読み上げが担う。1シーン目は前置きなしで、タイトルの続きを話す
@@ -121,21 +121,27 @@ STORY_RULES = """- 構成: 冒頭はタイトル（thumb_text）の読み上げ�
 
 RAPID_RULES = """（一言雑学の連発形式。この形式では、以下が後に続く共通の条件より優先する）
 - 構成: カテゴリの中で1つの切り口（例「動物の体のふしぎ」「コンビニの裏話」「宇宙のスケール」）を決め、
-  その切り口で一言で伝わる雑学を5〜6個、1シーンに1つずつ連続で紹介する。あいさつ・前置き・「〇連発！」のような
+  その切り口で一言で伝わる雑学を6個、1シーンに1つずつ連続で紹介する。あいさつ・前置き・「〇連発！」のような
   導入シーンは作らず、1シーン目からいきなり1つ目の雑学を言い切る（切り口と個数は画面上部の title で伝える）。
-- 各雑学のナレーションは1文で完結させ、18〜32文字（読み上げ約4〜5秒）。「実は」「なんと」「〜って知ってる？」
+- 各雑学のナレーションは1文で完結させ、22〜34文字（読み上げ約4〜5秒）。「実は」「なんと」「〜って知ってる？」
   のような前置きや、理由の長い説明は入れない。2文以上の説明がないと誤解されるネタは選ばない。
 - 聞いた瞬間に「へぇ！」となり、具体的な数字や情景が浮かぶネタにする（例「タコの心臓は、3つある。」
   「ラッコは、寝るとき手をつなぐ。」）。各雑学はそれぞれ単独で正しいこと。同じ動画の中で似たネタを重ねない。
 - 並び順: 1つ目は一番強いネタ（開始3秒で引き込む）、最後は2番目に強いネタ。最後のシーンも雑学1つで終え、
   まとめ・オチ・ループの言い直しは付けない。予告（「最後のはすごい」など）も入れない。
-- 長さ（厳守）: 雑学5〜6個、ナレーション合計140〜180文字（フォロー呼びかけを含めて動画全体30〜40秒に収める）。
+- 長さ（厳守）: 雑学6個、ナレーション合計160〜200文字（冒頭の一言とフォロー呼びかけを含めて動画全体30〜40秒に収める。
+  短すぎると30秒に届かないので、合計160文字未満にしない）。
 - 映像: 各雑学の中身が一目でわかる映像にする。photo か ai を中心に（全体の半分以上）、数字が主役のネタは number、
   2つの対比が主役のネタは compare を使ってよい。図解の同じ種類（number と number など）は2シーン続けない
-  （photo / ai が続くのはよい）。list・pie は使わない。illustration / text の text は、その雑学の要点を8文字前後で。
-- title: 切り口と個数がわかる見出し（例「[動物]の{term}5連発」）。thumb_text: 個数と切り口が伝わる
-  キャッチコピー（例「[5個]全部知ってる？」）。youtube_title: 切り口の言葉を前半に、個数を入れる
-  （例「思わず話したくなる動物の{term}5連発 #{term} #雑学 #shorts」）。末尾は #{term} #雑学 #shorts。
+  （photo / ai が続くのはよい）。list・pie は使わない。compare の note は空にする（画面で小さくなり読めないため）。
+  compare の label は何の比較か分かる言葉にする（例「左の横顔」「右の横顔」と value「好印象」「ふつう」）。
+  illustration / text の text は、その雑学の要点を8文字前後で。
+- title: 切り口と個数がわかる見出し（例「[動物]の{term}6連発」）。画面上部にずっと出る。
+- thumb_text: 動画の冒頭で画面に大きく出て読み上げられる「掴みの一言」で、サムネイルにも使う。総称（「〇〇の科学」）では
+  なく、続きを聞きたくなる具体的な一言にする（10〜16文字。例「好きな人の前で、体はこうなる」「[キス]で起きる体の変化」）。
+  [ ]で1か所強調。内容と食い違う誇張はしない。
+- youtube_title: 切り口の言葉を前半に、個数を入れる
+  （例「思わず話したくなる動物の{term}6連発 #{term} #雑学 #shorts」）。末尾は #{term} #雑学 #shorts。
 - comment_prompt: 「いくつ知ってた？」のように、知っていた数を答えたくなる問いかけ。
 - topic: 切り口と、紹介した雑学の要点を「／」区切りで全部書く（例「動物の体: タコの心臓3つ／ラッコの手つなぎ／…」）。
   次回以降の重複チェックに使う。
@@ -285,10 +291,10 @@ def _visual(v: Visual):
 def theme_line(category=None, history=(), topic=None, fmt="standard"):
     if fmt == "rapid":
         if topic:
-            return (f"切り口「{topic}」（カテゴリ: {category}）で、一言で伝わる雑学を5〜6個、"
+            return (f"切り口「{topic}」（カテゴリ: {category}）で、一言で伝わる雑学を6個、"
                     f"30〜40秒でテンポよく紹介する台本を作ってください。")
         hist = "\n".join(f"- {h}" for h in list(history)[-200:]) or "（なし）"
-        return (f"カテゴリ「{category}」から切り口を1つ決め、一言で伝わる雑学を5〜6個、30〜40秒でテンポよく"
+        return (f"カテゴリ「{category}」から切り口を1つ決め、一言で伝わる雑学を6個、30〜40秒でテンポよく"
                 f"紹介する台本を作ってください。\n\n# 重複禁止（過去に扱ったテーマ・雑学。同じ事実は使わない）\n{hist}")
     if topic:
         return (f"テーマ「{topic}」（カテゴリ: {category}）の雑学で、視聴者が「へぇ！」と驚く"
@@ -318,7 +324,9 @@ def finish_rapid(script, badge="雑学", intro=False):
     head = []
     if intro:
         title = re.sub(r"[\[\]]", "", script["title"])
-        head = [{"narration": title.rstrip("！!。") + "！", "visual": {"type": "text", "text": title},
+        hook = re.sub(r"[\[\]]", "", script.get("thumb_text") or "") or title
+        head = [{"narration": hook.rstrip("！!。？?") + ("？" if hook.rstrip("！!。").endswith(("？", "?")) else "！"),
+                 "visual": {"type": "text", "text": script.get("thumb_text") or title},
                  "card": "intro", "min_duration": 1.0, "hold": 0.15}]
     script["scenes"] = head + facts + outro
     return script

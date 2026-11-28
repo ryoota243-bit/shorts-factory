@@ -73,8 +73,14 @@ class CardStyle:
                 self.static_cards[i] = _frame(V.cover(Image.open(l.src_path).convert("RGB"), CARD_W, CARD_H), i)
         self.num_imgs = {k: self._sticker(k) for k in range(1, self.n + 1)}
         self.outro_img = self._outro(cfg)
-        self.intro_img = V.fit_text(self.title, 150, 960, 560, min_size=90, fill=(255, 255, 255), hi=(255, 214, 0),
+        # the hook (thumb_text) is the big line of the title call and the thumbnail; the title goes in a pill
+        self.hook = script.get("thumb_text") or self.title
+        self.intro_img = V.fit_text(self.hook, 150, 980, 520, min_size=90, fill=(255, 255, 255), hi=(255, 214, 0),
                                     stroke=18, stroke_fill=INK, spacing=1.15)
+        tag = V.rich_text(_plain(self.title), 54, 900, fill=(255, 255, 255), hi=(255, 255, 255))
+        self.title_pill = V.rounded((tag.width + 64, tag.height + 24), 40, INK + (255,))
+        self.title_pill.paste(tag, (32, 12), tag)
+        self.first_card = self.static_cards.get(self.facts[0]) if self.facts else None
 
     # ---------- parts ----------
     def _header(self):
@@ -178,16 +184,21 @@ class CardStyle:
             V.place(im, txt, W / 2, TEXT_CY + (1 - p) * 50, 1.0, alpha=p)
         return im
 
+    def _cover(self, im, t):
+        """Title call / thumbnail layout: first picture on top, the hook big, the title in a pill below."""
+        has_card = self.first_card is not None
+        hook_y = 1180 if has_card else H * 0.42
+        if has_card:
+            V.place(im, self.first_card, W / 2, 640, 0.8 * max(0.01, V.ease_back(t / 0.4)), -4)
+        V.place(im, self.intro_img, W / 2, hook_y, max(0.01, V.ease_back((t - 0.1) / 0.45)),
+                3 * V.ease_out(t / 0.6))
+        V.place(im, self.title_pill, W / 2, hook_y + self.intro_img.height / 2 + 80, 1.0,
+                alpha=V.ease_out((t - 0.35) / 0.3))
+
     def _intro_frame(self, i, t, dur):
         im = self._bg(i).copy()
         self._progress(im, 0, 0.0)
-        k = max(0.01, V.ease_back(t / 0.45))
-        V.place(im, self.intro_img, W / 2, H * 0.42, k, -3 + 3 * V.ease_out(t / 0.6))
-        if self.channel:
-            tag = V.rich_text(self.channel, 52, 900, fill=(255, 255, 255), hi=(255, 255, 255))
-            pill = V.rounded((tag.width + 60, tag.height + 22), 40, INK + (255,))
-            pill.paste(tag, (30, 11), tag)
-            V.place(im, pill, W / 2, H * 0.42 + self.intro_img.height / 2 + 110, 1.0, alpha=V.ease_out((t - 0.3) / 0.3))
+        self._cover(im, t)
         return im
 
     def _outro_frame(self, i, t, dur):
@@ -216,14 +227,8 @@ class CardStyle:
         return out
 
     def thumbnail(self, out_png, first_frame_src=None):
-        """Title card with the first picture: the first frames of the video show this too."""
-        im = _striped(PALETTE[0]).convert("RGBA")
-        if self.facts and self.facts[0] in self.static_cards:
-            card = self.static_cards[self.facts[0]]
-            V.place(im, card, W / 2, 620, 0.8, -4)
-        copy = V.fit_text(self.title, 160, 1000, 560, min_size=90, fill=(255, 255, 255), hi=(255, 214, 0),
-                          stroke=20, stroke_fill=INK, spacing=1.12)
-        V.place(im, copy, W / 2, 1250, 1.0, 3)
-        img = im.convert("RGB")
-        img.save(out_png)
-        return img
+        """Same layout as the title call, settled. Shown in the last frames of the video (pick it as the cover)."""
+        im = _striped(PALETTE[0])
+        self._cover(im, 5.0)
+        im.save(out_png)
+        return im
