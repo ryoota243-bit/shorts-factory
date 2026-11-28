@@ -64,14 +64,22 @@ class CardStyle:
         self.follow = (cfg.get("outro") or {}).get("sub", "")
         self.facts = [i for i, sc in enumerate(self.scenes) if sc.get("badge")]
         self.n = len(self.facts)
+        # "補足" cards (explaining an unfamiliar word) belong to the fact just before them
+        self.notes = {}
+        for i, sc in enumerate(self.scenes):
+            if sc.get("card") == "note":
+                prev = [f for f in self.facts if f < i]
+                if prev:
+                    self.notes[i] = prev[-1]
         self.bgs, self.text_cache = {}, {}
         self.header = self._header()
         self.static_cards = {}
-        for k, i in enumerate(self.facts):
+        for i in self.facts + list(self.notes):
             l = layers[i]
             if getattr(l, "src_path", None):
                 self.static_cards[i] = _frame(V.cover(Image.open(l.src_path).convert("RGB"), CARD_W, CARD_H), i)
         self.num_imgs = {k: self._sticker(k) for k in range(1, self.n + 1)}
+        self.note_sticker = self._note_sticker()
         self.outro_img = self._outro(cfg)
         # the hook (thumb_text) is the big line of the title call and the thumbnail; the title goes in a pill
         self.hook = script.get("thumb_text") or self.title
@@ -96,6 +104,14 @@ class CardStyle:
         im.alpha_composite(num, (0, 0))
         im.alpha_composite(tot, (num.width - 20, num.height - tot.height - 60))
         return im
+
+    def _note_sticker(self):
+        txt = V.rich_text("補足", 92, 400, fill=INK, hi=INK)
+        im = V.rounded((txt.width + 70, txt.height + 26), 34, (255, 255, 255, 255))
+        edge = V.rounded((im.width + 16, im.height + 16), 42, INK + (255,))
+        edge.alpha_composite(im, (8, 8))
+        edge.alpha_composite(txt, (8 + 35, 8 + 13))
+        return edge
 
     def _bg(self, i):
         if i not in self.bgs:
@@ -163,20 +179,27 @@ class CardStyle:
             return self._intro_frame(i, t, dur)
         if sc.get("no_subtitle") and i == len(self.scenes) - 1:
             return self._outro_frame(i, t, dur)
+        if i in self.notes:  # same colour as its fact, "補足" sticker instead of the number
+            f = self.notes[i]
+            k = self.facts.index(f)
+            return self._card_frame(i, t, dur, k, self._bg(f), 1.0, self.note_sticker, 120 + self.note_sticker.width / 2)
         if i not in self.facts:  # anything else: plain card with the narration
             im = self._bg(i).copy()
             V.paste_center(im, self._text(i, 1.0), W / 2, H / 2)
             return im
         k = self.facts.index(i)
-        im = self._bg(i).copy()
-        self._progress(im, k, min(1.0, t / max(dur, 0.1)))
+        st = self.num_imgs[k + 1]
+        return self._card_frame(i, t, dur, k, self._bg(i), min(1.0, t / max(dur, 0.1)), st, 95 + st.width / 2 - 30)
+
+    def _card_frame(self, i, t, dur, k, bg, prog, st, st_x):
+        im = bg.copy()
+        self._progress(im, k, prog)
         V.paste_center(im, self.header, W / 2, 190)
         ang = -2.5 if k % 2 == 0 else 2.5
         card = self.static_cards.get(i) or _frame(self._inner(i, t, dur), i)
         kk = 0.86 + 0.14 * V.ease_back(t / 0.4)
         V.place(im, card, W / 2, CARD_CY + (1 - V.ease_out(t / 0.35)) * 60, kk * (1 + 0.02 * t / max(dur, 0.1)), ang)
-        st = self.num_imgs[k + 1]
-        V.place(im, st, 95 + st.width / 2 - 30, CARD_CY - CARD_H / 2 - 100, max(0.01, V.ease_back((t - 0.08) / 0.35)),
+        V.place(im, st, st_x, CARD_CY - CARD_H / 2 - 100, max(0.01, V.ease_back((t - 0.08) / 0.35)),
                 -6 if k % 2 == 0 else 4)
         p = V.ease_out((t - 0.12) / 0.3)
         if p > 0:

@@ -50,6 +50,7 @@ class Visual(BaseModel):
 class Scene(BaseModel):
     narration: str
     visual: Visual
+    supplement: bool  # True: a short explanation of an unfamiliar word in the scene before (一言雑学の連発形式)
 
 
 class Pron(BaseModel):
@@ -129,7 +130,11 @@ RAPID_RULES = """（一言雑学の連発形式。この形式では、以下が
   「ラッコは、寝るとき手をつなぐ。」）。各雑学はそれぞれ単独で正しいこと。同じ動画の中で似たネタを重ねない。
 - 並び順: 1つ目は一番強いネタ（開始3秒で引き込む）、最後は2番目に強いネタ。最後のシーンも雑学1つで終え、
   まとめ・オチ・ループの言い直しは付けない。予告（「最後のはすごい」など）も入れない。
-- 長さ（厳守）: 雑学6個、ナレーション合計160〜200文字（冒頭の一言とフォロー呼びかけを含めて動画全体30〜40秒に収める。
+- 補足シーン: 雑学に馴染みのない横文字（例: ベラドンナ、MHC、オキシトシン）が出たら、その直後に supplement=true の
+  シーンを1つ入れ、何なのかを一言で説明する（1文・18〜34文字。例「ベラドンナは、ナス科の毒草。名前は"美しい女性"という意味。」）。
+  映像はその言葉の中身が分かるもの（photo / ai / illustration）。補足は1本につき2つまで。補足が必要な雑学が3つ以上に
+  なるなら、馴染みのある言葉で言える雑学に差し替える。補足シーンは雑学の個数に数えない。
+- 長さ（厳守）: 雑学6個、ナレーション合計160〜200文字（補足シーンを除く）（冒頭の一言とフォロー呼びかけを含めて動画全体30〜40秒に収める。
   短すぎると30秒に届かないので、合計160文字未満にしない）。
 - 映像: 各雑学の中身が一目でわかる映像にする。photo か ai を中心に（全体の半分以上）、数字が主役のネタは number、
   2つの対比が主役のネタは compare を使ってよい。図解の同じ種類（number と number など）は2シーン続けない
@@ -167,6 +172,10 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの{term}チャン�
 - emoji は内容をそのまま表すものを選ぶ（例: ピラミッドに 🏛️ は使わない。ぴったりの絵文字が無いときは
   🏜️ のように場所や雰囲気を表すものにする）。数字・英字は半角で書く。
 - ナレーションは話し言葉。強調したい語句は [ ] で囲む（各シーン1か所まで）。
+- 馴染みのない横文字（一般の人が意味を知らないカタカナ語・外来語・専門用語。例: ベラドンナ、MHC、ドーパミン）は
+  そのままにしない。言い換えられるなら身近な言葉に言い換え、言い換えられないときは説明を必ず入れる
+  （通常の形式は同じシーンか次のシーンで一言説明。一言雑学の連発形式は直後に補足シーンを入れる）。
+  コーヒー・メール・ストレスのように誰でも知っている語は説明しない。
 - 各シーンに映像を指定:
   photo（素材サイトの実写写真。どこにでもある一般的なモノ・風景・動物向け。query は確実に見つかる
   一般的な英語2〜3語で、固有名詞・年代・型番は使わない。例: "IBM 1401" ではなく "vintage computer"）/
@@ -217,6 +226,7 @@ FORMAT_PROMPT = """次の台本案を、指定のJSONスキーマに変換して
   illustration: emoji, text / text: text, emoji
   quiz / quiz_answer: text（問題文）, items（選択肢3つ。text のみ）, number（正解の番号 1〜3）
 - comment_prompt は最後に読み上げる問いかけ。
+- supplement: 直前のシーンに出た馴染みのない言葉を説明する補足シーンだけ true（一言雑学の連発形式で使う）。それ以外は false。
 - color は #RRGGBB。bg_colors は背景グラデーション用の暗めの2色。accent は明るい強調色。
 - mood は動画の雰囲気: danger（危険・注意・毒など）/ nature（動物・植物）/ water_space（海・空・宇宙）/
   food（食べ物）/ history（歴史・文化）/ science（科学・人体・技術）/ fun（その他の楽しい話）。
@@ -308,19 +318,28 @@ def finish_rapid(script, badge="雑学", intro=False):
     """rapid: keep 5-6 facts within the time budget and number them ("雑学 1/5" badge on screen).
 
     intro=True opens with a short spoken title card ("動物のトリビア5連発！", card style)."""
-    facts, outro = script["scenes"][:-1], script["scenes"][-1:]
-    budget = RAPID_MAX_CHARS - (12 if intro else 0)
-    while len(facts) > RAPID_ITEMS[1] or (len(facts) > RAPID_ITEMS[0]
-                                           and sum(len(re.sub(r"[\[\]]", "", f["narration"])) for f in facts)
-                                           > budget):
-        dropped = facts.pop(-2)  # keep the strong closer; drop the one before it
-        print(f"  [rapid] over budget, dropped: {dropped['narration']}")
-    for i, f in enumerate(facts, 1):
-        f["badge"] = f"{badge} {i}/{len(facts)}".strip()
-    chars = sum(len(re.sub(r"[\[\]]", "", f["narration"])) for f in facts)
-    print(f"  [rapid] {len(facts)} facts, {chars} chars of narration")
+    body, outro = script["scenes"][:-1], script["scenes"][-1:]
+    # group each fact with the 補足 (supplement) scenes that follow it
+    groups = []
+    for sc in body:
+        if sc.get("supplement") and groups and len(groups[-1]) < 2:
+            groups[-1].append(sc)
+        elif not sc.get("supplement"):
+            groups.append([sc])
+    budget = RAPID_MAX_CHARS + 70 - (12 if intro else 0)  # facts + up to two short supplements
+    count = lambda: sum(len(re.sub(r"[\[\]]", "", sc["narration"])) for g in groups for sc in g)
+    while len(groups) > RAPID_ITEMS[1] or (len(groups) > RAPID_ITEMS[0] and count() > budget):
+        dropped = groups.pop(-2)  # keep the strong closer; drop the one before it (with its supplement)
+        print(f"  [rapid] over budget, dropped: {dropped[0]['narration']}")
+    facts = []
+    for i, g in enumerate(groups, 1):
+        g[0]["badge"] = f"{badge} {i}/{len(groups)}".strip()
+        for sup in g[1:]:
+            sup["card"] = "note"
+        facts += g
+    print(f"  [rapid] {len(groups)} facts + {len(facts) - len(groups)} supplements, {count()} chars of narration")
     # the count in the title ("5連発") may have changed above
-    script["title"] = re.sub(r"\d+(連発|選)", f"{len(facts)}\\1", script.get("title", ""))
+    script["title"] = re.sub(r"\d+(連発|選)", f"{len(groups)}\\1", script.get("title", ""))
     head = []
     if intro:
         title = re.sub(r"[\[\]]", "", script["title"])
@@ -351,6 +370,8 @@ def clean_narration(text, comment_prompt=""):
 def _scene(sc, comment_prompt=""):
     v = _visual(sc.visual)
     out = {"narration": clean_narration(sc.narration, comment_prompt), "visual": v}
+    if getattr(sc, "supplement", False):
+        out["supplement"] = True
     if v.get("type") == "quiz" and v.get("countdown"):
         out["hold"] = 3.3  # room for the 3-2-1 countdown
     return out

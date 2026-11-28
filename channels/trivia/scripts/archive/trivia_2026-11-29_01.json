@@ -1,0 +1,175 @@
+{
+  "topic": "恋と魅力の科学: 心拍の同調／キスは右に傾く／肖像画は左頬／免疫遺伝子と体臭／魅力的な相手への声／ベラドンナで瞳孔",
+  "category": "モテ・魅力の科学",
+  "writer": "gemini+claude",
+  "format": "rapid",
+  "title": "[恋と魅力]の科学雑学6連発",
+  "youtube_title": "キスで頭はどっちに傾く？恋と魅力の雑学6連発 #大人の雑学 #雑学 #shorts",
+  "description": "人が惹かれ合うとき、体や声にはどんな変化が起きるのか？\n心理学や生物学の研究で報告されている「恋と魅力の雑学」を6連発でテンポよくお届けします！\n#大人の雑学 #雑学 #shorts #恋愛心理",
+  "tags": [
+    "大人の雑学",
+    "雑学",
+    "shorts",
+    "恋愛心理",
+    "科学"
+  ],
+  "theme": {
+    "bg": [
+      "#2a0f1e",
+      "#3b1029"
+    ],
+    "accent": "#ff4d8d"
+  },
+  "mood": "science",
+  "pronunciations": {},
+  "comment_prompt": "いくつ知ってた？コメントで教えて！",
+  "thumb_text": "[キス]のとき頭は右に傾きがち",
+  "sources": [
+    "https://www.universiteitleiden.nl/en/news/2021/11/heart-rate-and-skin-conductance-predict-romantic-attraction",
+    "https://www.staff.universiteitleiden.nl/news/2022/09/leiden-researchers-receive-ig-nobel-prize-for-research-into-romantic-click",
+    "https://www.abc.net.au/science/articles/2003/02/14/783848.htm",
+    "https://www.researchgate.net/publication/12831760_Laterality_of_expression_in_portraiture_putting_your_best_cheek_forward",
+    "https://www.semanticscholar.org/paper/MHC-dependent-mate-preferences-in-humans-Wedekind-Seebeck/f09c12abec1dba95d92989aa8645d20ee06652f0",
+    "https://www.stir.ac.uk/news/2014/07/in-the-language-of-love-its-not-what-you-say-its-how-you-say-it/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC2583162/"
+  ],
+  "scenes": [
+    {
+      "narration": "キスのとき頭は右に傾きがち！",
+      "visual": {
+        "type": "text",
+        "text": "[キス]のとき頭は右に傾きがち"
+      },
+      "card": "intro",
+      "min_duration": 1.0,
+      "hold": 0.15
+    },
+    {
+      "narration": "惹かれ合う2人は、[心拍数]が同調しやすいという研究がある。",
+      "visual": {
+        "type": "photo",
+        "query": "",
+        "ai_prompt": "",
+        "file": "channels/trivia/assets/trivia_2026-11-29_01/cafe.jpg",
+        "sources": [
+          "local"
+        ],
+        "fallback": {
+          "type": "illustration",
+          "emoji": "💓",
+          "text": "心拍が同調"
+        }
+      },
+      "badge": "大人の雑学 1/6"
+    },
+    {
+      "narration": "キスをするカップルの約65%は、頭を[右]に傾けていた。",
+      "visual": {
+        "type": "number",
+        "value": 65,
+        "unit": "%",
+        "label": "頭を右に傾けたカップル"
+      },
+      "badge": "大人の雑学 2/6"
+    },
+    {
+      "narration": "肖像画では、右頬より[左頬]を見せるポーズが多く描かれてきた。",
+      "visual": {
+        "type": "compare",
+        "relation": "vs",
+        "items": [
+          {
+            "label": "左頬を見せる",
+            "value": "多い",
+            "color": "#ec4899",
+            "emoji": "🖼️"
+          },
+          {
+            "label": "右頬を見せる",
+            "value": "少ない",
+            "color": "#9ca3af",
+            "emoji": "🖼️"
+          }
+        ]
+      },
+      "badge": "大人の雑学 3/6"
+    },
+    {
+      "narration": "女性が自分と異なる[免疫遺伝子]の男性の体臭を好んだ実験がある。",
+      "visual": {
+        "type": "photo",
+        "query": "",
+        "ai_prompt": "",
+        "file": "channels/trivia/assets/trivia_2026-11-29_01/shirts.jpg",
+        "sources": [
+          "local"
+        ],
+        "fallback": {
+          "type": "illustration",
+          "emoji": "👕",
+          "text": "体臭の実験"
+        }
+      },
+      "badge": "大人の雑学 4/6"
+    },
+    {
+      "narration": "魅力的な女性と話す男性は、[声]に抑揚が増え低い音まで出ていた。",
+      "visual": {
+        "type": "photo",
+        "query": "",
+        "ai_prompt": "",
+        "file": "channels/trivia/assets/trivia_2026-11-29_01/talk.jpg",
+        "sources": [
+          "local"
+        ],
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🗣️",
+          "text": "声が変わる"
+        }
+      },
+      "badge": "大人の雑学 5/6"
+    },
+    {
+      "narration": "ルネサンス期の女性は[ベラドンナ]で瞳孔を広げ、魅力的に見せようとした。",
+      "visual": {
+        "type": "photo",
+        "query": "",
+        "ai_prompt": "",
+        "file": "channels/trivia/assets/trivia_2026-11-29_01/belladonna.jpg",
+        "sources": [
+          "local"
+        ],
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🌿",
+          "text": "ベラドンナ"
+        }
+      },
+      "badge": "大人の雑学 6/6"
+    },
+    {
+      "narration": "ベラドンナは、ナス科の毒草。名前はイタリア語で[美しい女性]。",
+      "supplement": true,
+      "visual": {
+        "type": "illustration",
+        "emoji": "☠️",
+        "text": "ナス科の毒草"
+      },
+      "card": "note"
+    },
+    {
+      "narration": "いくつ知ってた？コメントで教えて！",
+      "visual": {
+        "type": "text",
+        "emoji": "💬",
+        "text": "いくつ知ってた？コメントで教えて！",
+        "size": 96,
+        "sub": "▶ フォローで毎日大人の雑学"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0,
+      "no_subtitle": true
+    }
+  ]
+}
