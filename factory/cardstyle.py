@@ -116,11 +116,25 @@ class CardStyle:
         im.paste(q, ((CARD_W - q.width) // 2, (CARD_H - q.height) // 2 - 20), q)
         return _frame(im, 0)
 
+    def _text_size(self, i):
+        """Font size the full line ends up with, so the set-up line is drawn at the same size (no jump)."""
+        key = ("size", i)
+        if key not in self.text_cache:
+            sz = 92
+            while True:
+                im = V.rich_text(self.scenes[i].get("narration", ""), sz, TEXT_BOX[0] - 20, fill=INK, hi=HI, spacing=1.3)
+                if (im.width <= TEXT_BOX[0] and im.height <= TEXT_BOX[1]) or sz <= 58:
+                    break
+                sz = int(sz * 0.9)
+            self.text_cache[key] = sz
+        return self.text_cache[key]
+
     def _tease_text(self, i, dots):
         key = ("tease", i, dots)
         if key not in self.text_cache:
             s = self.scenes[i]["tease"] + "・" * dots
-            self.text_cache[key] = V.fit_text(s, 92, *TEXT_BOX, min_size=58, fill=INK, hi=INK, stroke=0, spacing=1.3)
+            im = V.rich_text(s, self._text_size(i), TEXT_BOX[0] - 20, fill=INK, hi=INK, stroke=0, spacing=1.3)
+            self.text_cache[key] = V.scaled(im, min(1.0, TEXT_BOX[0] / im.width, TEXT_BOX[1] / im.height))
         return self.text_cache[key]
 
     def _note_sticker(self):
@@ -236,7 +250,9 @@ class CardStyle:
         if p > 0:
             if rv is not None and t < rv:  # only the set-up line, then dots while we wait
                 dots = 0 if t < sc.get("tease_end", 0) else min(3, 1 + int((t - sc["tease_end"]) / 0.5))
-                V.place(im, self._tease_text(i, dots), W / 2, TEXT_CY + (1 - p) * 50, 1.0, alpha=p)
+                tz = self._tease_text(i, dots)
+                top = TEXT_CY - self._text(i, 0.0).height / 2  # same top as the full line: the answer just adds on
+                V.place(im, tz, W / 2, top + tz.height / 2 + (1 - p) * 50, 1.0, alpha=p)
             elif rv is not None:  # the answer: full line pops, highlighter sweeps under the key words
                 kt = 1 + 0.06 * (1 - V.ease_out((t - rv) / 0.3))
                 V.place(im, self._text(i, V.ease_out((t - rv - 0.1) / 0.45)), W / 2, TEXT_CY, kt)

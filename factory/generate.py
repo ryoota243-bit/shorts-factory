@@ -335,7 +335,8 @@ def chinamini(text):
 
 
 def rapid_rules(term, count=RAPID_FACTS, tease=False):
-    return RAPID_RULES.format(term=term, count=count, lo=count * RAPID_CHARS[0], hi=count * RAPID_CHARS[1],
+    lo, hi = (24, 30) if tease else RAPID_CHARS  # the ~2 s pauses take time: shorter lines keep it within 40 s
+    return RAPID_RULES.format(term=term, count=count, lo=count * lo, hi=count * hi,
                               tease_rules=TEASE_RULES if tease else "")
 
 
