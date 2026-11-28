@@ -131,7 +131,8 @@ RAPID_RULES = """（一言雑学の連発形式。この形式では、以下が
 - 並び順: 1つ目は一番強いネタ（開始3秒で引き込む）、最後は2番目に強いネタ。最後のシーンも雑学1つで終え、
   まとめ・オチ・ループの言い直しは付けない。予告（「最後のはすごい」など）も入れない。
 - 補足シーン: 雑学に馴染みのない横文字（例: ベラドンナ、MHC、オキシトシン）が出たら、その直後に supplement=true の
-  シーンを1つ入れ、何なのかを一言で説明する（1文・18〜34文字。例「ベラドンナは、ナス科の毒草。名前は"美しい女性"という意味。」）。
+  シーンを1つ入れ、何なのかを一言で説明する。補足のナレーションは必ず「ちなみに、」から始める（「ちなみに、」を含めて
+  22〜38文字。例「ちなみに、ベラドンナはナス科の毒草。名前は"美しい女性"という意味。」）。
   映像はその言葉の中身が分かるもの（photo / ai / illustration）。補足は1本につき2つまで。補足が必要な雑学が3つ以上に
   なるなら、馴染みのある言葉で言える雑学に差し替える。補足シーンは雑学の個数に数えない。
 - 長さ（厳守）: 雑学6個、ナレーション合計160〜200文字（補足シーンを除く）（冒頭の一言とフォロー呼びかけを含めて動画全体30〜40秒に収める。
@@ -175,6 +176,7 @@ RESEARCH_PROMPT = """あなたは日本語YouTubeショートの{term}チャン�
 - 馴染みのない横文字（一般の人が意味を知らないカタカナ語・外来語・専門用語。例: ベラドンナ、MHC、ドーパミン）は
   そのままにしない。言い換えられるなら身近な言葉に言い換え、言い換えられないときは説明を必ず入れる
   （通常の形式は同じシーンか次のシーンで一言説明。一言雑学の連発形式は直後に補足シーンを入れる）。
+  説明を別のシーンに分けるときは、そのナレーションを「ちなみに、」から始める。
   コーヒー・メール・ストレスのように誰でも知っている語は説明しない。
 - 各シーンに映像を指定:
   photo（素材サイトの実写写真。どこにでもある一般的なモノ・風景・動物向け。query は確実に見つかる
@@ -314,6 +316,14 @@ def theme_line(category=None, history=(), topic=None, fmt="standard"):
             f"作ってください。\n\n# 重複禁止（過去に扱ったテーマ）\n{hist}")
 
 
+def chinamini(text):
+    """補足 lines always open with 「ちなみに、」 (added if the writer forgot it)."""
+    t = text.strip()
+    if re.sub(r"[\[\]]", "", t).startswith("ちなみに"):
+        return t
+    return "ちなみに、" + t
+
+
 def finish_rapid(script, badge="雑学", intro=False):
     """rapid: keep 5-6 facts within the time budget and number them ("雑学 1/5" badge on screen).
 
@@ -336,6 +346,7 @@ def finish_rapid(script, badge="雑学", intro=False):
         g[0]["badge"] = f"{badge} {i}/{len(groups)}".strip()
         for sup in g[1:]:
             sup["card"] = "note"
+            sup["narration"] = chinamini(sup["narration"])
         facts += g
     print(f"  [rapid] {len(groups)} facts + {len(facts) - len(groups)} supplements, {count()} chars of narration")
     # the count in the title ("5連発") may have changed above
