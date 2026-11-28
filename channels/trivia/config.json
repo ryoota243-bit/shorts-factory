@@ -23,7 +23,8 @@
     }
   },
   "video": {
-    "style": "card"
+    "style": "card",
+    "title_intro": false
   },
   "rapid": {
     "intro": true

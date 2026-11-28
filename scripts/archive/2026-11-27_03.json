@@ -1,0 +1,164 @@
+{
+  "topic": "バイキングの兜",
+  "category": "歴史",
+  "writer": "gemini+claude",
+  "title": "兜の角は[後世の創作]",
+  "youtube_title": "バイキングの兜に角はない？歴史の有名な大誤解 #雑学 #shorts",
+  "description": "バイキングといえば角が生えた兜のイメージですが、実はバイキング時代の遺跡から角つき兜は見つかっていません。\nあのイメージはどこから来たのか、意外な発祥を解説します！\n\n#雑学 #歴史 #ショート",
+  "tags": [
+    "バイキング",
+    "歴史",
+    "雑学",
+    "誤解",
+    "中世"
+  ],
+  "theme": {
+    "bg": [
+      "#1c242b",
+      "#0e1317"
+    ],
+    "accent": "#f39c12"
+  },
+  "mood": "history",
+  "pronunciations": {
+    "兜": "かぶと",
+    "歌劇": "かげき"
+  },
+  "scenes": [
+    {
+      "narration": "バイキングに、角はない。あの角つき兜は、[後世の創作]です。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A powerful early medieval Norse warrior in plain wool clothing standing on a rugged northern coast, wearing a simple rounded iron helmet with no horns, misty sea background, no text, no symbols, no flags, cinematic documentary style",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "⚔️",
+          "text": "角のないバイキング"
+        }
+      }
+    },
+    {
+      "narration": "このイメージは、19世紀の[絵画や舞台]から広まりました。",
+      "visual": {
+        "type": "compare",
+        "relation": "not_equal",
+        "items": [
+          {
+            "label": "誤解",
+            "value": "角つき",
+            "color": "#e74c3c",
+            "note": "19世紀の創作",
+            "emoji": "👿"
+          },
+          {
+            "label": "真実",
+            "value": "角なし",
+            "color": "#2ecc71",
+            "note": "出土した兜の姿",
+            "emoji": "🛡️"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "1876年、ワーグナーの歌劇の衣装に使われ、[一気に定着]しました。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🎭",
+        "text": "オペラ衣装で定着"
+      }
+    },
+    {
+      "narration": "実際、バイキング時代の遺跡から、角つき兜は[1つも出ていません]。",
+      "visual": {
+        "type": "number",
+        "value": 0,
+        "unit": "個",
+        "label": "出土した角つき兜"
+      }
+    },
+    {
+      "narration": "角は枝や盾に引っかかりやすく、戦いでは[邪魔]だったと考えられます。",
+      "visual": {
+        "type": "text",
+        "text": "実戦では不利",
+        "emoji": "⚠️"
+      }
+    },
+    {
+      "narration": "本物は、角のない[シンプルな鉄兜]。バイキングに、角はなかったのです。",
+      "visual": {
+        "type": "photo",
+        "query": "early medieval iron helmet museum",
+        "ai_prompt": "A close-up studio photograph of a simple rounded early medieval iron helmet with eye guards and no horns, resting on a dark rustic wooden table, no text, cinematic museum lighting",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🛡️",
+          "text": "角のない鉄兜"
+        }
+      }
+    },
+    {
+      "narration": "角つきだと思ってた？教えて！",
+      "visual": {
+        "type": "text",
+        "emoji": "💬",
+        "text": "角つきだと思ってた？教えて！",
+        "size": 96,
+        "sub": "▶ フォローで毎日雑学"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0,
+      "no_subtitle": true
+    }
+  ],
+  "comment_prompt": "角つきだと思ってた？教えて！",
+  "sources": [
+    "https://en.wikipedia.org/wiki/Carl_Emil_Doepler",
+    "https://www.history.com/articles/did-vikings-really-wear-horned-helmets",
+    "https://ja.wikipedia.org/wiki/%E3%83%B4%E3%82%A1%E3%82%A4%E3%82%AD%E3%83%B3%E3%82%B0",
+    "http://www.hurstwic.org/history/articles/manufacturing/text/horned_helmets.htm"
+  ],
+  "thumb_text": "バイキングに[角はない]",
+  "thumb_prompt": "Cinematic portrait of a fierce early medieval Norse warrior, wearing a simple round iron helmet with eye guards and NO horns, dramatic side lighting, photorealistic historical look, high contrast, no text, no flags",
+  "format": "myth",
+  "gen_cost": {
+    "usd": 0.4388,
+    "jpy": 68,
+    "by_task": {
+      "factcheck": 0.3813,
+      "convert": 0.0575
+    },
+    "tokens": {
+      "factcheck": {
+        "model": "claude-opus-5-5",
+        "in": 26767,
+        "out": 9526,
+        "searches": 7
+      },
+      "convert": {
+        "model": "claude-opus-5-5",
+        "in": 6650,
+        "out": 1544,
+        "searches": 0
+      }
+    }
+  },
+  "factcheck": [
+    "タイトル「完全な誤解」→「後世の創作」：ヴァイキング時代にも儀式用の角つき兜が描かれた例があるため。",
+    "S1「完全な誤解」→「後世の創作」に変更（理由は上と同じ）。",
+    "S2「オペラの舞台衣装から」→「絵画や舞台から」：1820年ごろの挿絵がオペラより前にあるため。",
+    "S3「衣装係が派手にしたのが始まり」→「衣装に使われ一気に定着」：起源ではなく定着のきっかけで、動機も確認できないため。",
+    "S3 画面の文字「舞台衣装の創作」→「オペラ衣装で定着」",
+    "S4「当時の遺跡」→「バイキング時代の遺跡」と時代をはっきりさせ、ラベルも「出土した角つき兜」に変更。",
+    "S5「首を折る危険があるから」→「邪魔だったと考えられます」：根拠がなく、因果関係も誇張だったため。",
+    "S5 画面の文字「首を折る致命的弱点」→「実戦では不利」",
+    "S6「歴史上、角つきバイキングはいません」を削除：儀式で使われた可能性があり言い過ぎのため。ループの言い回しに変更。",
+    "S6 写真の検索語を「viking helmet replica」→「early medieval iron helmet museum」に変更：角つきのコスプレ兜が出やすいため。",
+    "S6 画面の文字「本物の鉄兜」→「角のない鉄兜」：写真はレプリカなので。",
+    "ai_prompt と thumb_prompt に「no text, no flags」などを追加：文字や国旗が写り込まないようにするため。",
+    "description の「歴史上存在しません」→「遺跡から見つかっていません」",
+    "sources を確認に使ったURL（Wikipedia、History.com、Hurstwic）に差し替え。"
+  ]
+}

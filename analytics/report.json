@@ -1,9 +1,24 @@
 {
-  "generated": "2026-11-26T16:21",
+  "generated": "2026-11-27T21:11",
   "videos": [
     {
       "name": "2026-11-24_08",
       "video_id": "CHLRMedfJeo",
+      "topic": "角膜は空気から酸素をもらう",
+      "category": "人体",
+      "format": "standard",
+      "writer": "claude",
+      "views": null,
+      "averageViewPercentage": null,
+      "averageViewDuration": null,
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "subscribersGained": null
+    },
+    {
+      "name": "2026-11-24_08",
+      "video_id": "a_JVQScgODA",
       "topic": "角膜は空気から酸素をもらう",
       "category": "人体",
       "format": "standard",
@@ -32,10 +47,10 @@
       "subscribersGained": null
     },
     {
-      "name": "2026-11-24_10",
-      "video_id": "0ctsd-zRksk",
-      "topic": "ボールペンのキャップの穴は窒息防止のため",
-      "category": "身近なモノ",
+      "name": "2026-11-24_09",
+      "video_id": "jEEJO6ajZQI",
+      "topic": "回転寿司のルーツはビール工場",
+      "category": "日本の文化",
       "format": "standard",
       "writer": "claude",
       "views": null,
@@ -47,19 +62,34 @@
       "subscribersGained": null
     },
     {
+      "name": "2026-11-24_10",
+      "video_id": "0ctsd-zRksk",
+      "topic": "ボールペンのキャップの穴は窒息防止のため",
+      "category": "身近なモノ",
+      "format": "standard",
+      "writer": "claude",
+      "views": 581,
+      "averageViewPercentage": 45.95,
+      "averageViewDuration": 18,
+      "likes": 3,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 0
+    },
+    {
       "name": "2026-11-25_01",
       "video_id": "ShLQV19Ayk0",
       "topic": "ピラミッドとマンモス",
       "category": "歴史",
       "format": "standard",
       "writer": "gemini+claude",
-      "views": null,
-      "averageViewPercentage": null,
-      "averageViewDuration": null,
-      "likes": null,
-      "comments": null,
-      "shares": null,
-      "subscribersGained": null
+      "views": 3,
+      "averageViewPercentage": 94.83,
+      "averageViewDuration": 37,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 0
     },
     {
       "name": "2026-11-26_01",
@@ -68,6 +98,36 @@
       "category": "人体",
       "format": "standard",
       "writer": "gemini+claude",
+      "views": 1,
+      "averageViewPercentage": 91.82,
+      "averageViewDuration": 35,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 0
+    },
+    {
+      "name": "2026-11-26_02",
+      "video_id": "1nOqGkcsnS0",
+      "topic": "蚊が雨でも飛べる理由",
+      "category": "昆虫",
+      "format": "standard",
+      "writer": "gemini+claude",
+      "views": 0,
+      "averageViewPercentage": 0,
+      "averageViewDuration": 0,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 0
+    },
+    {
+      "name": "2026-11-27_03",
+      "video_id": "56FXWwvp3ac",
+      "topic": "バイキングの兜",
+      "category": "歴史",
+      "format": "myth",
+      "writer": "gemini+claude",
       "views": null,
       "averageViewPercentage": null,
       "averageViewDuration": null,
@@ -77,22 +137,90 @@
       "subscribersGained": null
     },
     {
-      "name": "2026-11-26_02",
-      "video_id": "1nOqGkcsnS0",
-      "topic": "蚊が雨でも飛べる理由",
-      "category": "昆虫",
-      "format": "standard",
-      "writer": "gemini+claude",
-      "views": null,
-      "averageViewPercentage": null,
-      "averageViewDuration": null,
-      "likes": null,
-      "comments": null,
-      "shares": null,
-      "subscribersGained": null
+      "name": "",
+      "video_id": "SICoGggGPqw",
+      "topic": "フランスが最も長く国境を接する国はブラジル？",
+      "category": "",
+      "format": "手動投稿",
+      "writer": "",
+      "views": 1170,
+      "averageViewPercentage": 62.529999999999994,
+      "averageViewDuration": 23,
+      "likes": 7,
+      "comments": 0,
+      "shares": 1,
+      "subscribersGained": 1
+    },
+    {
+      "name": "",
+      "video_id": "JmLBA11SXE8",
+      "topic": "1日に約16回も朝が来るヤバい場所",
+      "category": "",
+      "format": "手動投稿",
+      "writer": "",
+      "views": 1100,
+      "averageViewPercentage": 75.82,
+      "averageViewDuration": 31,
+      "likes": 7,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 1
+    },
+    {
+      "name": "",
+      "video_id": "J1PYPL67n00",
+      "topic": "空に浮かぶ雲の水はゾウ100頭分？落ちてこない科学的な理由",
+      "category": "",
+      "format": "手動投稿",
+      "writer": "",
+      "views": 1073,
+      "averageViewPercentage": 101.05999999999999,
+      "averageViewDuration": 49,
+      "likes": 7,
+      "comments": 0,
+      "shares": 0,
+      "subscribersGained": 1
     }
   ],
-  "by_format": {},
-  "by_category": {},
-  "measured": 0
+  "by_format": {
+    "standard": {
+      "videos": 3,
+      "views": 585,
+      "avg_views": 195.0,
+      "avg_view_percentage": 77.5
+    },
+    "手動投稿": {
+      "videos": 3,
+      "views": 3343,
+      "avg_views": 1114.3,
+      "avg_view_percentage": 79.8
+    }
+  },
+  "by_category": {
+    "身近なモノ": {
+      "videos": 1,
+      "views": 581,
+      "avg_views": 581.0,
+      "avg_view_percentage": 46.0
+    },
+    "歴史": {
+      "videos": 1,
+      "views": 3,
+      "avg_views": 3.0,
+      "avg_view_percentage": 94.8
+    },
+    "人体": {
+      "videos": 1,
+      "views": 1,
+      "avg_views": 1.0,
+      "avg_view_percentage": 91.8
+    },
+    "-": {
+      "videos": 3,
+      "views": 3343,
+      "avg_views": 1114.3,
+      "avg_view_percentage": 79.8
+    }
+  },
+  "measured": 6
 }

@@ -172,3 +172,18 @@ def tick(sr=SR):
     t = np.arange(int(0.09 * sr)) / sr
     x = np.sin(2 * np.pi * 1320 * t) * 0.6 + np.sin(2 * np.pi * 1980 * t) * 0.3
     return (x * np.exp(-t * 45)).astype(np.float32)
+
+
+def title_se(sr=SR, seed=5):
+    """Opening title: a short rising whoosh into a bright two-note chime."""
+    rng = np.random.default_rng(seed)
+    t = np.arange(int(0.35 * sr)) / sr
+    n = rng.standard_normal(len(t)).astype(np.float32)
+    n = n - np.convolve(n, np.ones(40) / 40, mode="same")
+    whoosh = n * (t / 0.35) ** 2 * np.exp(-((t - 0.3) / 0.08) ** 2) * 0.6
+    tc = np.arange(int(0.9 * sr)) / sr
+    chime = (np.sin(2 * np.pi * 1568 * tc) + 0.5 * np.sin(2 * np.pi * 2349 * tc) * (tc > 0.07)) * np.exp(-tc * 6)
+    out = np.zeros(int(0.3 * sr) + len(tc), np.float32)
+    out[:len(whoosh)] += whoosh
+    out[int(0.3 * sr):] += chime * 0.5
+    return (out / (np.abs(out).max() + 1e-9)).astype(np.float32)

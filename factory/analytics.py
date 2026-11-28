@@ -16,6 +16,7 @@ API = "https://youtubeanalytics.googleapis.com/v2/reports"
 METRICS = ["views", "averageViewPercentage", "averageViewDuration", "likes", "comments", "shares",
            "subscribersGained"]
 MIN_VIDEOS = 3        # a group needs this many measured videos before it changes any weight
+MIN_VIEWS = 50        # below this a video is unpublished/too new to say anything about the format
 WEIGHT_RANGE = (0.5, 2.0)
 
 
@@ -85,7 +86,10 @@ def build(root, history):
         m = rows[vid]
         videos.append({"name": "", "video_id": vid, "topic": re.sub(r"\s*#\S+", "", titles.get(vid, vid)),
                        "category": "", "format": "手動投稿", "writer": "", **{k: m.get(k) for k in METRICS}})
-    measured = [v for v in videos if v.get("views")]
+    for v in videos:
+        if v.get("averageViewPercentage") is not None:
+            v["averageViewPercentage"] = round(v["averageViewPercentage"], 1)
+    measured = [v for v in videos if (v.get("views") or 0) >= MIN_VIEWS]
 
     def group(key):
         out = {}
@@ -112,7 +116,7 @@ def build(root, history):
 
 def to_markdown(r):
     L = [f"# チャンネル分析（{r['generated']} 時点）", "",
-         f"計測できた動画: {r['measured']} 本（YouTube の集計は約2日遅れ）", ""]
+         f"集計対象: 再生{MIN_VIEWS}回以上の {r['measured']} 本（非公開・公開直後の動画は除外。YouTube の集計は約2日遅れ）", ""]
     for title, key in (("形式別", "by_format"), ("カテゴリ別", "by_category")):
         L += [f"## {title}", "", "| | 本数 | 平均再生数 | 平均視聴率 |", "|---|---|---|---|"]
         for k, g in sorted(r[key].items(), key=lambda x: -x[1]["avg_views"]):

@@ -131,6 +131,7 @@ def break_points(plain):
             attach = (f["pos"] in ("助詞", "助動詞", "記号") or f.get("pos_group1") in ("接尾", "非自立")
                       or prev == "接頭詞" or prev_num or (prev_g1 == "サ変接続" and f["pos"] == "動詞")
                       or (prev_str == "と" and f["string"][:1] in ("し", "い", "言"))
+                      or (prev_str in ("の", "が") and f["pos"] == "形容詞")  # 角の|ない -> keep 角のない
                       or (prev in ("形容詞", "連体詞") and f["pos"] == "名詞")
                       or (prev == "名詞" and f["pos"] == "名詞" and noun_run < 7
                           and f.get("pos_group1") not in ("代名詞",) and prev_g1 not in ("代名詞",)))
@@ -458,7 +459,9 @@ class NumberLayer(Layer):
         self.count = spec.get("count", not (unit.startswith("年") and isinstance(self.value, (int, float))
                                             and self.value > 1000))
         self.unit = rich_text(spec.get("unit", ""), 130, stroke=10, fill=self.accent) if spec.get("unit") else None
-        self.label = rich_text(spec.get("label", ""), 66, 900, stroke=0, fill=(30, 30, 30), hi=(220, 30, 60))
+        # a heading, not the start of a sentence ("土星の体積は地球の約" -> "土星の体積は地球の")
+        label = re.sub(r"(約|およそ|は|が|を|の)+$", "", spec.get("label", "")).strip() or spec.get("label", "")
+        self.label = rich_text(label, 66, 900, stroke=0, fill=(30, 30, 30), hi=(220, 30, 60))
         self.pill = rounded((self.label.width + 70, self.label.height + 30), 50, (255, 255, 255, 240))
         self.cache = {}
         self.delay = 0.0  # set by the renderer: seconds until the narration mentions the number

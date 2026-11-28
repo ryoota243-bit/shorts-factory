@@ -1,0 +1,164 @@
+{
+  "topic": "土星が水に浮く理由",
+  "category": "宇宙",
+  "writer": "gemini+claude",
+  "title": "[水に浮く]巨大惑星の秘密",
+  "youtube_title": "土星は水に浮くって本当？巨大惑星の驚きの正体 #雑学 #shorts",
+  "description": "太陽系で2番目に大きい惑星「土星」。\n実は、巨大なプールがあれば計算上はプカプカ浮かんでしまいます。\nその驚きの理由をサクッと解説します！\n#雑学 #shorts #宇宙 #土星",
+  "tags": [
+    "土星",
+    "宇宙",
+    "惑星",
+    "雑学",
+    "科学",
+    "shorts"
+  ],
+  "theme": {
+    "bg": [
+      "#0b1021",
+      "#1b2440"
+    ],
+    "accent": "#ffd166"
+  },
+  "mood": "water_space",
+  "pronunciations": {},
+  "scenes": [
+    {
+      "narration": "土星は、[水に浮く]。もし巨大なお風呂があればプカプカ浮かびます。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Surreal photo of a ringed planet gently floating on a boundless cosmic ocean, glowing stars in the background, cinematic lighting, 8k, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🪐",
+          "text": "水に浮く土星"
+        }
+      }
+    },
+    {
+      "narration": "土星の体積は[地球の約760倍]。地球が760個以上も入る大きさです。",
+      "visual": {
+        "type": "number",
+        "value": 760,
+        "unit": "倍",
+        "label": "土星の体積は地球の約"
+      }
+    },
+    {
+      "narration": "なのに平均密度は、水の1に対し土星は[約0.69]。水より軽いんです。",
+      "visual": {
+        "type": "compare",
+        "relation": "vs",
+        "items": [
+          {
+            "label": "水",
+            "value": "1",
+            "color": "#4cc9f0",
+            "note": "密度(g/cm³)",
+            "emoji": "💧"
+          },
+          {
+            "label": "土星",
+            "value": "約0.69",
+            "color": "#ffd166",
+            "note": "密度(g/cm³)",
+            "emoji": "🪐"
+          }
+        ]
+      }
+    },
+    {
+      "narration": "その中身の大半は、[最も軽い2つの元素]である水素とヘリウムです。",
+      "visual": {
+        "type": "photo",
+        "query": "Saturn planet Cassini",
+        "ai_prompt": "",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "💨",
+          "text": "主成分は水素＋ヘリウム"
+        }
+      }
+    },
+    {
+      "narration": "固い地面はなく、奥へ進むほど水素は圧力で液体へと変わっていきます。",
+      "visual": {
+        "type": "illustration",
+        "emoji": "🚫",
+        "text": "固い地面はない"
+      }
+    },
+    {
+      "narration": "太陽系で2番目に大きい土星でも、計算上は丸ごと[水に浮く]のです。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Wide angle view of a giant ringed planet floating serenely on calm reflective dark water under a starry galaxy sky, hyperrealistic, space concept art, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🪐",
+          "text": "巨体でも浮く"
+        }
+      }
+    },
+    {
+      "narration": "土星が浮くの知ってた？",
+      "visual": {
+        "type": "text",
+        "emoji": "💬",
+        "text": "土星が浮くの知ってた？",
+        "size": 96,
+        "sub": "▶ フォローで毎日雑学"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0,
+      "no_subtitle": true
+    }
+  ],
+  "comment_prompt": "土星が浮くの知ってた？",
+  "sources": [
+    "https://science.nasa.gov/saturn/facts/",
+    "https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturnfact.html",
+    "https://www2.jpl.nasa.gov/saturn/fact.html",
+    "https://www.kids.isas.jaxa.jp/zukan/solarsystem/saturn01.html"
+  ],
+  "thumb_text": "土星は、[水に浮く]！？",
+  "thumb_prompt": "A stunning and surreal view of a ringed planet floating gently on a calm ocean of water against a deep space starry background, vibrant colors, cinematic lighting, no text",
+  "format": "standard",
+  "gen_cost": {
+    "usd": 0.4432,
+    "jpy": 69,
+    "by_task": {
+      "factcheck": 0.3882,
+      "convert": 0.055
+    },
+    "tokens": {
+      "factcheck": {
+        "model": "claude-opus-5-5",
+        "in": 24749,
+        "out": 9521,
+        "searches": 8
+      },
+      "convert": {
+        "model": "claude-opus-5-5",
+        "in": 6570,
+        "out": 1438,
+        "searches": 0
+      }
+    }
+  },
+  "factcheck": [
+    "S2：数字のシーンなので「太陽系で2番目」をS6へ移し、ナレーションを760倍の話だけにした（NSSDCの763.59倍、JPLの764倍で確認）。",
+    "S2：画面のラベルに「約」を入れ、ナレーションと合わせた。",
+    "S3：note が12文字を超え、value の繰り返しにもなっていたので、両方とも「密度(g/cm³)」に統一した。水の value を「1」にした。",
+    "S3：35文字以内に収まるようにナレーションを短くした（密度0.687 g/cm³はNSSDCで確認）。",
+    "S4：内部は液体なので「超軽いガス」を「最も軽い2つの元素」に直した。",
+    "S4：木星の写真が出やすい query を土星の写真が出る指定に変え、使わない ai_prompt を消した。",
+    "S5：「中身がふんわり軽い気体」は誤りなので、「地面はなく、奥は圧力で液体になる」に直した（NASA・JAXAで確認）。emoji を 🚫 にした。",
+    "S6：仮定の話を言い切っていたので「計算上は」を足した。S2の言い直しを避けて「太陽系で2番目に大きい」を使い、冒頭へのループは保った。",
+    "description：「計算上は」を足して言い切りを和らげた。",
+    "ai_prompt / thumb_prompt：画像に文字が入らないよう「no text」を足した。",
+    "sources：中身を確認できなかったJAXAのFAQのURLを、確認できたJAXAキッズ図鑑の土星ページに差し替えた。JPLの資料を追加した。"
+  ]
+}

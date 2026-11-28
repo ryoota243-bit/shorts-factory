@@ -32,9 +32,13 @@
   "video": {
     "fps": 30,
     "crf": 20,
-    "thumb_seconds": 0.25,
+    "thumb_seconds": 0.5,
     "hook": false,
-    "camera_cuts": false
+    "camera_cuts": false,
+    "title_intro": true,
+    "title_intro_lead": 2.0,
+    "intro_character": "assets/characters/zundamon.png",
+    "intro_character_credit": ""
   },
   "daily": {
     "count": 1
