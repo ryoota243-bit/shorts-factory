@@ -93,7 +93,7 @@
       "visual": {
         "type": "ai",
         "query": "",
-        "ai_prompt": "Close-up of a male seahorse with a visibly rounded brood pouch on its belly, swimming among seagrass, tiny baby seahorses emerging nearby, underwater wildlife photography, realistic, no text",
+        "ai_prompt": "Side view of one entire male seahorse, the whole body clearly visible from the head and snout to the curled tail, centered with space around it, a smoothly swollen brood pouch on its belly, upright among seagrass, a few tiny baby seahorses drifting nearby, realistic underwater wildlife photography, anatomically correct, no text",
         "fallback": {
           "type": "illustration",
           "emoji": "🐟",
