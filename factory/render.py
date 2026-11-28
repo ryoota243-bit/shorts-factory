@@ -197,7 +197,18 @@ def render(script_path, cfg, root, out_dir):
     # blind text replacement broke word boundaries, e.g. 朝 read as チョウ). Other engines: replace.
     use_check = cfg["tts"]["backend"] == "voicevox"
     to_speak = (lambda ch: tts_text(ch, {})) if use_check else (lambda ch: tts_text(ch, prons))
-    spoken = [to_speak(ch) for sc in script["scenes"] for ch in split_sentences(sc.get("narration", ""))]
+    TEASE_PAUSE = float((cfg.get("rapid") or {}).get("tease_pause", 2.0))
+
+    def scene_chunks(sc):
+        """Narration chunks; for a teased fact the set-up line comes first, and the pause follows its last chunk."""
+        n = sc.get("narration", "")
+        tz = sc.get("tease")
+        if tz and n.startswith(tz) and len(n) > len(tz):
+            head = split_sentences(tz)
+            return head + split_sentences(n[len(tz):]), len(head) - 1
+        return split_sentences(n), None
+
+    spoken = [to_speak(ch) for sc in script["scenes"] for ch in scene_chunks(sc)[0]]
     title_line = to_speak(intro_copy) if INTRO_ON and intro_copy else ""
     if title_line:
         spoken = [title_line] + spoken
@@ -222,12 +233,18 @@ def render(script_path, cfg, root, out_dir):
         start = 0.0 if si == 0 else t  # scene 0's picture is the title's backdrop
         lead = 0.12 if (si or title_line) else (0.3 if HOOK_ON else 0.05)
         voice_parts.append(np.zeros(int(lead * SR), np.float32)); t += lead
-        for ch in split_sentences(sc.get("narration", "")):
+        chunks, tease_last = scene_chunks(sc)
+        for ci, ch in enumerate(chunks):
             line = to_speak(ch)
             a = tts.synth(fixed.get(line, line), cfg)
             subs.append((t, t + len(a) / SR, subtitle_text(ch)))
             voice_parts.append(a); t += len(a) / SR
-            voice_parts.append(np.zeros(int(0.12 * SR), np.float32)); t += 0.12
+            gap = 0.12
+            if ci == tease_last:  # the set-up line has been read: hold the answer back
+                gap = TEASE_PAUSE
+                sc["tease_end"] = t - start
+                sc["reveal_at"] = t + gap - start
+            voice_parts.append(np.zeros(int(gap * SR), np.float32)); t += gap
         tail = max(sc.get("hold", 0.25), (sc.get("min_duration", 1.6) - (t - start)))
         voice_parts.append(np.zeros(int(tail * SR), np.float32)); t += tail
         scenes_t.append((start, t))
@@ -273,6 +290,15 @@ def render(script_path, cfg, root, out_dir):
         se = bgm.title_se() * 0.5  # light whoosh + chime as the title pops in
         mix[: len(se)] += se[: len(mix)]
     pop = bgm.swipe() * 0.3 if STYLE == "card" else bgm.pop() * 0.25
+    for sc, (st, en) in zip(script["scenes"], scenes_t):  # teased facts: soft ticking, then a chime on the answer
+        if sc.get("reveal_at"):
+            a0, a1 = st + sc["tease_end"], st + sc["reveal_at"]
+            k = a0 + 0.25
+            while k < a1 - 0.2:
+                s_ = int(k * SR); mix[s_:s_ + len(tk)] += (tk * 0.9)[: max(0, min(len(tk), n - s_))]
+                k += 0.5
+            ch_ = bgm.reveal() * 0.45
+            s_ = int(a1 * SR); mix[s_:s_ + len(ch_)] += ch_[: max(0, min(len(ch_), n - s_))]
     for st, _ in scenes_t[1:]:
         s = int(st * SR); mix[s:s + len(pop)] += pop[: max(0, min(len(pop), n - s))]
     mix = np.tanh(mix * 1.1) / np.tanh(1.1)

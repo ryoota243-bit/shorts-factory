@@ -80,6 +80,7 @@ class CardStyle:
                 self.static_cards[i] = _frame(V.cover(Image.open(l.src_path).convert("RGB"), CARD_W, CARD_H), i)
         self.num_imgs = {k: self._sticker(k) for k in range(1, self.n + 1)}
         self.note_sticker = self._note_sticker()
+        self.mystery = self._mystery()
         self.outro_img = self._outro(cfg)
         # the hook (thumb_text) is the big line of the title call and the thumbnail; the title goes in a pill
         self.hook = script.get("thumb_text") or self.title
@@ -104,6 +105,23 @@ class CardStyle:
         im.alpha_composite(num, (0, 0))
         im.alpha_composite(tot, (num.width - 20, num.height - tot.height - 60))
         return im
+
+    def _mystery(self):
+        """The card shown while the answer is held back."""
+        im = Image.new("RGB", (CARD_W, CARD_H), PAPER)
+        d = ImageDraw.Draw(im)
+        for x in range(-CARD_H, CARD_W, 70):  # faint diagonal hatching
+            d.line([(x, CARD_H), (x + CARD_H, 0)], fill=(242, 234, 214), width=24)
+        q = V.rich_text("？", 330, 400, fill=INK, hi=INK)
+        im.paste(q, ((CARD_W - q.width) // 2, (CARD_H - q.height) // 2 - 20), q)
+        return _frame(im, 0)
+
+    def _tease_text(self, i, dots):
+        key = ("tease", i, dots)
+        if key not in self.text_cache:
+            s = self.scenes[i]["tease"] + "・" * dots
+            self.text_cache[key] = V.fit_text(s, 92, *TEXT_BOX, min_size=58, fill=INK, hi=INK, stroke=0, spacing=1.3)
+        return self.text_cache[key]
 
     def _note_sticker(self):
         txt = V.rich_text("補足", 92, 400, fill=INK, hi=INK)
@@ -196,15 +214,35 @@ class CardStyle:
         self._progress(im, k, prog)
         V.paste_center(im, self.header, W / 2, 190)
         ang = -2.5 if k % 2 == 0 else 2.5
-        card = self.static_cards.get(i) or _frame(self._inner(i, t, dur), i)
+        sc = self.scenes[i]
+        rv = sc.get("reveal_at") if sc.get("tease") else None  # teased fact: answer (picture + text) held back
+        if rv is not None and t < rv:
+            card = self.mystery
+            if t > sc.get("tease_end", 0):  # waiting: the "?" card wobbles
+                ang += math.sin((t - sc["tease_end"]) * 9) * 2.2
+        else:
+            t_in = t - (rv or 0)
+            card = self.static_cards.get(i) or _frame(self._inner(i, t_in, dur - (rv or 0)), i)
+        if rv is not None and abs(t - rv) < 0.16:  # flip: squeeze the "?" card, open the picture
+            sx = max(0.03, abs(t - rv) / 0.16)
+            card = card.resize((max(2, int(card.width * sx)), card.height), Image.BILINEAR)
         kk = 0.86 + 0.14 * V.ease_back(t / 0.4)
+        if rv is not None and t >= rv:
+            kk *= 1 + 0.05 * (1 - V.ease_out((t - rv) / 0.35))
         V.place(im, card, W / 2, CARD_CY + (1 - V.ease_out(t / 0.35)) * 60, kk * (1 + 0.02 * t / max(dur, 0.1)), ang)
         V.place(im, st, st_x, CARD_CY - CARD_H / 2 - 100, max(0.01, V.ease_back((t - 0.08) / 0.35)),
                 -6 if k % 2 == 0 else 4)
         p = V.ease_out((t - 0.12) / 0.3)
         if p > 0:
-            txt = self._text(i, V.ease_out((t - 0.5) / 0.45))
-            V.place(im, txt, W / 2, TEXT_CY + (1 - p) * 50, 1.0, alpha=p)
+            if rv is not None and t < rv:  # only the set-up line, then dots while we wait
+                dots = 0 if t < sc.get("tease_end", 0) else min(3, 1 + int((t - sc["tease_end"]) / 0.5))
+                V.place(im, self._tease_text(i, dots), W / 2, TEXT_CY + (1 - p) * 50, 1.0, alpha=p)
+            elif rv is not None:  # the answer: full line pops, highlighter sweeps under the key words
+                kt = 1 + 0.06 * (1 - V.ease_out((t - rv) / 0.3))
+                V.place(im, self._text(i, V.ease_out((t - rv - 0.1) / 0.45)), W / 2, TEXT_CY, kt)
+            else:
+                txt = self._text(i, V.ease_out((t - 0.5) / 0.45))
+                V.place(im, txt, W / 2, TEXT_CY + (1 - p) * 50, 1.0, alpha=p)
         return im
 
     def _cover(self, im, t):

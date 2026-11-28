@@ -156,13 +156,17 @@ def main():
                         s = generate(topics, cfg["outro"], seed=seed, recent_categories=recent, writer=w,
                                      fmt=a.format, term=term, intro=cfg.get("rapid", {}).get("intro", False),
                                      categories=cfg.get("categories"), channel_rules=cfg.get("content_rules", ""),
+                                     n_facts=cfg.get("rapid", {}).get("facts", 6),
+                                     tease=bool(cfg.get("rapid", {}).get("tease_pause")),
                                      **{"format_weights": fmt_weights, **tuned})
                         first = s
                     else:  # same topic & category as the first writer
                         s = generate(topics, cfg["outro"], writer=w, fmt=first.get("format"),
                                      category=first["category"], topic=first["topic"], term=term,
                                      intro=cfg.get("rapid", {}).get("intro", False),
-                                     channel_rules=cfg.get("content_rules", ""))
+                                     channel_rules=cfg.get("content_rules", ""),
+                                     n_facts=cfg.get("rapid", {}).get("facts", 6),
+                                     tease=bool(cfg.get("rapid", {}).get("tease_pause")))
                     scripts.append((s, f"_{w}" if a.compare else ""))
                 except Exception as e:
                     print(f"[daily] {w} script failed: {e}")

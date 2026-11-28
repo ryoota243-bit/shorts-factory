@@ -39,7 +39,9 @@
     "title_intro": false
   },
   "rapid": {
-    "intro": true
+    "intro": true,
+    "facts": 5,
+    "tease_pause": 2.0
   },
   "bgm": {
     "style": "bouncy",

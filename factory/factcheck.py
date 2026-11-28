@@ -66,7 +66,7 @@ thumb_text は冒頭で読み上げられるタイトル。1シーン目がタ�
 STORY_NOTE = """- 形式（通常・クイズ・誤解を正す）、ループの言い回し、comment_prompt（20文字以内の問いかけ）、
   ナレーション合計150〜220文字は保つ"""
 
-RAPID_NOTE = """- これは「一言雑学の連発」形式（1シーン＝独立した雑学1つ、6個）。雑学ごとに個別に事実を確認し、
+RAPID_NOTE = """- これは「一言雑学の連発」形式（1シーン＝独立した雑学1つ、指定の個数）。雑学ごとに個別に事実を確認し、
   誤り・諸説ある・確認できない雑学は、確認できる別の雑学に差し替えるか削る（5個未満にはしない）。
   各雑学は1文・22〜34文字、ナレーション合計160〜200文字を保つ（長い補足を足さない。短くしすぎない）。
   compare の note は空のまま。thumb_text は冒頭で読み上げる掴みの一言（総称ではなく具体的な一言）で、内容と合っているか確認する。
@@ -83,11 +83,16 @@ def channel_note(rules):
             "別の雑学に差し替える）:\n" + channel_block(rules))
 
 
-def check(script_model, fmt="standard", channel_rules=""):
+TEASE_NOTE = """
+- 答えを焦らす構成: 各雑学のナレーションの「｜」（前振りと答えの区切り）は必ず残す。前振りだけで答えが分かってしまう
+  ときは区切りの位置を直す。title・thumb_text・youtube_title が答えを言っていたら、答えを言わない形に直す"""
+
+
+def check(script_model, fmt="standard", channel_rules="", tease=False):
     """Return (fixed Script, list of review notes)."""
     client = anthropic.Anthropic()
     payload = json.dumps(script_model.model_dump(), ensure_ascii=False, indent=1)
-    report = research(client, CHECK_PROMPT.format(script=payload, format_note=(RAPID_NOTE if fmt == "rapid" else STORY_NOTE)
+    report = research(client, CHECK_PROMPT.format(script=payload, format_note=(RAPID_NOTE + (TEASE_NOTE if tease else "") if fmt == "rapid" else STORY_NOTE)
                                           + channel_note(channel_rules)), max_uses=10, task="factcheck")
     notes = []
     m = re.search(r"##\s*校閲メモ\s*\n(.*)", report, re.S)

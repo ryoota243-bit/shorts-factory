@@ -167,6 +167,17 @@ def impact(sr=SR, seed=1):
     return (x / (np.abs(x).max() + 1e-9)).astype(np.float32)
 
 
+def reveal(sr=SR):
+    """Answer reveal: a bright two-note 'ding-dong' (up a fourth)."""
+    out = np.zeros(int(0.55 * sr), np.float32)
+    for k, (f, st) in enumerate(((1046.5, 0.0), (1396.9, 0.09))):
+        t = np.arange(int(0.45 * sr)) / sr
+        x = (np.sin(2 * np.pi * f * t) + 0.3 * np.sin(2 * np.pi * f * 2 * t)) * np.exp(-t * 7)
+        s0 = int(st * sr)
+        out[s0:s0 + len(x)] += x[: len(out) - s0].astype(np.float32)
+    return out / (np.abs(out).max() + 1e-9)
+
+
 def tick(sr=SR):
     """Soft accent for emphasised words: short bright blip."""
     t = np.arange(int(0.09 * sr)) / sr
