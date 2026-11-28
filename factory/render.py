@@ -335,7 +335,7 @@ def render(script_path, cfg, root, out_dir):
     band.paste(title, ((band.width - title.width) // 2, 20), title)
     # diagram scenes borrow a blurred photo from the video so the middle is not one flat colour
     photos = [(i, l.src_path) for i, l in enumerate(layers) if getattr(l, "src_path", None)]
-    if photos:
+    if photos and STYLE != "card":  # card style: a diagram sits on its own card (no unrelated blurred photo)
         tint = V.hex2rgb(theme["bg"][0])
         cache_bd = {}
         for i, l in enumerate(layers):

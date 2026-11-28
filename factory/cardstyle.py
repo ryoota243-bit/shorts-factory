@@ -249,10 +249,18 @@ class CardStyle:
         p = V.ease_out((t - 0.12) / 0.3)
         if p > 0:
             if rv is not None and t < rv:  # only the set-up line, then dots while we wait
-                dots = 0 if t < sc.get("tease_end", 0) else min(3, 1 + int((t - sc["tease_end"]) / 0.5))
-                tz = self._tease_text(i, dots)
+                tz = self._tease_text(i, 0)  # the line itself never re-wraps while we wait
                 top = TEXT_CY - self._text(i, 0.0).height / 2  # same top as the full line: the answer just adds on
                 V.place(im, tz, W / 2, top + tz.height / 2 + (1 - p) * 50, 1.0, alpha=p)
+                if t > sc.get("tease_end", 1e9):  # waiting dots under the line, popping in one by one
+                    d = ImageDraw.Draw(im)
+                    cy = top + tz.height + 46
+                    for j in range(3):
+                        q = V.ease_back((t - sc["tease_end"] - j * 0.4) / 0.25)
+                        if q > 0:
+                            r = 15 * q
+                            cx = W / 2 + (j - 1) * 56
+                            d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=INK)
             elif rv is not None:  # the answer: full line pops, highlighter sweeps under the key words
                 kt = 1 + 0.06 * (1 - V.ease_out((t - rv) / 0.3))
                 V.place(im, self._text(i, V.ease_out((t - rv - 0.1) / 0.45)), W / 2, TEXT_CY, kt)

@@ -1,0 +1,172 @@
+{
+  "topic": "恋と求愛の科学: キスで移る細菌8000万個／キスは右に傾く／魅力的な相手で瞳孔が開く／ペンギンの小石の求愛／タツノオトシゴはオスが出産",
+  "category": "モテ・魅力の科学",
+  "writer": "gemini+claude",
+  "title": "[恋と求愛]の科学5連発",
+  "youtube_title": "思わず誰かに話したくなる恋と求愛の科学5連発 #大人の雑学 #雑学 #shorts",
+  "description": "惹かれ合うとき、人や動物の体にはどんなことが起きているのか？\n研究でわかった恋と求愛の意外な事実を、テンポよくお届けします。\n\n#大人の雑学 #雑学 #shorts #心理学 #恋愛 #動物",
+  "tags": [
+    "大人の雑学",
+    "雑学",
+    "shorts",
+    "心理学",
+    "恋愛",
+    "動物"
+  ],
+  "theme": {
+    "bg": [
+      "#210b17",
+      "#381329"
+    ],
+    "accent": "#ff4d6d"
+  },
+  "mood": "science",
+  "pronunciations": {
+    "瞳孔": "どうこう",
+    "8000万個": "はっせんまんこ"
+  },
+  "scenes": [
+    {
+      "narration": "10秒のキスで移る細菌は何個？",
+      "visual": {
+        "type": "text",
+        "text": "10秒のキスで移る[細菌]は何個？"
+      },
+      "card": "intro",
+      "min_duration": 1.0,
+      "hold": 0.15
+    },
+    {
+      "narration": "わずか10秒のキスで相手に移る細菌は、約[8000万個]にもなる。",
+      "visual": {
+        "type": "number",
+        "value": 8000,
+        "unit": "万個",
+        "label": "10秒のキスで移る細菌"
+      },
+      "tease": "わずか10秒のキスで相手に移る細菌は、",
+      "badge": "大人の雑学 1/5"
+    },
+    {
+      "narration": "街でキスをするカップルを観察すると、約65%は頭を[右]に傾けていた。",
+      "visual": {
+        "type": "number",
+        "value": 65,
+        "unit": "%",
+        "label": "キスで頭を右に傾ける割合"
+      },
+      "tease": "街でキスをするカップルを観察すると、約65%は",
+      "badge": "大人の雑学 2/5"
+    },
+    {
+      "narration": "人は魅力を感じる相手を見つめると、目の[瞳孔]が自然と大きく開きやすい。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Extreme macro close-up of a human eye with a large dilated pupil, soft warm light reflection in the iris, photorealistic",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "👁️",
+          "text": "目は正直"
+        }
+      },
+      "tease": "人は魅力を感じる相手を見つめると、",
+      "badge": "大人の雑学 3/5"
+    },
+    {
+      "narration": "南極周辺にすむ一部のペンギンのオスは、[小石]を贈ってメスに求愛する。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "A male gentoo penguin holding a small round pebble in its beak, offering it to a female gentoo penguin next to a nest of pebbles on a rocky Antarctic shore, natural wildlife photography, realistic, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🐧",
+          "text": "小石で求愛"
+        }
+      },
+      "tease": "南極周辺にすむ一部のペンギンのオスは、",
+      "badge": "大人の雑学 4/5"
+    },
+    {
+      "narration": "タツノオトシゴは、メスではなく[オス]がお腹の袋で子どもを産む。",
+      "visual": {
+        "type": "ai",
+        "query": "",
+        "ai_prompt": "Close-up of a male seahorse with a visibly rounded brood pouch on its belly, swimming among seagrass, tiny baby seahorses emerging nearby, underwater wildlife photography, realistic, no text",
+        "fallback": {
+          "type": "illustration",
+          "emoji": "🐟",
+          "text": "オスが出産"
+        }
+      },
+      "tease": "タツノオトシゴは、",
+      "badge": "大人の雑学 5/5"
+    },
+    {
+      "narration": "いくつ知ってた？コメントで教えて！",
+      "visual": {
+        "type": "text",
+        "emoji": "💬",
+        "text": "いくつ知ってた？コメントで教えて！",
+        "size": 96,
+        "sub": "▶ フォローで毎日大人の雑学"
+      },
+      "hold": 0.5,
+      "min_duration": 1.0,
+      "no_subtitle": true
+    }
+  ],
+  "comment_prompt": "いくつ知ってた？コメントで教えて！",
+  "sources": [
+    "https://www.psychologytoday.com/us/blog/the-asymmetric-brain/201907/do-i-kiss-you-right-exploring-side-preferences-in-kissing",
+    "https://www.researchgate.net/publication/10878706_Human_behaviour_Adult_persistence_of_head-turning_asymmetry",
+    "https://www.sciencedaily.com/releases/2012/08/120806084533.htm",
+    "https://data.4tu.nl/articles/_/14134874/2",
+    "https://phys.org/news/2014-11-million-bacteria.html",
+    "https://www.oneearth.org/species-of-the-week-gentoo-penguin/",
+    "https://en.wikipedia.org/wiki/Pebbling",
+    "https://projectseahorse.org/saving-seahorses/about-seahorses/reproduction/",
+    "https://www.sciencenews.org/article/male-seahorses-mothering-brood-pouch"
+  ],
+  "thumb_text": "10秒のキスで移る[細菌]は何個？",
+  "thumb_prompt": "Cinematic shot of a fully clothed adult man and woman making meaningful eye contact across a cozy cafe table, warm dramatic lighting, high contrast, photorealistic, no text",
+  "format": "rapid",
+  "gen_cost": {
+    "usd": 0.5793,
+    "jpy": 90,
+    "by_task": {
+      "factcheck": 0.5167,
+      "convert": 0.0626
+    },
+    "tokens": {
+      "factcheck": {
+        "model": "claude-opus-5-5",
+        "in": 29961,
+        "out": 13798,
+        "searches": 10
+      },
+      "convert": {
+        "model": "claude-opus-5-5",
+        "in": 7174,
+        "out": 1696,
+        "searches": 0
+      }
+    }
+  },
+  "factcheck": [
+    "1シーン目：64.5%をNature論文（2003年）で確認しました。公共の場所での観察なので、「街で観察すると」「傾けていた」という言い方にしました。",
+    "1シーン目：label を、それだけで意味が通る「キスで頭を右に傾ける割合」に直しました。",
+    "「赤い服で魅力的に見える」は、再現研究やメタ分析で効果がほぼ見られないため、「10秒のキスで最大約8000万個の細菌が移る」に差し替えました。",
+    "「左の横顔が魅力的」は小さな研究1件だけなので、「一部のペンギンのオスは小石で求愛」に差し替えました。あわせて vs の誤った使い方も解消しました。",
+    "「男女とも声が低くなる」は、女性は高くなるという逆の研究もあるため、「タツノオトシゴはオスが出産」に差し替えました。「唯一」とは言っていません。",
+    "瞳孔：「無意識に開く」と言い切っていたのを「開きやすい」に和らげ、画面の専門用語「瞳孔の散大」を「目は正直」に変えました。",
+    "細菌の数：研究の表現が「最大で」なので、ナレーションと label に「最大」を入れました。",
+    "「ジェンツーペンギン」は馴染みのない語なので、「一部のペンギン」と言い換えました。補足シーンは不要です。",
+    "映像の並びを number → ai → number → photo → compare にして、同じ種類が続かないようにしました。compare は「多くの動物」と「タツノオトシゴ」の対比として vs にし、2つの値の形もそろえ、note は空のままです。",
+    "title・youtube_title・topic・description・tags を、差し替えた内容に合わせて更新しました。どれも答えを言っておらず、露骨な言葉も使っていません。description からは「科学的に実証」という言い過ぎを削りました。",
+    "thumb_text を、どの話か分からない総称から、答え（数）を伏せた具体的な問いに変えました。1シーン目とも重なりません。",
+    "thumb_prompt に「服を着た大人」と明記しました。",
+    "sources を、確認に使った具体的なページのURLに入れ替えました。"
+  ]
+}
