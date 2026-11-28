@@ -154,7 +154,7 @@ RAPID_RULES = """（一言雑学の連発形式。この形式では、以下が
 """
 
 TEASE_RULES = """- 溜め（答えを焦らす構成）: 各雑学（補足シーン以外）のナレーションは「前振り」と「答え」に分け、その間に「｜」を
-  1つだけ入れる。動画では前振りを読んだあと約2秒の間（画面は「？」）を置いてから答えを読む。前振りは「〇〇は、」
+  1つだけ入れる。動画では前振りを読んだあと少し間（画面は「？」）を置いてから答えを読む。前振りは「〇〇は、」
   「〇〇の正体は、」「〇〇すると、」のように答えが気になる所で止め、前振りだけでは答えが分からないようにする。
   答えは短く言い切り、[ ] の強調は答えの中に入れる。
   例「キスをするカップルの約65%は、｜頭を[右]に傾けている。」「ラッコは寝るとき、｜[手をつないで]流されないようにする。」
@@ -335,7 +335,7 @@ def chinamini(text):
 
 
 def rapid_rules(term, count=RAPID_FACTS, tease=False):
-    lo, hi = (24, 30) if tease else RAPID_CHARS  # the ~2 s pauses take time: shorter lines keep it within 40 s
+    lo, hi = (24, 30) if tease else RAPID_CHARS  # the pauses take time: shorter lines keep it within 40 s
     return RAPID_RULES.format(term=term, count=count, lo=count * lo, hi=count * hi,
                               tease_rules=TEASE_RULES if tease else "")
 

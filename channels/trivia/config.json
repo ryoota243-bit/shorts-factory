@@ -41,7 +41,7 @@
   "rapid": {
     "intro": true,
     "facts": 5,
-    "tease_pause": 2.0
+    "tease_pause": 1.5
   },
   "bgm": {
     "style": "bouncy",

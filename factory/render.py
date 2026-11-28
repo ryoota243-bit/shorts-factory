@@ -197,7 +197,7 @@ def render(script_path, cfg, root, out_dir):
     # blind text replacement broke word boundaries, e.g. 朝 read as チョウ). Other engines: replace.
     use_check = cfg["tts"]["backend"] == "voicevox"
     to_speak = (lambda ch: tts_text(ch, {})) if use_check else (lambda ch: tts_text(ch, prons))
-    TEASE_PAUSE = float((cfg.get("rapid") or {}).get("tease_pause", 2.0))
+    TEASE_PAUSE = float((cfg.get("rapid") or {}).get("tease_pause", 1.5))
 
     def scene_chunks(sc):
         """Narration chunks; for a teased fact the set-up line comes first, and the pause follows its last chunk."""
@@ -290,13 +290,9 @@ def render(script_path, cfg, root, out_dir):
         se = bgm.title_se() * 0.5  # light whoosh + chime as the title pops in
         mix[: len(se)] += se[: len(mix)]
     pop = bgm.swipe() * 0.3 if STYLE == "card" else bgm.pop() * 0.25
-    for sc, (st, en) in zip(script["scenes"], scenes_t):  # teased facts: soft ticking, then a chime on the answer
+    for sc, (st, en) in zip(script["scenes"], scenes_t):  # teased facts: silent pause, then a chime on the answer
         if sc.get("reveal_at"):
-            a0, a1 = st + sc["tease_end"], st + sc["reveal_at"]
-            k = a0 + 0.25
-            while k < a1 - 0.2:
-                s_ = int(k * SR); mix[s_:s_ + len(tk)] += (tk * 0.9)[: max(0, min(len(tk), n - s_))]
-                k += 0.5
+            a1 = st + sc["reveal_at"]
             ch_ = bgm.reveal() * 0.45
             s_ = int(a1 * SR); mix[s_:s_ + len(ch_)] += ch_[: max(0, min(len(ch_), n - s_))]
     for st, _ in scenes_t[1:]:
