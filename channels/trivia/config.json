@@ -1,5 +1,24 @@
 {
-  "_comment": "一言トリビアチャンネル用の設定。ここに書いた項目だけが config.json を上書きします（それ以外は共通）。",
+  "_comment": "トリビアチャンネル用の設定。ここに書いた項目だけが config.json を上書きします（それ以外は共通）。テーマは categories と content_rules で決まります。",
+  "categories": [
+    "動物の求愛と繁殖",
+    "キス・ハグの科学",
+    "恋愛の心理学",
+    "人体とホルモン",
+    "性のしくみと健康",
+    "歴史の中の恋愛と性",
+    "世界の結婚・恋愛文化",
+    "下着・ファッションの歴史",
+    "大人の言葉の語源",
+    "モテ・魅力の科学"
+  ],
+  "content_rules": [
+    "テーマは「ちょっと大人な雑学」: 性・恋愛・体・動物の繁殖にまつわる、大人がクスッと驚く事実。科学・歴史・文化として伝える語り口にし、下品な言い回し、性行為の具体的な描写、露骨な俗語は使わない（匂わせ程度まで）。",
+    "未成年に関わる話題は一切扱わない。実在の個人（有名人を含む）の性的な話題、性暴力・性犯罪、違法行為、特定の性別・性的指向・国や民族への偏見やからかいは扱わない。",
+    "医療・健康に関わる内容は、公的機関や医学的な情報源で確認できる事実だけにし、効果をうたったり行動を勧めたりしない。「〜すると精力がつく」のような俗説は採用しない。",
+    "映像: 裸・半裸・下着姿・水着・性的なポーズ・体の性的な部位は、写真・AI画像・絵文字のどれでも出さない。人物は、服を着た大人の日常的な場面（手をつなぐカップル、カフェで話す2人など）だけにする。動物・モノ・風景・図解（number/compare）・絵文字（❤️💋🐧🧪💍 など）で表すのを基本にする。🍆🍑💦 のような性的な意味で使われる絵文字は使わない。photo の query も性的な検索語にしない。",
+    "title・thumb_text・youtube_title は匂わせ程度にとどめ、露骨な言葉（性行為や性器を直接指す語）を使わない（YouTube の規約で年齢制限や削除の対象になるため）。"
+  ],
   "formats": {
     "rapid": 1
   },
@@ -8,19 +27,12 @@
   },
   "outro": {
     "narration": "いくつ知ってた？",
-    "sub": "▶ フォローで毎日トリビア"
+    "sub": "▶ フォローで毎日大人の雑学"
   },
   "channel": {
-    "name": "一言トリビア",
-    "term": "トリビア",
-    "footer": "――――――――――\n💡 一言トリビア\n一言でわかる「へぇ！」を、30秒で5連発。毎日投稿中。\n▶ チャンネル登録で、明日のトリビアもチェック！\n※台本と画像の制作にAIを活用しています。誤りに気づいたらコメントで教えてください。"
-  },
-  "youtube": {
-    "secret_env": {
-      "client_id": "TRIVIA_YOUTUBE_CLIENT_ID",
-      "client_secret": "TRIVIA_YOUTUBE_CLIENT_SECRET",
-      "refresh_token": "TRIVIA_YOUTUBE_REFRESH_TOKEN"
-    }
+    "name": "ちょっと大人な雑学",
+    "term": "大人の雑学",
+    "footer": "――――――――――\n💋 ちょっと大人な雑学\n恋愛・体・動物の求愛にまつわる「へぇ！」を、30秒で5連発。毎日投稿中。\n▶ チャンネル登録で、明日の大人の雑学もチェック！\n※科学・歴史・文化としての雑学です。台本と画像の制作にAIを活用しています。誤りに気づいたらコメントで教えてください。"
   },
   "video": {
     "style": "card",
@@ -40,20 +52,30 @@
       "credit": "VOICEVOX:春日部つむぎ"
     }
   },
+  "assets": {
+    "ai_suffix": "Strictly non-sexual and non-suggestive: no nudity, no underwear or swimwear, no sexual poses; any people are fully clothed adults in an everyday scene"
+  },
   "card": {
     "ranks": [
       [
         "👑",
-        "トリビア王"
+        "オトナ博士"
       ],
       [
         "🎓",
-        "物知り"
+        "なかなか大人"
       ],
       [
         "🌱",
-        "伸びしろ大"
+        "まだまだ純粋"
       ]
     ]
+  },
+  "youtube": {
+    "secret_env": {
+      "client_id": "TRIVIA_YOUTUBE_CLIENT_ID",
+      "client_secret": "TRIVIA_YOUTUBE_CLIENT_SECRET",
+      "refresh_token": "TRIVIA_YOUTUBE_REFRESH_TOKEN"
+    }
   }
 }

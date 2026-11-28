@@ -99,7 +99,7 @@ def main():
                 from factory.generate import FORMAT_WEIGHTS, CATEGORIES
                 rep = analytics.build(data, history)
                 tuned = {"format_weights": analytics.tuned_weights(fmt_weights or FORMAT_WEIGHTS, rep["by_format"]),
-                         "category_weights": analytics.tuned_weights({c: 1.0 for c in CATEGORIES},
+                         "category_weights": analytics.tuned_weights({c: 1.0 for c in cfg.get("categories") or CATEGORIES},
                                                                      rep["by_category"])}
                 print(f"[analytics] measured {rep['measured']} videos; format weights {tuned['format_weights']}")
             except Exception as e:
@@ -155,12 +155,14 @@ def main():
                     if first is None:
                         s = generate(topics, cfg["outro"], seed=seed, recent_categories=recent, writer=w,
                                      fmt=a.format, term=term, intro=cfg.get("rapid", {}).get("intro", False),
+                                     categories=cfg.get("categories"), channel_rules=cfg.get("content_rules", ""),
                                      **{"format_weights": fmt_weights, **tuned})
                         first = s
                     else:  # same topic & category as the first writer
                         s = generate(topics, cfg["outro"], writer=w, fmt=first.get("format"),
                                      category=first["category"], topic=first["topic"], term=term,
-                                     intro=cfg.get("rapid", {}).get("intro", False))
+                                     intro=cfg.get("rapid", {}).get("intro", False),
+                                     channel_rules=cfg.get("content_rules", ""))
                     scripts.append((s, f"_{w}" if a.compare else ""))
                 except Exception as e:
                     print(f"[daily] {w} script failed: {e}")

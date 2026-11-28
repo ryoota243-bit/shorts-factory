@@ -376,18 +376,31 @@ def assemble(s: Script, category, outro, writer):
     }
 
 
-def pick_category(seed=None, recent_categories=(), weights=None):
+def channel_block(rules):
+    """A channel's own content rules, placed first under 台本の条件 (they override everything below)."""
+    if not rules:
+        return ""
+    if isinstance(rules, (list, tuple)):
+        rules = "\n".join(f"- {r}" for r in rules)
+    return "（このチャンネルのテーマと守ること。以下のすべての条件より優先する）\n" + rules + "\n"
+
+
+def pick_category(seed=None, recent_categories=(), weights=None, categories=None):
     rng = random.Random(seed or dt.date.today().toordinal())
-    pool = [c for c in CATEGORIES if c not in set(recent_categories)] or CATEGORIES
+    cats = categories or CATEGORIES
+    pool = [c for c in cats if c not in set(recent_categories)] or cats
     w = [(weights or {}).get(c, 1.0) for c in pool]
     return rng.choices(pool, weights=w)[0]
 
 
 def generate(history, outro, seed=None, recent_categories=(), writer="claude", category=None, topic=None,
-             fmt=None, format_weights=None, category_weights=None, term="雑学", intro=False):
-    """Write a script. With topic set, write about that topic instead of choosing one."""
+             fmt=None, format_weights=None, category_weights=None, term="雑学", intro=False,
+             categories=None, channel_rules=""):
+    """Write a script. With topic set, write about that topic instead of choosing one.
+
+    categories / channel_rules: a channel's own topic list and content rules (channels/<name>/config.json)."""
     llm.reset()
-    category = category or pick_category(seed, recent_categories, category_weights)
+    category = category or pick_category(seed, recent_categories, category_weights, categories)
     print(f"[generate:{writer}] category: {category}" + (f" / topic: {topic}" if topic else ""))
     rng = random.Random((seed or dt.date.today().toordinal()) * 7 + 3)
     fw = format_weights or FORMAT_WEIGHTS
@@ -395,7 +408,8 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
     print(f"[generate] format: {fmt}")
     prompt = RESEARCH_PROMPT.format(term=term, theme_line=theme_line(category, history, topic, fmt),
                                     format_name=FORMATS[fmt][0], format_guide=FORMATS[fmt][1],
-                                    structure_rules=RAPID_RULES.format(term=term) if fmt == "rapid" else STORY_RULES)
+                                    structure_rules=channel_block(channel_rules)
+                                    + (RAPID_RULES.format(term=term) if fmt == "rapid" else STORY_RULES))
     notes = None
     if writer in ("gemini", "gemini+claude"):
         from . import gemini
@@ -403,7 +417,7 @@ def generate(history, outro, seed=None, recent_categories=(), writer="claude", c
         if writer == "gemini+claude":
             from .factcheck import check
             print("[generate] Claude fact-check...")
-            s, notes = check(s, fmt)
+            s, notes = check(s, fmt, channel_rules)
             for n in notes:
                 print(f"  [factcheck] {n}")
     else:

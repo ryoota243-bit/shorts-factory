@@ -71,6 +71,9 @@ def _ai(v, cfg, cache, avoid=""):
         return None
     if avoid:
         prompt += f". Important: {avoid}"
+    extra = (cfg.get("assets") or {}).get("ai_suffix", "")  # a channel's standing image rules
+    if extra:
+        prompt += f". {extra}"
     path = Path(cache) / ("ai_" + hashlib.sha1(prompt.encode()).hexdigest()[:16] + ".png")
     if not path.exists():
         from . import gemini

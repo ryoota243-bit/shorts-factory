@@ -70,11 +70,21 @@ RAPID_NOTE = """- これは「一言雑学の連発」形式（1シーン＝独�
   topic は「切り口: 雑学の要点／…」の形で、差し替えた内容に合わせて更新する。comment_prompt は20文字以内"""
 
 
-def check(script_model, fmt="standard"):
+def channel_note(rules):
+    """The channel's content rules: the fact-checker must enforce them too (rewrite or drop what breaks them)."""
+    if not rules:
+        return ""
+    from .generate import channel_block
+    return ("\n- このチャンネルの決まり（守れていない雑学・映像の指定・タイトル・サムネイルは、守れる形に直すか"
+            "別の雑学に差し替える）:\n" + channel_block(rules))
+
+
+def check(script_model, fmt="standard", channel_rules=""):
     """Return (fixed Script, list of review notes)."""
     client = anthropic.Anthropic()
     payload = json.dumps(script_model.model_dump(), ensure_ascii=False, indent=1)
-    report = research(client, CHECK_PROMPT.format(script=payload, format_note=RAPID_NOTE if fmt == "rapid" else STORY_NOTE), max_uses=10, task="factcheck")
+    report = research(client, CHECK_PROMPT.format(script=payload, format_note=(RAPID_NOTE if fmt == "rapid" else STORY_NOTE)
+                                          + channel_note(channel_rules)), max_uses=10, task="factcheck")
     notes = []
     m = re.search(r"##\s*校閲メモ\s*\n(.*)", report, re.S)
     if m:
