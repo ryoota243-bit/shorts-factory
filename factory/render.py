@@ -182,7 +182,8 @@ def render(script_path, cfg, root, out_dir):
     fps = cfg["video"]["fps"]
     HOOK_ON = bool(cfg["video"].get("hook", False))  # old opening (flash / slam / impact) - kept off
     INTRO_ON = bool(cfg["video"].get("title_intro", True))  # catch copy pops in, ~1 s before the narration
-    INTRO_LEAD = float(cfg["video"].get("title_intro_lead", 1.0))
+    INTRO_LEAD = float(cfg["video"].get("title_intro_lead", 2.0))  # minimum seconds before the main part
+    intro_copy = re.sub(r"\s+", "", script.get("thumb_text") or script.get("title") or "")
     seed = abs(hash(name)) % 10000
     (root / "cache").mkdir(exist_ok=True)
     out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
@@ -195,6 +196,9 @@ def render(script_path, cfg, root, out_dir):
     use_check = cfg["tts"]["backend"] == "voicevox"
     to_speak = (lambda ch: tts_text(ch, {})) if use_check else (lambda ch: tts_text(ch, prons))
     spoken = [to_speak(ch) for sc in script["scenes"] for ch in split_sentences(sc.get("narration", ""))]
+    title_line = to_speak(intro_copy) if INTRO_ON and intro_copy else ""
+    if title_line:
+        spoken = [title_line] + spoken
     fixed = {}
     if use_check:
         try:
@@ -203,9 +207,18 @@ def render(script_path, cfg, root, out_dir):
             print(f"  [reading] check skipped: {e}")
     voice_parts, subs, scenes_t = [], [], []
     t = 0.0
+    intro_len = 0.0
+    if title_line:  # Zundamon reads the title; the main part starts only after the title has gone
+        ta = tts.synth(fixed.get(title_line, title_line), cfg)
+        intro_len = max(INTRO_LEAD, 0.35 + len(ta) / SR + 0.6)
+        seg = np.zeros(int(intro_len * SR), np.float32)
+        s0_ = int(0.35 * SR)
+        seg[s0_:s0_ + len(ta)] = ta[: len(seg) - s0_]
+        voice_parts.append(seg)
+        t = intro_len
     for si, sc in enumerate(script["scenes"]):
-        start = t
-        lead = 0.12 if si else (INTRO_LEAD if INTRO_ON else (0.3 if HOOK_ON else 0.05))
+        start = 0.0 if si == 0 else t  # scene 0's picture is the title's backdrop
+        lead = 0.12 if (si or title_line) else (0.3 if HOOK_ON else 0.05)
         voice_parts.append(np.zeros(int(lead * SR), np.float32)); t += lead
         for ch in split_sentences(sc.get("narration", "")):
             line = to_speak(ch)
@@ -311,11 +324,16 @@ def render(script_path, cfg, root, out_dir):
     hook_img = None if not HOOK_ON else (V.fit_text(hook_copy, 170, 1000, 520, min_size=100, stroke=20, fill=(255, 255, 255),
                            hi=V.hex2rgb(theme["accent"]), shadow=True, spacing=1.1) if hook_copy else None)
     HOOK = 2.7  # seconds the catch copy stays up at the start
-    intro_copy = re.sub(r"\s+", "", script.get("thumb_text") or script.get("title") or "")
     intro_img = (V.fit_text(intro_copy, 150, 980, 460, min_size=90, stroke=18, fill=(255, 255, 255),
                             hi=V.hex2rgb(theme["accent"]), shadow=True, spacing=1.12)
                  if INTRO_ON and intro_copy else None)
-    INTRO_END = INTRO_LEAD + 0.5  # the title fades while the first words are spoken
+    INTRO_END = intro_len - 0.35  # the title has fully faded by intro_len, when the main part starts
+    chara = None
+    cp = root / cfg["video"].get("intro_character", "assets/characters/zundamon.png")
+    if intro_img is not None and cp.exists():
+        ch_img = Image.open(cp).convert("RGBA")
+        ch_img = ch_img.crop(ch_img.getbbox())
+        chara = V.scaled(ch_img, 760 / ch_img.height)  # standing figure, about 40 % of the screen height
     if HOOK_ON and isinstance(layers[0], V.PhotoLayer):
         layers[0].punch = True
     thumb_img = None
@@ -374,7 +392,12 @@ def render(script_path, cfg, root, out_dir):
         while si < len(scenes_t) - 1 and tt >= scenes_t[si][1]:
             si += 1
         s0, s1 = scenes_t[si]
-        img = layers[si].frame(tt - s0, s1 - s0)
+        if si == 0 and intro_len and not isinstance(layers[0], (V.PhotoLayer, V.VideoLayer)):
+            # during the title only the backdrop shows; the diagram/illustration appears with the main part
+            lt = tt - intro_len
+            img = (layers[0].background(tt, s1 - s0) if lt < 0 else layers[0].frame(lt, s1 - intro_len))
+        else:
+            img = layers[si].frame(tt - s0, s1 - s0)
         z = 1.0  # the screen itself no longer moves (no push-in, punch-in or camera cuts)
         n_cut = sum(1 for a in cuts[si] if a <= tt)
         fz, fx, fy = FRAMINGS[n_cut % len(FRAMINGS)] if n_cut else FRAMINGS[0]
@@ -424,7 +447,13 @@ def render(script_path, cfg, root, out_dir):
             a = 1.0 - V.clamp((tt - INTRO_END) / 0.3)
             dim = Image.new("RGB", img.size, (0, 0, 0))
             img = Image.blend(img, dim, 0.35 * a)                  # darken the picture behind the title
-            V.place(img, intro_img, V.W / 2, V.H * 0.42, max(0.01, k), alpha=a * V.clamp(tt / 0.12))
+            title_y = V.H * (0.30 if chara is not None else 0.42)
+            V.place(img, intro_img, V.W / 2, title_y, max(0.01, k), alpha=a * V.clamp(tt / 0.12))
+            if chara is not None:  # slides up from the bottom, bobs while reading, leaves with the title
+                p_ = V.ease_back((tt - 0.15) / 0.45)
+                bob = math.sin(tt * 5.0) * 6 * V.clamp((tt - 0.6) / 0.3)
+                cy = V.H + chara.height / 2 - (chara.height * 0.95) * p_ + bob
+                V.place(img, chara, V.W / 2 + 230, cy, 1.0, alpha=a)
         if script.get("title") and not in_hook and not (in_intro and tt < INTRO_END):
             b = band
             if in_intro:  # the top title band fades in as the big title leaves
@@ -457,6 +486,8 @@ def render(script_path, cfg, root, out_dir):
     wav.unlink()
 
     desc = build_description(script, cfg, voicevox="voicevox" in tts.USED)
+    if chara is not None and cfg["video"].get("intro_character_credit"):
+        desc += "\n" + cfg["video"]["intro_character_credit"]  # credit required by the art's terms
     qa_issues = []
     if os.environ.get("ANTHROPIC_API_KEY") and cfg.get("qa", True):
         try:
