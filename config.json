@@ -32,9 +32,11 @@
   "video": {
     "fps": 30,
     "crf": 20,
-    "thumb_seconds": 0.25,
+    "thumb_seconds": 0.5,
     "hook": false,
-    "camera_cuts": false
+    "camera_cuts": false,
+    "title_intro": true,
+    "title_intro_lead": 1.0
   },
   "daily": {
     "count": 1

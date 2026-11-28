@@ -180,7 +180,9 @@ def render(script_path, cfg, root, out_dir):
     theme = {**DEFAULT_THEME, **script.get("theme", {})}
     prons = {**cfg.get("pronunciations", {}), **script.get("pronunciations", {})}
     fps = cfg["video"]["fps"]
-    HOOK_ON = bool(cfg["video"].get("hook", False))  # opening flash / catch-copy slam / impact sound
+    HOOK_ON = bool(cfg["video"].get("hook", False))  # old opening (flash / slam / impact) - kept off
+    INTRO_ON = bool(cfg["video"].get("title_intro", True))  # catch copy pops in, ~1 s before the narration
+    INTRO_LEAD = float(cfg["video"].get("title_intro_lead", 1.0))
     seed = abs(hash(name)) % 10000
     (root / "cache").mkdir(exist_ok=True)
     out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
@@ -203,7 +205,7 @@ def render(script_path, cfg, root, out_dir):
     t = 0.0
     for si, sc in enumerate(script["scenes"]):
         start = t
-        lead = 0.12 if si else (0.3 if HOOK_ON else 0.05)  # with the hook: let the opening hit land first
+        lead = 0.12 if si else (INTRO_LEAD if INTRO_ON else (0.3 if HOOK_ON else 0.05))
         voice_parts.append(np.zeros(int(lead * SR), np.float32)); t += lead
         for ch in split_sentences(sc.get("narration", "")):
             line = to_speak(ch)
@@ -251,13 +253,16 @@ def render(script_path, cfg, root, out_dir):
     if HOOK_ON:
         hit = bgm.impact() * 0.55  # opening impact
         mix[: len(hit)] += hit[: len(mix)]
+    if INTRO_ON:
+        se = bgm.title_se() * 0.5  # light whoosh + chime as the title pops in
+        mix[: len(se)] += se[: len(mix)]
     pop = bgm.pop() * 0.25
     for st, _ in scenes_t[1:]:
         s = int(st * SR); mix[s:s + len(pop)] += pop[: max(0, min(len(pop), n - s))]
     mix = np.tanh(mix * 1.1) / np.tanh(1.1)
     fps_ = cfg["video"]["fps"]
     T0 = round(float(cfg["video"].get("thumb_seconds", 0.5)) * fps_) / fps_  # whole frames of thumbnail
-    mix = np.concatenate([np.zeros(int(T0 * SR), np.float32), mix])
+    mix = np.concatenate([mix, np.zeros(int(T0 * SR), np.float32)])  # thumbnail frame comes at the end
     wav = out_dir / f"{name}.wav"
     write_wav(wav, mix)
 
@@ -306,6 +311,11 @@ def render(script_path, cfg, root, out_dir):
     hook_img = None if not HOOK_ON else (V.fit_text(hook_copy, 170, 1000, 520, min_size=100, stroke=20, fill=(255, 255, 255),
                            hi=V.hex2rgb(theme["accent"]), shadow=True, spacing=1.1) if hook_copy else None)
     HOOK = 2.7  # seconds the catch copy stays up at the start
+    intro_copy = re.sub(r"\s+", "", script.get("thumb_text") or script.get("title") or "")
+    intro_img = (V.fit_text(intro_copy, 150, 980, 460, min_size=90, stroke=18, fill=(255, 255, 255),
+                            hi=V.hex2rgb(theme["accent"]), shadow=True, spacing=1.12)
+                 if INTRO_ON and intro_copy else None)
+    INTRO_END = INTRO_LEAD + 0.5  # the title fades while the first words are spoken
     if HOOK_ON and isinstance(layers[0], V.PhotoLayer):
         layers[0].punch = True
     thumb_img = None
@@ -357,10 +367,10 @@ def render(script_path, cfg, root, out_dir):
     si, prev_last = 0, None
     thumb_frames = round(T0 * fps)
     for fi in range(nframes):
-        if fi < thumb_frames:
-            proc.stdin.write((thumb_img or layers[0].frame(0, 1)).tobytes())
+        if fi >= nframes - thumb_frames:  # last frames: the thumbnail (pick it as the cover in the app)
+            proc.stdin.write((thumb_img or layers[-1].frame(0, 1)).tobytes())
             continue
-        tt = (fi - thumb_frames) / fps
+        tt = fi / fps
         while si < len(scenes_t) - 1 and tt >= scenes_t[si][1]:
             si += 1
         s0, s1 = scenes_t[si]
@@ -407,8 +417,19 @@ def render(script_path, cfg, root, out_dir):
             V.paste_center(img, V.scaled(hook_img, max(0.01, k)), V.W / 2 + shake, V.H * 0.42, alpha=a)
             if tt < 0.12:  # white flash on the first frames
                 img = Image.blend(img, Image.new("RGB", img.size, (255, 255, 255)), 0.7 * (1 - tt / 0.12))
-        if script.get("title") and not in_hook:
+        in_intro = si == 0 and intro_img is not None and tt < INTRO_END + 0.3
+        if in_intro:
+            k = 0.55 + 0.45 * V.ease_back(tt / 0.4)              # pops in and lands
+            k *= 1 + 0.025 * math.sin(math.pi * V.clamp((tt - 0.4) / 0.8))  # one gentle breath
+            a = 1.0 - V.clamp((tt - INTRO_END) / 0.3)
+            dim = Image.new("RGB", img.size, (0, 0, 0))
+            img = Image.blend(img, dim, 0.35 * a)                  # darken the picture behind the title
+            V.place(img, intro_img, V.W / 2, V.H * 0.42, max(0.01, k), alpha=a * V.clamp(tt / 0.12))
+        if script.get("title") and not in_hook and not (in_intro and tt < INTRO_END):
             b = band
+            if in_intro:  # the top title band fades in as the big title leaves
+                b = band.copy()
+                b.putalpha(b.getchannel("A").point(lambda v, f=V.clamp((tt - INTRO_END) / 0.3): int(v * f)))
             if si == 0 and hook_img is not None and tt < HOOK + 0.3:
                 b = band.copy()
                 b.putalpha(b.getchannel("A").point(lambda v, f=V.clamp((tt - HOOK) / 0.3): int(v * f)))
@@ -440,7 +461,7 @@ def render(script_path, cfg, root, out_dir):
     if os.environ.get("ANTHROPIC_API_KEY") and cfg.get("qa", True):
         try:
             from . import qa
-            qa_issues = qa.review(mp4, script, scenes_t, subs, offset=T0)
+            qa_issues = qa.review(mp4, script, scenes_t, subs, offset=0.0)
             for q in qa_issues:
                 print(f"  [qa] {q['severity']} シーン{q['scene']}: {q['issue']}")
         except Exception as e:
