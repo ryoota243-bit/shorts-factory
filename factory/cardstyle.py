@@ -94,7 +94,7 @@ class CardStyle:
         tot = V.rich_text(f"/{self.n:02d}", 70, fill=INK, hi=INK, stroke=0)
         im = Image.new("RGBA", (num.width + tot.width - 10, num.height), (0, 0, 0, 0))
         im.alpha_composite(num, (0, 0))
-        im.alpha_composite(tot, (num.width - 20, num.height - tot.height - 34))
+        im.alpha_composite(tot, (num.width - 20, num.height - tot.height - 60))
         return im
 
     def _bg(self, i):
@@ -151,7 +151,7 @@ class CardStyle:
             row.paste(c, (50, (150 - c.height) // 2), c)
             e = V.emoji(emo, 90)
             row.paste(e, (380, 30), e)
-            nm = V.fit_text(name, 64, 300, 120, min_size=40, fill=INK, hi=INK)
+            nm = V.fit_text(name, 70, 320, 120, min_size=48, fill=INK, hi=INK)
             row.paste(nm, (490, (150 - nm.height) // 2), nm)
             out.append(row)
         return out
@@ -176,7 +176,7 @@ class CardStyle:
         kk = 0.86 + 0.14 * V.ease_back(t / 0.4)
         V.place(im, card, W / 2, CARD_CY + (1 - V.ease_out(t / 0.35)) * 60, kk * (1 + 0.02 * t / max(dur, 0.1)), ang)
         st = self.num_imgs[k + 1]
-        V.place(im, st, 95 + st.width / 2 - 30, CARD_CY - CARD_H / 2 - 75, max(0.01, V.ease_back((t - 0.08) / 0.35)),
+        V.place(im, st, 95 + st.width / 2 - 30, CARD_CY - CARD_H / 2 - 100, max(0.01, V.ease_back((t - 0.08) / 0.35)),
                 -6 if k % 2 == 0 else 4)
         p = V.ease_out((t - 0.12) / 0.3)
         if p > 0:
