@@ -55,7 +55,8 @@
     }
   },
   "assets": {
-    "ai_suffix": "Strictly non-sexual and non-suggestive: no nudity, no underwear or swimwear, no sexual poses; any people are fully clothed adults in an everyday scene"
+    "ai_suffix": "Strictly non-sexual and non-suggestive: no nudity, no underwear or swimwear, no sexual poses; any people are fully clothed adults in an everyday scene",
+    "ai_aspect": "4:3"
   },
   "card": {
     "ranks": [

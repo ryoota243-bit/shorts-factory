@@ -74,13 +74,18 @@ def _ai(v, cfg, cache, avoid=""):
     extra = (cfg.get("assets") or {}).get("ai_suffix", "")  # a channel's standing image rules
     if extra:
         prompt += f". {extra}"
-    path = Path(cache) / ("ai_" + hashlib.sha1(prompt.encode()).hexdigest()[:16] + ".png")
+    # aspect: the main channel fills the vertical screen; the card style shows pictures in a landscape frame
+    aspect = (cfg.get("assets") or {}).get("ai_aspect", "9:16")
+    key = prompt if aspect == "9:16" else f"{prompt} [{aspect}]"
+    path = Path(cache) / ("ai_" + hashlib.sha1(key.encode()).hexdigest()[:16] + ".png")
     if not path.exists():
         from . import gemini
-        full = (prompt + ". Vertical 9:16 composition. No text, letters, logos, emblems, patches, flags-as-logos"
+        comp = ("Vertical 9:16 composition" if aspect == "9:16" else
+                f"Landscape {aspect} composition with the whole main subject inside the frame (nothing important cut off)")
+        full = (prompt + f". {comp}. No text, letters, logos, emblems, patches, flags-as-logos"
                 " or watermarks in the image."
                 " Do not depict the face of any real, identifiable person.")
-        path.write_bytes(gemini.generate_image(full))
+        path.write_bytes(gemini.generate_image(full, aspect))
     return {"kind": "image", "path": path, "credit": "AI生成画像 (Gemini)"}
 
 
